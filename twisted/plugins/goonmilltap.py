@@ -12,7 +12,7 @@ from twisted.application.service import IServiceMaker
 from twisted.application import strports
 
 from nevow import appserver
-from goonmill import Root
+from goonmill.resource import Root
 
 class Options(usage.Options):
     optParameters = [['port', 'p', '6680', 'Port to run on'],
