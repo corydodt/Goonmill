@@ -1,2 +1,2 @@
-from goonmill.resource import Root
+"""Goonmill, the statblock generator"""
 
