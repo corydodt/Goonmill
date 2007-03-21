@@ -1,5 +1,6 @@
 // import Nevow.Athena
 // import DeanEdwards
+// import Divmod.Defer
 
 Goonmill.Search = Nevow.Athena.Widget.subclass('Goonmill.Search');
 Goonmill.Search.methods( // {{{
@@ -85,14 +86,18 @@ Goonmill.Search.methods( // {{{
 
 Goonmill.HistoryView = Nevow.Athena.Widget.subclass('Goonmill.HistoryView');
 Goonmill.HistoryView.methods( // {{{
-    function postHistoryView(self, result) { // {{{
-        var d = self.addChildWidgetFromWidgetInfo(result);
-        d.addCallback(function addedWidget(w) {
-            self.node.appendChild(w.node);
-            return null;
-        });
+    function postResult(self, result) { // {{{
+        var ll = [];
+        for (var i=0; i<result.length; i++) {
+            var d = self.addChildWidgetFromWidgetInfo(result[i]);
+            d.addCallback(function addedWidget(w) {
+                self.node.appendChild(w.node);
+                return null;
+            });
+            ll.push(d);
+        }
 
-        return d;
+        return Divmod.Defer.DeferredList(ll);
     } // }}}
 ); // }}}
 
