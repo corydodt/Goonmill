@@ -13,7 +13,7 @@ class History(object):
     def __init__(self):
         self.result = None
         self.statblocks = []
-        self.pendingStatblocks = []
+        self.pending = []
 
     def setView(self, view):
         """
@@ -25,16 +25,14 @@ class History(object):
         ## TODO - limit the number of statblocks i can hold to some reasonable
         ## number to prevent DoS
         self.statblocks.append(statblock)
-        self.pendingStatblocks.append(statblock)
+        self.pending.append(statblock)
         self.view.historyUpdated(self)
 
     def pendingStatblocks(self):
-        return self.pendingStatblocks
+        return self.pending
 
     def unpendStatblocks(self, statblocks):
-        for block in statblocks:
-            if block in self.pendingStatblocks:
-                del self.pendingStatblocks[block]
+        self.pending = list(set(self.pending) - set(statblocks))
 
 miniParser = re.compile(r'(\S+)\s[^(]*\(([\d,]+) hp\)')
 
@@ -52,7 +50,10 @@ class Statblock(object):
         if _parsed is None:
             self.hitPoints = ['Special'] * count
         else:
-            self.hitPoints = [d.sum() for d in dice.roll(_parsed)]
+            hp = []
+            for n in range(count):
+                hp.extend([d.sum() for d in dice.roll(_parsed)])
+            self.hitPoints = hp
 
         for n, hp in enumerate(self.hitPoints):
             if hp < 1: 

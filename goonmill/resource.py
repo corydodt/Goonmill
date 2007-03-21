@@ -1,7 +1,7 @@
 """The resource structure for Goonmill"""
 import shlex
 
-from nevow import rend, url, loaders, athena, flat, static
+from nevow import rend, url, loaders, athena, flat, static, page
 
 from goonmill.util import RESOURCE
 from goonmill.history import History, Statblock
@@ -63,10 +63,10 @@ class Search(athena.LiveElement):
         """Take the configured monster and make a statblock for it"""
         id = kwargs['monster_id']
         label = kwargs['monster_label']
-        count = kwargs['monster_count']
+        count = int(kwargs['monster_count'])
         ## TODO - create a statblock for this monster
         sb = Statblock(id, count, label)
-        self.historyView.addStatblock(sb)
+        self.history.addStatblock(sb)
 
     athena.expose(onConfigSubmit)
 
@@ -94,20 +94,17 @@ class HistoryView(athena.LiveElement):
 
     def historyUpdated(self, history):
         outgoing = []
-        for statblock in history.pendingStatblocks():
-            outgoing.append(Result(statblock))
+        pending = history.pendingStatblocks()
+        for statblock in pending:
+            r = Result(statblock)
+            r.setFragmentParent(self)
+            outgoing.append(r)
 
         d = self.callRemote("postResult", outgoing)
 
-        def unpend(r):
-            """
-            On successful post, notify history that statblocks are no
-            longer "pending"
-            """
-            history.unpendStatblocks(outgoing)
-            return r
-
-        d.addCallback(unpend)
+        # immediately un-pend statblocks we have posted.
+        # there's no point keeping them around if they failed to post
+        history.unpendStatblocks(pending)
 
         return d
 
@@ -118,6 +115,9 @@ class Result(athena.LiveElement):
         super(Result, self).__init__(*a, **kw)
         self.statblock = statblock
 
-    def render_name(self, ctx, data):
-        return "ID: %s " % (self.statblock.id,)
+    def name(self, ctx, data):
+        m = self.statblock.monster
+        return "%s hp %s" % (m.name, self.statblock.hitPoints)
+
+    page.renderer(name)
 
