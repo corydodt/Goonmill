@@ -57,6 +57,10 @@ class Statblock(object):
             if hp < 1: 
                 self.hitPoints[n] = 1
 
+        # TODO - when a monster can have a gender, we must decide what it will
+        # be.  Choose randomly?  Is it always one or the other?  Can we
+        # say "mix of male and female" ?
+
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
         m = miniParser.match(self.monster.hit_dice)
