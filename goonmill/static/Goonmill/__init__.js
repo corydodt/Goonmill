@@ -75,10 +75,11 @@ Goonmill.Search.methods( // {{{
     }, // }}}
 
     /* call to set up and display the configure form */
-    function setupConfigure(self, id, name) { // {{{
+    function setupConfigure(self, id, name, organization) { // {{{
         var f = self.configForm;
         f.monster_id.value = id;
         self.firstNodeByClass('monster_name').innerHTML = name;
+        self.firstNodeByClass('organization').innerHTML = organization;
         f.style['display'] = 'block';
         return null;
     } // }}}

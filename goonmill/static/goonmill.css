@@ -1,1 +1,7 @@
 .configForm { display: none; }
+
+.monster_entry p { margin: 0px; font-size: 10pt; }
+
+h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }
+
+.statblock { border-bottom: thin solid black; }

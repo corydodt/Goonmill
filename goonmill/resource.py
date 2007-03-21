@@ -78,10 +78,11 @@ class Search(athena.LiveElement):
         Respond to the action of a user choosing a hit from the search results
         """
         ## TODO figure out special configure parameters we could play with
-        ## frex - parse organization to suggest a value for count
-        ##      - parse attack to present options for weapon choices
+        ## frex - parse attack to present options for weapon choices
+        ##      - parse alignment to suggest values for alignment
+        ##      - suggest gender?
         goon = query.lookup(id)
-        return self.callRemote('setupConfigure', id, goon.name)
+        return self.callRemote('setupConfigure', id, goon.name, goon.organization)
 
     athena.expose(chose)
 
@@ -117,10 +118,70 @@ class Result(athena.LiveElement):
     def __init__(self, statblock, *a, **kw):
         super(Result, self).__init__(*a, **kw)
         self.statblock = statblock
+        self.monster = statblock.monster
+        self.label = statblock.label
+        self.hitPoints = statblock.hitPoints
 
-    def name(self, ctx, data):
-        m = self.statblock.monster
-        return "%s hp %s" % (m.name, self.statblock.hitPoints)
+    def slots(self, req, tag):
+        m = self.monster
+        tag.fillSlots('name', m.name)
+        tag.fillSlots('challengeRating', m.challenge_rating)
+        tag.fillSlots('alignment', m.alignment)
+        tag.fillSlots('size', m.size)
+        tag.fillSlots('creatureType', m.type)
+        tag.fillSlots('initiative', m.initiative)
+        tag.fillSlots('languages', u'LANGUAGES=FIXME')
+        return tag
 
-    page.renderer(name)
+    page.renderer(slots)
 
+    def blockLabel(self, req, tag):
+        if self.label:
+            tag.fillSlots('label', self.label)
+            return tag
+        return ''
+
+    page.renderer(blockLabel)
+
+    def subtype(self, req, tag):
+        if self.monster.descriptor:
+            tag.fillSlots('subtype', self.monster.descriptor)
+            return tag
+        return ''
+
+    page.renderer(subtype)
+
+    def aura(self, req, tag):
+        return u"FIXME - aura"
+
+    page.renderer(aura)
+
+    def space(self, req, tag):
+        m = self.monster
+        # don't need to print anything if this is just a typical Medium
+        # monster
+        if m.space == u'5 ft.' and m.reach == u'5 ft.' and m.size == u'Medium':
+            return ''
+
+        tag.fillSlots('space', m.space)
+        tag.fillSlots('reach', m.reach)
+        return tag
+
+    page.renderer(space)
+
+    def npcTraits(self, req, tag):
+        return "FIXME - npcTraits"
+        """
+        GENDER
+        RACE
+        CLASS
+        LEVEL
+        """
+
+    page.renderer(npcTraits)
+
+    def hp(self, req, tag):
+        tag.fillSlots('hp', ', '.join(map(unicode, self.hitPoints)))
+        return tag
+
+    page.renderer(hp)

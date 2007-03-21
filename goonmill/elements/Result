@@ -1,2 +1,78 @@
-<div xmlns:n="http://nevow.com/ns/nevow/0.1" 
-n:render="liveElement"><n:invisible n:render="name" /></div>
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
+  <n:invisible n:render="slots">
+  <h1><n:slot name="name"/><n:invisible n:render="blockLabel"> <em>(<n:slot
+          name="label" />)</em></n:invisible>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;CR <n:slot name="challengeRating"/></h1>
+    <div class="statblock">
+      <p n:render="npcTraits">
+        <n:slot name="gender"/>
+        <n:slot name="race"/>
+        <n:slot name="class"/>
+        <n:slot name="level"/>
+        </p>
+      <p>
+        <n:slot name="alignment"/>
+        <n:slot name="size"/>
+        <n:slot name="creatureType"/>
+        <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
+      </p>
+      <p><strong>Init</strong><n:slot name="initiative"/><span class="math">(+XX Dex, misc. mods)</span>; <strong>Senses</strong> [special senses;] Listen +XX, Spot +XX</p>
+      <p>
+        <n:invisible n:render="aura"><strong>Aura</strong> aura (range, DC
+      XX)</n:invisible>
+      </p>
+      <p>
+        <strong>Languages</strong>
+        <n:slot name="languages"/>
+      </p>
+    </div>
+    <div class="statblock">
+      <p><strong>AC</strong> XX, touch XX, flat-footed XX <span class="math">(+XX armor, +XX Dex, +XX size, misc. mods)</span>[; defenses][; <a title="Dodge | Mobility | Deflect Arrows | Two-Weapon Defense">AC feats</a>]</p>
+      <p n:render="hp"><strong>hp</strong> <n:slot name="hp" /> (XX HD<span class="math"> (+XX Race, +XX Class)</span>)[; fast healing XX][; <strong>DR</strong> XX/XX]</p>
+      <p>[<strong>Immune</strong> immunities]</p>
+      <p>[<strong>Resist</strong> resistances; <strong>SR</strong> XX]</p>
+      <p><strong>Fort</strong> +XX, <strong>Ref</strong> +XX, <strong>Will</strong> +XX <span class="math">(Race F+XX, R+XX, W+XX; Class F+XX, R+XX, W+XX; Con +XX, Dex +XX, Wis +XX)</span>[; save modifiers]</p>
+      <p>[<strong>Weakness</strong> XX]</p>
+    </div>
+    <div class="statblock">
+      <p><strong>Spd</strong> XX ft.[; <a title="Spring Attack | Ride-By Attack | Shot on the Run | Run">speed feats</a>]</p>
+      <p><strong>Melee</strong> weapon +XX (damage) <span class="math">(+XX BAB, +XX Str, +XX size, +XX weapon quality, +XX feat)</span></p>
+      <p><strong>Ranged</strong> weapon +XX (damage) <span class="math">(+XX BAB, +XX Dex, +XX size, +XX weapon quality, +XX feat)</span>[; <a title="Manyshot | Rapid Shot">ranged atk feats</a>]</p>
+      <p>
+        <n:invisible n:render="space"><strong>Space</strong><n:slot name="space"/> ft;
+    <strong>Reach</strong> <n:slot name="reach"/> 
+    ft</n:invisible>
+      </p>
+      <p><strong>Base Atk</strong> +XX <span class="math">(+XX Race, +XX Class)</span>; <strong>Grp</strong> +XX</p>
+      <p>[<strong>Atk Options</strong> options; <a title="Blind-Fight | Cleave | Combat Reflexes | Far Shot | Great Cleave | Improved Bull Rush | Improved Disarm | Improved Feint | Improved Overrun | Improved Precise Shot | Improved Sunder | Improved Trip | Mounted Combat | Point Blank Shot | Power Attack | Powerful Charge | Precise Shot | Quick Draw | Rapid Reload | Spirited Charge | Stunning Fist | Trample | Whirlwind Attack; metamagic feats (if the creature casts spontaneously)">atk options feats</a>]</p>
+      <p>[<strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a>]</p>
+      <p><strong>Combat Gear</strong> gear</p>
+      <p>[<strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
+      <p>[<strong>Spell-Like Abilities</strong> (CL XX)]</p>
+    </div>
+    <div class="statblock">
+      <p><strong>Abilities</strong> Str XX, Dex XX, Con XX, Int XX, Wis XX, Cha XX</p>
+      <p>[<strong>SQ</strong> special qualities]</p>
+      <p><strong>Feats</strong> Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span></p>
+      <p><strong>Skills</strong> Skill +XX, Skill +XX, Skill +XX, Skill +XX, Skill +XX</p>
+      <p><strong>Possessions</strong><span class="math">money derived from DMG tables for NPC wealth-</span>item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, XX gp<span class="math"> remaining wealth in coins</span></p>
+      <p>[<strong>Spellbook</strong> All spells prepared plus XX]</p>
+    </div>
+    <div class="statblock">
+      <p>[<strong>Hook</strong> hook]</p>
+    </div>
+    <div class="statblock">
+      <p>[<strong>Ability (Type)</strong> description]</p>
+      <p>[<strong>Ability (Type)</strong> description]</p>
+    </div>
+    <p>
+      <span class="math"><strong>Skills (class):</strong>
+Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX racial
+trait), Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX
+racial trait), Skill XX ranks (+XX ability score, +XX feat, +XX item,
++XX racial trait), = XX (XX skill points)</span>
+    </p>
+    <p>
+      <span class="math"><strong>NOTE:</strong> Number of feats is derived as follows: XX.</span>
+    </p>
+  </n:invisible>
+</div>
