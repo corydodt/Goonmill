@@ -1,3 +1,2 @@
-<div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement">
-    <n:invisible n:render="name" />
-</div>
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" 
+n:render="liveElement"><n:invisible n:render="name" /></div>
