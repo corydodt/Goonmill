@@ -22,8 +22,6 @@ class History(object):
         self.view = view
 
     def addStatblock(self, statblock):
-        ## TODO - limit the number of statblocks i can hold to some reasonable
-        ## number to prevent DoS
         self.statblocks.append(statblock)
         self.pending.append(statblock)
         self.view.historyUpdated(self)

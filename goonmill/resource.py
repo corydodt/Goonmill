@@ -64,7 +64,10 @@ class Search(athena.LiveElement):
         id = kwargs['monster_id']
         label = kwargs['monster_label']
         count = int(kwargs['monster_count'])
-        ## TODO - create a statblock for this monster
+
+        # limit the count to something reasonable to prevent DoS
+        if count > 100: count = 100
+
         sb = Statblock(id, count, label)
         self.history.addStatblock(sb)
 
