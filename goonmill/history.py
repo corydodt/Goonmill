@@ -39,17 +39,17 @@ class Statblock(object):
     A representation of one statblock; a configured monster that has had
     its hit points generated and labels set up.
     """
-    def __init__(self, id, count, label):
+    def __init__(self, id):
         self.monster = query.lookup(id)
-        self.count = count
-        self.label = label
+        self.count = 1
+        self.label = ''
         print self.monster.name, self.monster.hit_dice,
         _parsed = self.parseHitPoints()
         if _parsed is None:
-            self.hitPoints = ['Special'] * count
+            self.hitPoints = ['Special'] * self.count
         else:
             hp = []
-            for n in range(count):
+            for n in range(self.count):
                 hp.extend([d.sum() for d in dice.roll(_parsed)])
             self.hitPoints = hp
 

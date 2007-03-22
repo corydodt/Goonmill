@@ -61,30 +61,13 @@ class Search(athena.LiveElement):
 
     athena.expose(onSearchSubmit)
 
-    def onConfigSubmit(self, kwargs):
-        """Take the configured monster and make a statblock for it"""
-        id = kwargs['monster_id']
-        label = kwargs['monster_label']
-        count = int(kwargs['monster_count'])
-
-        # limit the count to something reasonable to prevent DoS
-        if count > 100: count = 100
-
-        sb = Statblock(id, count, label)
-        self.history.addStatblock(sb)
-
-    athena.expose(onConfigSubmit)
-
     def chose(self, id):
         """
         Respond to the action of a user choosing a hit from the search results
         """
-        ## TODO figure out special configure parameters we could play with
-        ## frex - parse attack to present options for weapon choices
-        ##      - parse alignment to suggest values for alignment
-        ##      - suggest gender?
-        goon = query.lookup(id)
-        return self.callRemote('setupConfigure', id, goon.name, goon.organization)
+        sb = Statblock(id)
+        self.history.addStatblock(sb)
+        return None
 
     athena.expose(chose)
 

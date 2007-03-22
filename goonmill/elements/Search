@@ -6,14 +6,6 @@
 </form>
 <div class="hits">
 </div>
-<form class="configForm">
-  <h2 class="monster_name"/>
-  <input type="hidden" name="monster_id"/>
-  <div>How many? <input name="monster_count" value="1"/> Organization: <span class="organization"></span></div>
-  <div>Extra labels (will appear as, <em>e.g.</em> "20 Orcs (wearing red
-      armor)" <input name="monster_label"/></div>
-  <input type="submit" value="Get Stat block" />
-</form>
 <!-- vi:ft=html
 -->
 </div>

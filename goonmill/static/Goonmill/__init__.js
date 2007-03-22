@@ -12,17 +12,11 @@ Goonmill.Search.methods( // {{{
             function onSearchSubmit(event) { return self.onSearchSubmit(event) 
         });
 
-        self.configForm = self.firstNodeByClass("configForm");
-        DeanEdwards.addEvent(self.configForm, 'submit', 
-            function onConfigSubmit(event) { return self.onConfigSubmit(event) 
-        });
     }, // }}}
 
     function onSearchSubmit(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();
-
-        self.clearConfigure();
 
         var args = {'search_terms': self.searchForm.search_terms.value};
         var d = self.callRemote("onSearchSubmit", args);
@@ -60,38 +54,6 @@ Goonmill.Search.methods( // {{{
 
     function clearHits(self) { // {{{
         self.firstNodeByClass('hits').innerHTML = '';
-    }, // }}}
-
-    function clearConfigure(self) { // {{{
-        var f = self.configForm;
-        f.monster_id.value = '';
-        self.firstNodeByClass('monster_name').innerHTML = '';
-        self.firstNodeByClass('organization').innerHTML = '';
-        f.style['display'] = 'none';
-    }, // {{{
-
-    function onConfigSubmit(self, event) { // {{{
-        event.stopPropagation();
-        event.preventDefault();
-
-        var f = self.configForm;
-
-        var args = {'monster_count': f.monster_count.value,
-                'monster_label': f.monster_label.value,
-                'monster_id': f.monster_id.value
-        };
-        var d = self.callRemote("onConfigSubmit", args);
-        return d
-    }, // }}}
-
-    /* call to set up and display the configure form */
-    function setupConfigure(self, id, name, organization) { // {{{
-        var f = self.configForm;
-        f.monster_id.value = id;
-        self.firstNodeByClass('monster_name').innerHTML = name;
-        self.firstNodeByClass('organization').innerHTML = organization;
-        f.style['display'] = 'block';
-        return null;
     } // }}}
 ); // }}}
 
