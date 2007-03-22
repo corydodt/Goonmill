@@ -12,7 +12,7 @@ from twisted.application.service import IServiceMaker
 from twisted.application import strports
 
 from nevow import appserver
-from goonmill.resource import Root
+from goonmill.resource import Root, VhostFakeRoot
 
 class Options(usage.Options):
     optParameters = [['port', 'p', '6680', 'Port to run on'],
@@ -39,7 +39,7 @@ class GoonmillServerMaker(object):
         """
         Construct the test daemon.
         """
-        resource = Root()
+        resource = VhostFakeRoot(Root())
         factory = appserver.NevowSite(resource)
         port = 'tcp:%s' % (options['port'],)
         ## port = 'ssl:%s:privateKey=%s:certKey=%s' % (options['port'],
