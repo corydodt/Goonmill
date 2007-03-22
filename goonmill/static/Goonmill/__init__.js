@@ -22,6 +22,8 @@ Goonmill.Search.methods( // {{{
         event.stopPropagation();
         event.preventDefault();
 
+        self.clearConfigure();
+
         var args = {'search_terms': self.searchForm.search_terms.value};
         var d = self.callRemote("onSearchSubmit", args);
         d.addCallback(function gotHits(hits) {
@@ -59,6 +61,14 @@ Goonmill.Search.methods( // {{{
     function clearHits(self) { // {{{
         self.firstNodeByClass('hits').innerHTML = '';
     }, // }}}
+
+    function clearConfigure(self) { // {{{
+        var f = self.configForm;
+        f.monster_id.value = '';
+        self.firstNodeByClass('monster_name').innerHTML = '';
+        self.firstNodeByClass('organization').innerHTML = '';
+        f.style['display'] = 'none';
+    }, // {{{
 
     function onConfigSubmit(self, event) { // {{{
         event.stopPropagation();
