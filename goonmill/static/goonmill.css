@@ -5,3 +5,12 @@
 h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }
 
 .statblock { border-bottom: thin solid black; }
+
+h4 { 
+    float: left;
+    width: 60em;
+    clear: both;
+    background-color: red; 
+    color: white;
+    border: 2px outset black;
+}

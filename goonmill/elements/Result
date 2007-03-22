@@ -1,7 +1,8 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
   <n:invisible n:render="slots">
-  <h1><n:slot name="name"/><n:invisible n:render="blockLabel"> <em>(<n:slot
-          name="label" />)</em></n:invisible>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;CR <n:slot name="challengeRating"/></h1>
+  <h4><n:slot name="name"/><n:invisible n:render="blockLabel"> <em>(<n:slot
+          name="label" />)</em></n:invisible>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;CR <n:slot name="challengeRating"/></h4>
+  <div style="clear:both" />
     <div class="statblock">
       <p n:render="npcTraits">
         <n:slot name="gender"/>
@@ -75,4 +76,5 @@ racial trait), Skill XX ranks (+XX ability score, +XX feat, +XX item,
       <span class="math"><strong>NOTE:</strong> Number of feats is derived as follows: XX.</span>
     </p>
   </n:invisible>
-</div>
+<!-- vi:ft=html
+--></div>
