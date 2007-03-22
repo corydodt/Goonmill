@@ -116,6 +116,10 @@ class Result(athena.LiveElement):
         tag.fillSlots('creatureType', m.type)
         tag.fillSlots('initiative', m.initiative)
         tag.fillSlots('languages', u'LANGUAGES=FIXME')
+        tag.fillSlots('speed', m.speed)
+        tag.fillSlots('baseAttack', m.base_attack)
+        tag.fillSlots('abilities', m.abilities)
+        tag.fillSlots('specialQualities', m.special_qualities)
         return tag
 
     page.renderer(slots)
