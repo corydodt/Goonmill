@@ -1,7 +1,9 @@
 """The resource structure for Goonmill"""
 import shlex
 
-from nevow import rend, url, loaders, athena, flat, static, page
+from zope.interface import implements
+
+from nevow import rend, url, loaders, athena, flat, static, page, vhost, inevow
 
 from goonmill.util import RESOURCE
 from goonmill.history import History, Statblock
@@ -185,3 +187,24 @@ class Result(athena.LiveElement):
         return tag
 
     page.renderer(hp)
+
+class VhostFakeRoot:
+    """
+    I am a wrapper to be used at site root when you want to combine 
+    vhost.VHostMonsterResource with nevow.guard. If you are using guard, you 
+    will pass me a guard.SessionWrapper resource.
+    """
+    implements(inevow.IResource)
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+    
+    def renderHTTP(self, ctx):
+        return self.wrapped.renderHTTP(ctx)
+        
+    def locateChild(self, ctx, segments):
+        """Returns a VHostMonster if the first segment is "vhost". Otherwise
+        delegates to the wrapped resource."""
+        if segments[0] == "VHOST":
+            return vhost.VHostMonsterResource(), segments[1:]
+        else:
+            return self.wrapped.locateChild(ctx, segments)
