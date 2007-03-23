@@ -110,9 +110,9 @@ class Result(athena.LiveElement):
     def slots(self, req, tag):
         m = self.monster
         tag.fillSlots('name', m.name)
-        tag.fillSlots('label', Guise())
+        tag.fillSlots('label', Guise(tooltip='Click to add a label'))
         tag.fillSlots('challengeRating', m.challenge_rating)
-        tag.fillSlots('alignment', Guise(m.alignment))
+        tag.fillSlots('alignment', Guise(m.alignment, 'Click to edit alignment'))
         tag.fillSlots('size', m.size)
         tag.fillSlots('creatureType', m.type)
         tag.fillSlots('initiative', m.initiative)
@@ -134,7 +134,7 @@ class Result(athena.LiveElement):
     page.renderer(subtype)
 
     def aura(self, req, tag):
-        return u"FIXME - aura"
+        return tag[u"FIXME - aura"]
 
     page.renderer(aura)
 
@@ -152,13 +152,11 @@ class Result(athena.LiveElement):
     page.renderer(space)
 
     def npcTraits(self, req, tag):
-        return "FIXME - npcTraits"
-        """
-        GENDER
-        RACE
-        CLASS
-        LEVEL
-        """
+        tag.fillSlots('gender', '')
+        tag.fillSlots('race', '')
+        tag.fillSlots('class', '')
+        tag.fillSlots('level', '')
+        return tag["FIXME - npcTraits"]
 
     page.renderer(npcTraits)
 
@@ -172,14 +170,20 @@ class Guise(page.Element):
     """A simple edit/static toggleable widget"""
     docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
 
-    def __init__(self, value='', *a, **kw):
+    def __init__(self, value='', tooltip='Click to edit', *a, **kw):
         super(Guise, self).__init__(*a, **kw)
         self.value = value
+        self.tooltipText = tooltip
 
     def preload(self, req, tag):
         return self.value
 
     page.renderer(preload)
+
+    def tooltip(self, req, tag):
+        return self.tooltipText
+
+    page.renderer(tooltip)
 
 class VhostFakeRoot:
     """

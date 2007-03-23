@@ -1,6 +1,15 @@
 .configForm { display: none; }
 
-.monster_entry p { margin: 0px; font-size: 10pt; }
+.monster_entry {
+    float: left;
+    width: 550px;
+}
+
+.monster_entry p { 
+    margin: 0px; 
+    font-size: 8pt; 
+    font-family: sans-serif;
+}
 
 h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }
 
@@ -8,7 +17,7 @@ h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }
 
 h4 { 
     float: left;
-    width: 60em;
+    width: 550px;
     clear: both;
     background-color: red; 
     color: white;

@@ -59,7 +59,7 @@ ft</n:invisible>
     </p>
     <p><strong>Feats</strong> Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span></p>
     <p><strong>Skills</strong> Skill +XX, Skill +XX, Skill +XX, Skill +XX, Skill +XX</p>
-    <p><strong>Possessions</strong><span class="math">money derived from DMG tables for NPC wealth-</span>item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, XX gp<span class="math"> remaining wealth in coins</span></p>
+    <p><strong>Possessions</strong> <span class="math">money derived from DMG tables for NPC wealth-</span>item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, XX gp<span class="math"> remaining wealth in coins</span></p>
     <p>[<strong>Spellbook</strong> All spells prepared plus XX]</p>
   </div>
   <div class="statblock">
