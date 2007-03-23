@@ -14,3 +14,11 @@ h4 {
     color: white;
     border: 2px outset black;
 }
+
+form.guise { display: inline; }
+
+.guiseInput { display: none; }
+
+.guiseStatic {
+    border: thin dotted black;
+}

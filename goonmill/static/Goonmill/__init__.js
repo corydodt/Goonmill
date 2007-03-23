@@ -65,6 +65,14 @@ Goonmill.HistoryView.methods( // {{{
             var d = self.addChildWidgetFromWidgetInfo(result[i]);
             d.addCallback(function addedWidget(w) {
                 self.node.appendChild(w.node);
+
+                /* hook up Guise machinery to all the guise nodes in this
+                 * widget */
+                var guises = w.nodesByAttribute('class', 'guise');
+                for (var g=0; g<guises.length; g++) {
+                    var _ignored = new Goonmill.Guise(guises[g], w);
+                }
+
                 return null;
             });
             ll.push(d);
@@ -74,4 +82,49 @@ Goonmill.HistoryView.methods( // {{{
     } // }}}
 ); // }}}
 
+/* a guise is a static-text region that can be clicked to become editable */
+Goonmill.Guise = Divmod.Class.subclass('Goonmill.Guise');
+Goonmill.Guise.methods( // {{{
+    function __init__(self, node, widget) { // {{{
+        self.widget = widget;
+        self.staticNode = node.getElementsByTagName('span')[0];
+        self.inputNode = node.getElementsByTagName('input')[0];
+        self.node = node;
+        DeanEdwards.addEvent(self.staticNode, 'click', function (event) {
+            self.editGuise(event);
+        });
+        DeanEdwards.addEvent(node, 'submit', function (event) {
+            self.onSubmit(event);
+        });
+
+        if (self.inputNode.value) { 
+            self.staticNode.innerHTML = self.inputNode.value;
+        } else {
+            self.staticNode.innerHTML = '&#xA0;';
+        }
+    }, // }}}
+
+    /* put guise into editing mode */
+    function editGuise(self, event) { // {{{
+        event.stopPropagation();
+        event.preventDefault()
+        self.staticNode.style['display'] = 'none';
+        self.inputNode.style['display'] = 'inline';
+        self.inputNode.focus();
+    }, // }}}
+
+    function onSubmit(self, event) { // {{{
+        event.stopPropagation();
+        event.preventDefault()
+        self.inputNode.style['display'] = 'none';
+        self.staticNode.innerHTML = self.inputNode.value;
+        self.staticNode.style['display'] = 'inline';
+        // TODO - send it back.
+    } // }}}
+    
+); // }}}
 // vi:foldmethod=marker
+
+/*
+
+*/

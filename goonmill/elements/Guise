@@ -1,0 +1,3 @@
+<form class="guise" title="Click to edit" xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <span class="guiseStatic"></span><input name="guise" type="text" class="guiseInput"><n:attr name="value" n:render="preload" /></input>
+</form>

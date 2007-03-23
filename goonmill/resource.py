@@ -110,8 +110,9 @@ class Result(athena.LiveElement):
     def slots(self, req, tag):
         m = self.monster
         tag.fillSlots('name', m.name)
+        tag.fillSlots('label', Guise())
         tag.fillSlots('challengeRating', m.challenge_rating)
-        tag.fillSlots('alignment', m.alignment)
+        tag.fillSlots('alignment', Guise(m.alignment))
         tag.fillSlots('size', m.size)
         tag.fillSlots('creatureType', m.type)
         tag.fillSlots('initiative', m.initiative)
@@ -123,14 +124,6 @@ class Result(athena.LiveElement):
         return tag
 
     page.renderer(slots)
-
-    def blockLabel(self, req, tag):
-        if self.label:
-            tag.fillSlots('label', self.label)
-            return tag
-        return ''
-
-    page.renderer(blockLabel)
 
     def subtype(self, req, tag):
         if self.monster.descriptor:
@@ -174,6 +167,19 @@ class Result(athena.LiveElement):
         return tag
 
     page.renderer(hp)
+
+class Guise(page.Element):
+    """A simple edit/static toggleable widget"""
+    docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
+
+    def __init__(self, value='', *a, **kw):
+        super(Guise, self).__init__(*a, **kw)
+        self.value = value
+
+    def preload(self, req, tag):
+        return self.value
+
+    page.renderer(preload)
 
 class VhostFakeRoot:
     """
