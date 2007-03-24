@@ -1,7 +1,7 @@
 """The resource structure for Goonmill"""
 import shlex
 
-from zope.interface import implements
+from zope.interface import implements, Interface
 
 from nevow import rend, url, loaders, athena, flat, static, page, vhost, inevow
 
@@ -24,6 +24,7 @@ class Root(rend.Page):
     def renderHTTP(self, ctx):
         return url.root.child("app")
 
+
 class GoonmillPage(athena.LivePage):
     docFactory = loaders.xmlfile(RESOURCE('templates/goonmillpage.xhtml'))
     addSlash = 1
@@ -37,7 +38,8 @@ class GoonmillPage(athena.LivePage):
 
         s.setView(hv)
 
-        return [s, hv]
+        return ctx.tag[s, hv]
+
 
 class Search(athena.LiveElement):
     """The search widget"""
@@ -71,6 +73,7 @@ class Search(athena.LiveElement):
 
     athena.expose(chose)
 
+
 class HistoryView(athena.LiveElement):
     """The results container widget"""
     docFactory = loaders.xmlfile(RESOURCE("elements/HistoryView"))
@@ -97,6 +100,7 @@ class HistoryView(athena.LiveElement):
 
         return d
 
+
 class Result(athena.LiveElement):
     """One result"""
     docFactory = loaders.xmlfile(RESOURCE("elements/Result"))
@@ -105,37 +109,48 @@ class Result(athena.LiveElement):
         self.statblock = statblock
 
     def slots(self, req, tag):
-        g = self.statblock.get
-        tag.fillSlots('name', g('name'))
-        tag.fillSlots('label', Guise(tooltip='Click to add a label'))
-        tag.fillSlots('challengeRating', g('challenge_rating'))
-        tag.fillSlots('alignment', Guise(g('alignment'), 
-            'Click to edit alignment'))
-        tag.fillSlots('size', g('size'))
-        tag.fillSlots('creatureType', g('type'))
-        tag.fillSlots('initiative', g('initiative'))
-        tag.fillSlots('languages', u'LANGUAGES=FIXME')
-        tag.fillSlots('speed', g('speed'))
-        tag.fillSlots('baseAttack', g('base_attack'))
-        tag.fillSlots('abilities', g('abilities'))
-        tag.fillSlots('specialQualities', g('special_qualities'))
+        get = self.statblock.get
+
+        def guise(*a, **kw):
+            _g = Guise(*a, **kw)
+            _g.setFragmentParent(self)
+            return _g
+
+        fill = tag.fillSlots
+        fill('name', get('name'))
+        fill('label', guise(tooltip='Click to add a label'))
+        fill('challengeRating', get('challenge_rating'))
+        fill('alignment', guise(get('alignment'), 'Click to edit alignment'))
+        fill('size', get('size'))
+        fill('creatureType', get('type'))
+        fill('initiative', get('initiative'))
+        fill('languages', u'LANGUAGES=FIXME')
+        fill('speed', get('speed'))
+        fill('baseAttack', get('base_attack'))
+        fill('abilities', get('abilities'))
+        fill('specialQualities', get('special_qualities'))
+        fill('subtype', get('descriptor'))
+        fill('count', guise(get('count'), 
+                    tooltip='Click to set the number of individuals'))
+        fill('space', get('space'))
+        fill('reach', get('reach'))
+        fill('gender', '')
+        fill('race', '')
+        fill('class', '')
+        fill('level', '')
         return tag
 
     page.renderer(slots)
 
     def subtype(self, req, tag):
-        descriptor = self.statblock.get('descriptor')
-        if descriptor:
-            tag.fillSlots('subtype', descriptor)
+        if self.statblock.get('descriptor'):
             return tag
         return ''
 
     page.renderer(subtype)
 
     def count(self, req, tag):
-        ct = self.statblock.get('count')
-        if ct > 1:
-            tag.fillSlots(ct)
+        if self.statblock.get('count') > 1:
             return tag
         return ''
 
@@ -155,17 +170,11 @@ class Result(athena.LiveElement):
         if space == u'5 ft.' and reach == u'5 ft.' and g('size') == u'Medium':
             return ''
 
-        tag.fillSlots('space', space)
-        tag.fillSlots('reach', reach)
         return tag
 
     page.renderer(space)
 
     def npcTraits(self, req, tag):
-        tag.fillSlots('gender', '')
-        tag.fillSlots('race', '')
-        tag.fillSlots('class', '')
-        tag.fillSlots('level', '')
         return tag["FIXME - npcTraits"]
 
     page.renderer(npcTraits)
@@ -176,9 +185,15 @@ class Result(athena.LiveElement):
 
     page.renderer(hp)
 
-class Guise(page.Element):
-    """A simple edit/static toggleable widget"""
+
+class Guise(athena.LiveElement):
+    """A simple edit/static toggleable widget
+    @param value: The default value of the widget
+    @param tooltip: The tooltip that will appear when the user hovers over the widget
+    @param edit: A string that names a handler defined in Result object
+    """
     docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
+    jsClass = u"Goonmill.Guise"
 
     def __init__(self, value='', tooltip='Click to edit', *a, **kw):
         super(Guise, self).__init__(*a, **kw)
@@ -194,6 +209,7 @@ class Guise(page.Element):
         return self.tooltipText
 
     page.renderer(tooltip)
+
 
 class VhostFakeRoot:
     """

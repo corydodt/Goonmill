@@ -83,13 +83,12 @@ Goonmill.HistoryView.methods( // {{{
 ); // }}}
 
 /* a guise is a static-text region that can be clicked to become editable */
-Goonmill.Guise = Divmod.Class.subclass('Goonmill.Guise');
+Goonmill.Guise = Nevow.Athena.Widget.subclass('Goonmill.Guise');
 Goonmill.Guise.methods( // {{{
-    function __init__(self, node, widget) { // {{{
-        self.widget = widget;
+    function __init__(self, node) { // {{{
+        Goonmill.Guise.upcall(self, '__init__', node);
         self.staticNode = node.getElementsByTagName('span')[0];
         self.inputNode = node.getElementsByTagName('input')[0];
-        self.node = node;
         DeanEdwards.addEvent(self.staticNode, 'click', function (event) {
             self.editGuise(event);
         });
@@ -117,14 +116,14 @@ Goonmill.Guise.methods( // {{{
         event.stopPropagation();
         event.preventDefault()
         self.inputNode.style['display'] = 'none';
-        self.staticNode.innerHTML = self.inputNode.value;
+        if (self.inputNode.value) {
+            self.staticNode.innerHTML = self.inputNode.value;
+        } else {
+            self.staticNode.innerHTML = '&#xA0;';
+        }
         self.staticNode.style['display'] = 'inline';
         // TODO - send it back.
     } // }}}
     
 ); // }}}
 // vi:foldmethod=marker
-
-/*
-
-*/
