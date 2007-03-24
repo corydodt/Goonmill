@@ -1,5 +1,5 @@
-(/|\\|).*\.pyc$
+(/|\\|^).*\.pyc$
 (/|\\|)dropin.cache$
-(/|\\|)twistd.log$
+(/|\\|^)twistd.log$
 (/|\\)srd35.db$
-(/|\\)twistd.pid$
+(/|\\|^)twistd.pid$
