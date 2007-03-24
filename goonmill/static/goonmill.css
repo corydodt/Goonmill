@@ -29,5 +29,13 @@ form.guise { display: inline; }
 .guiseInput { display: none; }
 
 .guiseStatic {
-    border: thin dotted black;
+    border: 1px dotted black;
+    margin: 1px;
+}
+
+span.guiseStatic:hover {
+    background-color: white;
+    color: black;
+    border: 2px inset black;
+    margin: 0px;
 }
