@@ -1,7 +1,7 @@
 """The resource structure for Goonmill"""
 import shlex
 
-from zope.interface import implements, Interface
+from zope.interface import implements
 
 from nevow import rend, url, loaders, athena, flat, static, page, vhost, inevow
 
@@ -109,7 +109,8 @@ class Result(athena.LiveElement):
         self.statblock = statblock
 
     def slots(self, req, tag):
-        get = self.statblock.get
+        s = self.statblock
+        get = s.get
 
         def guise(*a, **kw):
             _g = Guise(*a, **kw)
@@ -118,9 +119,11 @@ class Result(athena.LiveElement):
 
         fill = tag.fillSlots
         fill('name', get('name'))
-        fill('label', guise(tooltip='Click to add a label'))
+        fill('label', guise(tooltip='Click to add a label', 
+                editHandler=s.setLabel))
         fill('challengeRating', get('challenge_rating'))
-        fill('alignment', guise(get('alignment'), 'Click to edit alignment'))
+        fill('alignment', guise(get('alignment'), 'Click to edit alignment',
+            editHandler=s.setAlignment))
         fill('size', get('size'))
         fill('creatureType', get('type'))
         fill('initiative', get('initiative'))
@@ -131,7 +134,8 @@ class Result(athena.LiveElement):
         fill('specialQualities', get('special_qualities'))
         fill('subtype', get('descriptor'))
         fill('count', guise(get('count'), 
-                    tooltip='Click to set the number of individuals'))
+                    tooltip='Click to set the number of individuals', 
+                    editHandler=s.setCount))
         fill('space', get('space'))
         fill('reach', get('reach'))
         fill('gender', '')
@@ -189,16 +193,20 @@ class Result(athena.LiveElement):
 class Guise(athena.LiveElement):
     """A simple edit/static toggleable widget
     @param value: The default value of the widget
-    @param tooltip: The tooltip that will appear when the user hovers over the widget
-    @param edit: A string that names a handler defined in Result object
+    @param tooltip: The tooltip that will appear when the user hovers over the
+                    widget
+    @param editHandler: A callable that takes the new value as an argument
+                        when the user edits a Guise in the browser
     """
     docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
     jsClass = u"Goonmill.Guise"
 
-    def __init__(self, value='', tooltip='Click to edit', *a, **kw):
+    def __init__(self, value='', tooltip='Click to edit', editHandler=None, 
+            *a, **kw):
         super(Guise, self).__init__(*a, **kw)
         self.value = value
         self.tooltipText = tooltip
+        self.editHandler = editHandler
 
     def preload(self, req, tag):
         return self.value
@@ -209,6 +217,12 @@ class Guise(athena.LiveElement):
         return self.tooltipText
 
     page.renderer(tooltip)
+
+    def editedValue(self, newValue):
+        """User edited the value in the browser"""
+        self.editHandler(newValue)
+
+    athena.expose(editedValue)
 
 
 class VhostFakeRoot:

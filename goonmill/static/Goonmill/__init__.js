@@ -109,6 +109,7 @@ Goonmill.Guise.methods( // {{{
         event.preventDefault()
         self.staticNode.style['display'] = 'none';
         self.inputNode.style['display'] = 'inline';
+        self.inputNode.select();
         self.inputNode.focus();
     }, // }}}
 
@@ -117,12 +118,14 @@ Goonmill.Guise.methods( // {{{
         event.preventDefault()
         self.inputNode.style['display'] = 'none';
         if (self.inputNode.value) {
-            self.staticNode.innerHTML = self.inputNode.value;
+            var v = self.inputNode.value;
+            self.staticNode.innerHTML = v;
+            // notify the server
+            d = self.callRemote("editedValue", v);
         } else {
             self.staticNode.innerHTML = '&#xA0;';
         }
         self.staticNode.style['display'] = 'inline';
-        // TODO - send it back.
     } // }}}
     
 ); // }}}

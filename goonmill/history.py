@@ -43,10 +43,26 @@ class Statblock(object):
         self.monster = query.lookup(id)
         self._count = 1
         self._label = ''
-        self.overridden = {
+        self.overrides = {
                 'count': self._count,
                 'label': self._label,
                 }
+        self._handler = None
+
+    def update(self, attribute, newValue):
+        """I will call this to notify handlers ot changed attributes"""
+        if self._handler is None:
+            return
+
+        return self._handler(attribute, newValue)
+
+    def updateHandler(self, handler):
+        """
+        Call with a function with the signature: handler(attribute, newValue)
+
+        It will be called when an attribute of the statblock changes
+        """
+        self._handler = handler
 
     def hitPoints(self):
         """
@@ -90,6 +106,21 @@ class Statblock(object):
         (which might have been modified from the server) and second by looking
         it up in the monster's ORM object.
         """
-        if attribute in self.overridden:
-            return self.overridden[attribute]
+        if attribute in self.overrides:
+            return self.overrides[attribute]
         return getattr(self.monster, attribute)
+
+    def setCount(self, count):
+        self.overrides['count'] = count
+        hp = self.hitPoints()
+        self.overrides['hp'] = hp
+        self.update('count', count)
+        self.update('hp', hp)
+ 
+    def setLabel(self, label):
+        self.overrides['label'] = label
+        self.update('label', label)
+
+    def setAlignment(self, alignment):
+        self.overrides['alignment'] = alignment
+        self.update('alignment', alignment)
