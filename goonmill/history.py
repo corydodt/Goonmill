@@ -84,7 +84,6 @@ class Statblock(object):
         except pyparsing.ParseException:
             return p(m.group(2))
 
-
     def get(self, attribute):
         """
         Retrieve an attribute, first by looking it up in my own property list
