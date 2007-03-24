@@ -103,35 +103,43 @@ class Result(athena.LiveElement):
     def __init__(self, statblock, *a, **kw):
         super(Result, self).__init__(*a, **kw)
         self.statblock = statblock
-        self.monster = statblock.monster
-        self.label = statblock.label
-        self.hitPoints = statblock.hitPoints
 
     def slots(self, req, tag):
-        m = self.monster
-        tag.fillSlots('name', m.name)
+        g = self.statblock.get
+        tag.fillSlots('name', g('name'))
         tag.fillSlots('label', Guise(tooltip='Click to add a label'))
-        tag.fillSlots('challengeRating', m.challenge_rating)
-        tag.fillSlots('alignment', Guise(m.alignment, 'Click to edit alignment'))
-        tag.fillSlots('size', m.size)
-        tag.fillSlots('creatureType', m.type)
-        tag.fillSlots('initiative', m.initiative)
+        tag.fillSlots('challengeRating', g('challenge_rating'))
+        tag.fillSlots('alignment', Guise(g('alignment'), 
+            'Click to edit alignment'))
+        tag.fillSlots('size', g('size'))
+        tag.fillSlots('creatureType', g('type'))
+        tag.fillSlots('initiative', g('initiative'))
         tag.fillSlots('languages', u'LANGUAGES=FIXME')
-        tag.fillSlots('speed', m.speed)
-        tag.fillSlots('baseAttack', m.base_attack)
-        tag.fillSlots('abilities', m.abilities)
-        tag.fillSlots('specialQualities', m.special_qualities)
+        tag.fillSlots('speed', g('speed'))
+        tag.fillSlots('baseAttack', g('base_attack'))
+        tag.fillSlots('abilities', g('abilities'))
+        tag.fillSlots('specialQualities', g('special_qualities'))
         return tag
 
     page.renderer(slots)
 
     def subtype(self, req, tag):
-        if self.monster.descriptor:
-            tag.fillSlots('subtype', self.monster.descriptor)
+        descriptor = self.statblock.get('descriptor')
+        if descriptor:
+            tag.fillSlots('subtype', descriptor)
             return tag
         return ''
 
     page.renderer(subtype)
+
+    def count(self, req, tag):
+        ct = self.statblock.get('count')
+        if ct > 1:
+            tag.fillSlots(ct)
+            return tag
+        return ''
+
+    page.renderer(count)
 
     def aura(self, req, tag):
         return tag[u"FIXME - aura"]
@@ -139,14 +147,16 @@ class Result(athena.LiveElement):
     page.renderer(aura)
 
     def space(self, req, tag):
-        m = self.monster
+        g = self.statblock.get
         # don't need to print anything if this is just a typical Medium
         # monster
-        if m.space == u'5 ft.' and m.reach == u'5 ft.' and m.size == u'Medium':
+        space = g('space')
+        reach = g('reach')
+        if space == u'5 ft.' and reach == u'5 ft.' and g('size') == u'Medium':
             return ''
 
-        tag.fillSlots('space', m.space)
-        tag.fillSlots('reach', m.reach)
+        tag.fillSlots('space', space)
+        tag.fillSlots('reach', reach)
         return tag
 
     page.renderer(space)
@@ -161,7 +171,7 @@ class Result(athena.LiveElement):
     page.renderer(npcTraits)
 
     def hp(self, req, tag):
-        tag.fillSlots('hp', ', '.join(map(unicode, self.hitPoints)))
+        tag.fillSlots('hp', ', '.join(map(str, self.statblock.hitPoints())))
         return tag
 
     page.renderer(hp)

@@ -41,21 +41,32 @@ class Statblock(object):
     """
     def __init__(self, id):
         self.monster = query.lookup(id)
-        self.count = 1
-        self.label = ''
-        print self.monster.name, self.monster.hit_dice,
-        _parsed = self.parseHitPoints()
-        if _parsed is None:
-            self.hitPoints = ['Special'] * self.count
-        else:
-            hp = []
-            for n in range(self.count):
-                hp.extend([d.sum() for d in dice.roll(_parsed)])
-            self.hitPoints = hp
+        self._count = 1
+        self._label = ''
+        self.overridden = {
+                'count': self._count,
+                'label': self._label,
+                }
 
-        for n, hp in enumerate(self.hitPoints):
+    def hitPoints(self):
+        """
+        @return: A sequence of hit points
+        """
+        _parsed = self.parseHitPoints()
+        hplist = []
+        if _parsed is None:
+            return ['Special'] * self._count
+        else:
+            for n in range(self._count):
+                rolled = list(dice.roll(_parsed))
+                assert len(rolled) == 1, "Too many repeats in this expression - a monter may have only one hit dice expression with no repeats!"
+                hplist.append(rolled[0].sum())
+
+        for n, hp in enumerate(hplist):
             if hp < 1: 
-                self.hitPoints[n] = 1
+                hplist[n] = 1
+
+        return hplist
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
@@ -73,3 +84,13 @@ class Statblock(object):
         except pyparsing.ParseException:
             return p(m.group(2))
 
+
+    def get(self, attribute):
+        """
+        Retrieve an attribute, first by looking it up in my own property list
+        (which might have been modified from the server) and second by looking
+        it up in the monster's ORM object.
+        """
+        if attribute in self.overridden:
+            return self.overridden[attribute]
+        return getattr(self.monster, attribute)
