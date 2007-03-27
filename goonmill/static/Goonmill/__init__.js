@@ -66,13 +66,6 @@ Goonmill.HistoryView.methods( // {{{
             d.addCallback(function addedWidget(w) {
                 self.node.appendChild(w.node);
 
-                /* hook up Guise machinery to all the guise nodes in this
-                 * widget */
-                var guises = w.nodesByAttribute('class', 'guise');
-                for (var g=0; g<guises.length; g++) {
-                    var _ignored = new Goonmill.Guise(guises[g], w);
-                }
-
                 return null;
             });
             ll.push(d);
@@ -85,10 +78,16 @@ Goonmill.HistoryView.methods( // {{{
 /* a guise is a static-text region that can be clicked to become editable */
 Goonmill.Guise = Nevow.Athena.Widget.subclass('Goonmill.Guise');
 Goonmill.Guise.methods( // {{{
-    function __init__(self, node) { // {{{
+    function __init__(self, node, template) { // {{{
         Goonmill.Guise.upcall(self, '__init__', node);
+
+        if (!template) template = '#{quote_safe_value}';
+
+        self.template = new Template(template);
+
         self.staticNode = node.getElementsByTagName('span')[0];
         self.inputNode = node.getElementsByTagName('input')[0];
+
         DeanEdwards.addEvent(self.staticNode, 'click', function (event) {
             self.editGuise(event);
         });
@@ -96,11 +95,23 @@ Goonmill.Guise.methods( // {{{
             self.onSubmit(event);
         });
 
+        self.display();
+    }, // }}}
+
+    /* display inputNode.value inside staticNode, using the formatting I was
+     * passed in self.template */
+    function display(self) { // {{{
+        var id = Goonmill.nextId();
+        console.log("--- self.inputNode.value " + self.inputNode.value);
         if (self.inputNode.value) { 
-            self.staticNode.innerHTML = self.inputNode.value;
+            var v = Goonmill.quoteSafeString(self.inputNode.value);
+            var hash = {quote_safe_value: v, id: id};
         } else {
-            self.staticNode.innerHTML = '&#xA0;';
+            var hash = {quote_safe_value: '&#xA0;', id: id};
         }
+        var markup = self.template.evaluate(hash);
+        self.staticNode.update(markup);
+        self.staticNode.style['display'] = 'inline';
     }, // }}}
 
     /* put guise into editing mode */
@@ -117,16 +128,42 @@ Goonmill.Guise.methods( // {{{
         event.stopPropagation();
         event.preventDefault()
         self.inputNode.style['display'] = 'none';
-        if (self.inputNode.value) {
-            var v = self.inputNode.value;
-            self.staticNode.innerHTML = v;
+        var v = self.inputNode.value;
+        if (v) {
             // notify the server
             d = self.callRemote("editedValue", v);
-        } else {
-            self.staticNode.innerHTML = '&#xA0;';
         }
-        self.staticNode.style['display'] = 'inline';
+        self.display();
+    }, // }}}
+
+    function pushed(self, newValue) { // {{{
+        if (newValue) {
+            self.inputNode.value = newValue;
+        }
+        self.display();
     } // }}}
-    
 ); // }}}
+
+Goonmill.ReadOnlyGuise = Goonmill.Guise.subclass('Goonmill.ReadOnlyGuise');
+Goonmill.ReadOnlyGuise.methods( // {{{
+    function editGuise(self, event) { // {{{
+        event.stopPropagation();
+        event.preventDefault()
+        return null;
+    } // }}}
+); // }}}
+
+Goonmill.idCounter = 0;
+
+Goonmill.quoteSafeString = function (s) { // {{{
+    var s = s.gsub(/\\/, '\\\\');
+    var s = s.gsub(/'/, "\\'");
+    var s = s.gsub(/"/, '\\"');
+    return s;
+}; // }}}
+
+Goonmill.nextId = function () { // {{{
+    Goonmill.idCounter += 1;
+    return Goonmill.idCounter;
+}; // }}}
 // vi:foldmethod=marker

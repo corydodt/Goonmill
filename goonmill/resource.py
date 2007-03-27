@@ -5,7 +5,7 @@ from zope.interface import implements
 
 from nevow import rend, url, loaders, athena, flat, static, page, vhost, inevow
 
-from goonmill.util import RESOURCE
+from goonmill.util import RESOURCE, resourceData
 from goonmill.history import History, Statblock
 from goonmill import query
 
@@ -107,44 +107,60 @@ class Result(athena.LiveElement):
     def __init__(self, statblock, *a, **kw):
         super(Result, self).__init__(*a, **kw)
         self.statblock = statblock
+        self.guises = {}
 
     def slots(self, req, tag):
         s = self.statblock
         get = s.get
 
-        def guise(*a, **kw):
-            _g = Guise(*a, **kw)
+        def guise(label, readOnly=False, *a, **kw):
+            if readOnly:
+                _g = ReadOnlyGuise(*a, **kw)
+            else:
+                _g = Guise(*a, **kw)
             _g.setFragmentParent(self)
+            self.guises[label] = _g
             return _g
 
         fill = tag.fillSlots
         fill('name', get('name'))
-        fill('label', guise(tooltip='Click to add a label', 
-                editHandler=s.setLabel))
+        fill('label', guise('label', tooltip='Click to add a label', 
+            editHandler=s.setLabel))
         fill('challengeRating', get('challenge_rating'))
-        fill('alignment', guise(get('alignment'), 'Click to edit alignment',
+        fill('alignment', guise('alignment', 
+            readOnly=False, value=get('alignment'), 
+            tooltip='Click to edit alignment',
             editHandler=s.setAlignment))
         fill('size', get('size'))
         fill('creatureType', get('type'))
         fill('initiative', get('initiative'))
         fill('languages', u'LANGUAGES=FIXME')
+        fill('hp', guise('hp', readOnly=True, value=self.statblock.hitPoints()))
         fill('speed', get('speed'))
         fill('baseAttack', get('base_attack'))
         fill('abilities', get('abilities'))
         fill('specialQualities', get('special_qualities'))
         fill('subtype', get('descriptor'))
-        fill('count', guise(get('count'), 
-                    tooltip='Click to set the number of individuals', 
-                    editHandler=s.setCount))
+        fill('count', guise('count',
+            value=get('count'), 
+            tooltip='Click to set the number of individuals', 
+            template=resourceData('guises/Count'),
+            editHandler=s.setCount))
         fill('space', get('space'))
         fill('reach', get('reach'))
         fill('gender', '')
         fill('race', '')
         fill('class', '')
         fill('level', '')
+
+        s.updateHandler(self.updateHandler)
+
         return tag
 
     page.renderer(slots)
+
+    def updateHandler(self, attribute, newValue):
+        self.guises[attribute].push(newValue)
 
     def subtype(self, req, tag):
         if self.statblock.get('descriptor'):
@@ -152,13 +168,6 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(subtype)
-
-    def count(self, req, tag):
-        if self.statblock.get('count') > 1:
-            return tag
-        return ''
-
-    page.renderer(count)
 
     def aura(self, req, tag):
         return tag[u"FIXME - aura"]
@@ -183,15 +192,12 @@ class Result(athena.LiveElement):
 
     page.renderer(npcTraits)
 
-    def hp(self, req, tag):
-        tag.fillSlots('hp', ', '.join(map(str, self.statblock.hitPoints())))
-        return tag
-
-    page.renderer(hp)
-
 
 class Guise(athena.LiveElement):
-    """A simple edit/static toggleable widget
+    """
+    A simple edit/static toggleable widget.  It can also receive a push from
+    the server.
+
     @param value: The default value of the widget
     @param tooltip: The tooltip that will appear when the user hovers over the
                     widget
@@ -201,12 +207,14 @@ class Guise(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
     jsClass = u"Goonmill.Guise"
 
-    def __init__(self, value='', tooltip='Click to edit', editHandler=None, 
+    def __init__(self, value='', tooltip='Click to edit', editHandler=None,
+            template=None,
             *a, **kw):
         super(Guise, self).__init__(*a, **kw)
         self.value = value
         self.tooltipText = tooltip
         self.editHandler = editHandler
+        self.template = template
 
     def preload(self, req, tag):
         return self.value
@@ -223,6 +231,19 @@ class Guise(athena.LiveElement):
         self.editHandler(newValue)
 
     athena.expose(editedValue)
+
+    def push(self, newValue):
+        """
+        Send a value to the widget to be displayed.
+        """
+        return self.callRemote('pushed', unicode(newValue))
+
+    def getInitialArguments(self):
+        return (self.template,)
+
+class ReadOnlyGuise(Guise):
+    docFactory = loaders.xmlfile(RESOURCE('elements/ReadOnlyGuise'))
+    jsClass = u'Goonmill.ReadOnlyGuise'
 
 
 class VhostFakeRoot:

@@ -71,18 +71,19 @@ class Statblock(object):
         _parsed = self.parseHitPoints()
         hplist = []
         if _parsed is None:
-            return ['Special'] * self._count
+            hplist = ['Special'] * self._count
         else:
             for n in range(self._count):
                 rolled = list(dice.roll(_parsed))
                 assert len(rolled) == 1, "Too many repeats in this expression - a monter may have only one hit dice expression with no repeats!"
                 hplist.append(rolled[0].sum())
 
-        for n, hp in enumerate(hplist):
-            if hp < 1: 
-                hplist[n] = 1
+            # minimum of 1hp for a monster
+            for n, hp in enumerate(hplist):
+                if hp < 1: 
+                    hplist[n] = 1
 
-        return hplist
+        return ', '.join(map(str, hplist))
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
@@ -111,16 +112,14 @@ class Statblock(object):
         return getattr(self.monster, attribute)
 
     def setCount(self, count):
+        count = int(count)
         self.overrides['count'] = count
+        self._count = count
         hp = self.hitPoints()
-        self.overrides['hp'] = hp
-        self.update('count', count)
         self.update('hp', hp)
  
     def setLabel(self, label):
         self.overrides['label'] = label
-        self.update('label', label)
 
     def setAlignment(self, alignment):
         self.overrides['alignment'] = alignment
-        self.update('alignment', alignment)

@@ -1,6 +1,6 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
 <n:invisible n:render="slots">
-  <h4><n:slot name="name"/> <span n:render="count">(<n:slot name="count"/>)</span>
+  <h4><n:slot name="name"/> <n:slot name="count"/>
 &#xA0;<em><n:slot name="label"/></em>
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;CR <n:slot name="challengeRating"/></h4>
   <div style="clear:both"/>
@@ -26,7 +26,7 @@
   </div>
   <div class="statblock">
     <p><strong>AC</strong>&#xA0;XX, touch XX, flat-footed XX <span class="math">(+XX armor, +XX Dex, +XX size, misc. mods)</span>[; defenses][; <a title="Dodge | Mobility | Deflect Arrows | Two-Weapon Defense">AC feats</a>]</p>
-    <p><span n:render="hp"><strong>hp</strong>&#xA0;<n:slot name="hp"/></span> (XX HD<span class="math"> (+XX Race, +XX Class)</span>)[; fast healing XX][; <strong>DR</strong> XX/XX]</p>
+    <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (XX HD<span class="math"> (+XX Race, +XX Class)</span>)[; fast healing XX][; <strong>DR</strong> XX/XX]</p>
     <p>[<strong>Immune</strong> immunities]</p>
     <p>[<strong>Resist</strong> resistances; <strong>SR</strong> XX]</p>
     <p><strong>Fort</strong> +XX, <strong>Ref</strong> +XX, <strong>Will</strong> +XX <span class="math">(Race F+XX, R+XX, W+XX; Class F+XX, R+XX, W+XX; Con +XX, Dex +XX, Wis +XX)</span>[; save modifiers]</p>
