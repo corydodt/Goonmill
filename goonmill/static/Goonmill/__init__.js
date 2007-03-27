@@ -102,7 +102,6 @@ Goonmill.Guise.methods( // {{{
      * passed in self.template */
     function display(self) { // {{{
         var id = Goonmill.nextId();
-        console.log("--- self.inputNode.value " + self.inputNode.value);
         if (self.inputNode.value) { 
             var v = Goonmill.quoteSafeString(self.inputNode.value);
             var hash = {quote_safe_value: v, id: id};
