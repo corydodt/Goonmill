@@ -12,6 +12,15 @@ class Monster(object):
     def __repr__(self):
         return '<%s name=%s>' % (self.__class__.__name__, self.name)
 
+
+class Skill(object):
+    """A skill mapped from the db"""
+
+
+class Feat(object):
+    """A skill mapped from the db"""
+
+
 class SRDDatabase(object):
     """A complete SRD database"""
     def __init__(self):
@@ -22,7 +31,13 @@ class SRDDatabase(object):
         self.monster = S.Table('monster', self.meta, autoload=True)
         S.mapper(Monster, self.monster)
 
+        self.skill = S.Table('skill', self.meta, autoload=True)
+        S.mapper(Skill, self.skill)
+
         self.monster_text = S.Table('monster_text', self.meta, autoload=True)
+
+        self.feat = S.Table('feat', self.meta, autoload=True)
+        S.mapper(Feat, self.feat)
 
     def lookup(self, id):
         """Return the Monster for this id by querying the sqlite database"""
@@ -44,6 +59,31 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return ss.query(Monster).select(_monsterSelect)
 
+    def lookupSkill(self, idOrName):
+        """Return the Skill for this id or name"""
+        ss = S.create_session(self.engine)
+        skill = ss.query(Skill).get(idOrName)
+        if skill is None:
+            skill = ss.query(Skill).get_by(name=idOrName)
+        return skill
+
+    def lookupFeat(self, idOrName):
+        """Return the Feat for this id or name"""
+        ss = S.create_session(self.engine)
+        feat = ss.query(Feat).get(idOrName)
+        if feat is None:
+            feat = ss.query(Feat).get_by(name=idOrName)
+        return feat
+
+    def _allSkillStats(self):
+        """Return all skill names as strings"""
+        ss = S.create_session(self.engine)
+        return [s.skills for s in ss.query(Monster)]
+
+    def _allMonsters(self):
+        ss = S.create_session(self.engine)
+        return ss.query(Monster)
+
 db = SRDDatabase()
 
 def lookup(id):
@@ -53,3 +93,18 @@ def lookup(id):
 def find(terms):
     """Return the Monsters that contain these terms"""
     return db.find(terms)
+
+def lookupSkill(idOrName):
+    """Return the Skill for this id or name"""
+    return db.lookupSkill(idOrName)
+
+def lookupFeat(idOrName):
+    """Return the Feat for this is or name"""
+    return db.lookupFeat(idOrName)
+
+def _allSkillStats():
+    """Return the skill attribute for every monster"""
+    return db._allSkillStats()
+
+def _allMonsters():
+    return db._allMonsters()
