@@ -23,6 +23,8 @@ def convertNumber(s,p,t):
 
 number.setParseAction(convertNumber)
 
+number.setResultsName('number')
+
 
 # skillName
 skillNamePrintables = ''.join([c for c in P.printables if c not in ',()-+'])
@@ -35,11 +37,14 @@ def joinSkill(s,p,t):
 
 skillName.setParseAction(joinSkill)
 
+skillName.setResultsName('skillName')
+
 
 # subskills
 subSkillGroup = P.Group(
         SL('(') + P.delimitedList(P.OneOrMore(skillName)) + SL(')')
         )
+subSkillGroup.setResultsName('subSkillGroup')
 
 
 # a qualifier could be just about anything..
