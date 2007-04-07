@@ -44,27 +44,29 @@ subSkillGroup = P.Group(
 
 # a qualifier could be just about anything..
 qualifierChars = skillNamePrintables + '-+' + string.whitespace
-unparenthesizedQualifier = W(qualifierChars)
+orQualifier = L('or ') + W(qualifierChars)
 
 inParenQualifierChars = qualifierChars + ','
-parenthesizedQualifier = SL('(') + W(inParenQualifierChars) + SL(')')
+inParenQualifier = P.Combine(P.OneOrMore(W(inParenQualifierChars), ' '))
+parenQualifier = SL('(') + inParenQualifier + SL(')')
 
-qualifier = P.OneOrMore(parenthesizedQualifier | unparenthesizedQualifier)
+qualifier = P.OneOrMore(parenQualifier | orQualifier)
 
 splat = L('*')
 
 # one whole skill
-skill = skillName + P.Optional(subSkillGroup) + number + P.Optional(splat) + P.Optional(qualifier)
+skill = P.Group(skillName + P.Optional(subSkillGroup) + number + P.Optional(splat) + P.Optional(qualifier) + P.Optional(splat))
 
 # fucking Speak Language
-language = L('Speak Language') + P.Optional(subSkillGroup)
+language = (L('Speak Language') + P.Optional(subSkillGroup))
 
 # all the skills that a skill-having monster has
-skillList = P.delimitedList(P.OneOrMore(P.Group(language | skill)))
+languageOrSkill = (language | skill)
+skillList = P.delimitedList(P.OneOrMore(languageOrSkill))
 
 # (an empty skill list)
-noSkillList = L('-').setName('noSkillList')
-noSkillList.setParseAction(lambda s,p,t: [None])
+noSkillList = L('-')
+noSkillList.setParseAction(lambda s,p,t: 'empty')
 
 
 
@@ -92,6 +94,7 @@ Spot +1
 Bluff + 15, Concentration +11 (+15 when manifesting defensively), Hide +14, Listen +14, Move Silently +16
 Jump +16 or as controlling spirit
 Climb +38, Knowledge (psionics, arcane) +31, Listen +30, Psicraft +31, Spot +30
+Climb +38 (+39 on a good day)*
 Listen +11, Move Silently +7, Spot +11
 Climb +14*, Listen +6, Move Silently +6, Search +2, Spot +6
 Hide +22, Listen +7, Sense Motive +7, Spot +7
@@ -104,6 +107,6 @@ Climb +2, Jump +2
 if __name__ == '__main__':
     for slist in tests:
         print slist
-        p = skillStat.parseString(slist)
-        print p
-        print
+        parsed = skillStat.parseString(slist)
+        ## print parsed.asDict()
+        print parsed
