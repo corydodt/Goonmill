@@ -25,7 +25,9 @@
     </p>
   </div>
   <div class="statblock">
-    <p><strong>AC</strong>&#xA0;XX, touch XX, flat-footed XX <span class="math">(+XX armor, +XX Dex, +XX size, misc. mods)</span>[; defenses][; <a title="Dodge | Mobility | Deflect Arrows | Two-Weapon Defense">AC feats</a>]</p>
+    <p><strong>AC</strong>&#xA0;XX, touch XX, flat-footed XX <span
+        class="math">(+XX armor, +XX Dex, +XX size, misc. mods)</span>[;
+    defenses]<n:invisible n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></n:invisible></p>
     <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (XX HD<span class="math"> (+XX Race, +XX Class)</span>)[; fast healing XX][; <strong>DR</strong> XX/XX]</p>
     <p>[<strong>Immune</strong> immunities]</p>
     <p>[<strong>Resist</strong> resistances; <strong>SR</strong> XX]</p>

@@ -135,6 +135,7 @@ class Result(athena.LiveElement):
         fill('creatureType', get('type'))
         fill('initiative', get('initiative'))
         fill('languages', u'LANGUAGES=FIXME')
+        fill('acFeats', get('feats'))
         fill('hp', guise('hp', readOnly=True, value=self.statblock.hitPoints()))
         fill('speed', get('speed'))
         fill('baseAttack', get('base_attack'))
@@ -192,6 +193,15 @@ class Result(athena.LiveElement):
 
     page.renderer(npcTraits)
 
+    def acFeats(self, req, tag):
+        feats = self.statblock.acFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    page.renderer(acFeats)
+
 
 class Guise(athena.LiveElement):
     """
@@ -240,6 +250,7 @@ class Guise(athena.LiveElement):
 
     def getInitialArguments(self):
         return (self.template,)
+
 
 class ReadOnlyGuise(Guise):
     docFactory = loaders.xmlfile(RESOURCE('elements/ReadOnlyGuise'))
