@@ -16,61 +16,59 @@ W = P.Word
 
 # the noble number
 numberChars = P.nums + ','
-number = P.Combine(P.Optional(P.oneOf('+ -')) + P.Optional(P.White()) + W(numberChars))
+number = P.Combine(P.Optional(P.oneOf('+ -')) + P.Optional(P.White()) + W(numberChars)).setResultsName('number')
 
 def convertNumber(s,p,t):
     return int(t[0].replace(',', ''))
 
 number.setParseAction(convertNumber)
 
-number.setResultsName('number')
-
 
 # skillName
 skillNamePrintables = ''.join([c for c in P.printables if c not in ',()-+'])
 skillNameWord = W(skillNamePrintables)
 
-skillName = P.Group(P.OneOrMore(skillNameWord))
+skillName = P.Group(P.OneOrMore(skillNameWord)).setResultsName('skillName')
 
 def joinSkill(s,p,t):
     return ' '.join(t[0].asList())
 
 skillName.setParseAction(joinSkill)
 
-skillName.setResultsName('skillName')
+
 
 
 # subskills
 subSkillGroup = P.Group(
         SL('(') + P.delimitedList(P.OneOrMore(skillName)) + SL(')')
-        )
-subSkillGroup.setResultsName('subSkillGroup')
+        ).setResultsName('subSkillGroup')
 
 
 # a qualifier could be just about anything..
 qualifierChars = skillNamePrintables + '-+' + string.whitespace
-orQualifier = L('or ') + W(qualifierChars)
+orQualifier = P.Combine(L('or ') + W(qualifierChars))
 
 inParenQualifierChars = qualifierChars + ','
 inParenQualifier = P.Combine(P.OneOrMore(W(inParenQualifierChars), ' '))
 parenQualifier = SL('(') + inParenQualifier + SL(')')
 
-qualifier = P.OneOrMore(parenQualifier | orQualifier)
+qualifier = P.Combine(P.OneOrMore(parenQualifier | orQualifier)).setResultsName('qualifier')
 
-splat = L('*')
+splat = L('*').setResultsName('splat')
 
 # one whole skill
-skill = P.Group(skillName + P.Optional(subSkillGroup) + number + P.Optional(splat) + P.Optional(qualifier) + P.Optional(splat))
+skill = P.Group(skillName + P.Optional(subSkillGroup) + number + P.Optional(splat) + P.Optional(qualifier) + P.Optional(splat)).setResultsName('skill')
 
 # fucking Speak Language
-language = (L('Speak Language') + P.Optional(subSkillGroup))
+languageName = L('Speak Language').setResultsName('languageName')
+language = P.Group(languageName + P.Optional(subSkillGroup)).setResultsName('language')
 
 # all the skills that a skill-having monster has
 languageOrSkill = (language | skill)
-skillList = P.delimitedList(P.OneOrMore(languageOrSkill))
+skillList = P.delimitedList(P.OneOrMore(languageOrSkill)).setResultsName('skillList')
 
 # (an empty skill list)
-noSkillList = L('-')
+noSkillList = L('-').setResultsName('noSkillList')
 noSkillList.setParseAction(lambda s,p,t: 'empty')
 
 
@@ -113,5 +111,4 @@ if __name__ == '__main__':
     for slist in tests:
         print slist
         parsed = skillStat.parseString(slist)
-        ## print parsed.asDict()
         print parsed
