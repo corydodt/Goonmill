@@ -1,3 +1,7 @@
+input[name=search_terms] {
+    width: 25em;
+}
+
 .configForm { display: none; }
 
 .plus:hover, .minus:hover {

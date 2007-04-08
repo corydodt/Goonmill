@@ -3,7 +3,7 @@
 // import Divmod.Defer
 
 Goonmill.Result = Nevow.Athena.Widget.subclass('Goonmill.Result');
-Goonmill.Result.methods(
+Goonmill.Result.methods( // {{{
     function __init__(self, node) { // {{{
         Goonmill.Result.upcall(self, '__init__', node);
 
@@ -19,22 +19,22 @@ Goonmill.Result.methods(
 
     }, // }}}
 
-    function onPlusClick(self, event) {
+    function onPlusClick(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();
         self.foldable.style['display'] = 'block';
         self.plus.style['display'] = 'none';
         self.minus.style['display'] = 'inline';
-    },
+    }, // }}}
 
-    function onMinusClick(self, event) {
+    function onMinusClick(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();
         self.foldable.style['display'] = 'none';
         self.minus.style['display'] = 'none';
         self.plus.style['display'] = 'inline';
-    }
-);
+    } // }}}
+); // }}}
 
 Goonmill.Search = Nevow.Athena.Widget.subclass('Goonmill.Search');
 Goonmill.Search.methods( // {{{
@@ -45,6 +45,7 @@ Goonmill.Search.methods( // {{{
         DeanEdwards.addEvent(self.searchForm, 'submit', 
             function onSearchSubmit(event) { return self.onSearchSubmit(event) 
         });
+        self.searchForm.search_terms.select();
 
     }, // }}}
 
