@@ -2,6 +2,40 @@
 // import DeanEdwards
 // import Divmod.Defer
 
+Goonmill.Result = Nevow.Athena.Widget.subclass('Goonmill.Result');
+Goonmill.Result.methods(
+    function __init__(self, node) { // {{{
+        Goonmill.Result.upcall(self, '__init__', node);
+
+        self.foldable = self.firstNodeByClass("foldable");
+        self.plus = self.firstNodeByClass('plus');
+        self.minus = self.firstNodeByClass('minus');
+        DeanEdwards.addEvent(self.plus, 'click', 
+            function onPlusClick(event) { return self.onPlusClick(event)
+        });
+        DeanEdwards.addEvent(self.minus, 'click', 
+            function onMinusClick(event) { return self.onMinusClick(event)
+        });
+
+    }, // }}}
+
+    function onPlusClick(self, event) {
+        event.stopPropagation();
+        event.preventDefault();
+        self.foldable.style['display'] = 'block';
+        self.plus.style['display'] = 'none';
+        self.minus.style['display'] = 'inline';
+    },
+
+    function onMinusClick(self, event) {
+        event.stopPropagation();
+        event.preventDefault();
+        self.foldable.style['display'] = 'none';
+        self.minus.style['display'] = 'none';
+        self.plus.style['display'] = 'inline';
+    }
+);
+
 Goonmill.Search = Nevow.Athena.Widget.subclass('Goonmill.Search');
 Goonmill.Search.methods( // {{{
     function __init__(self, node) { // {{{

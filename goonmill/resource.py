@@ -104,6 +104,7 @@ class HistoryView(athena.LiveElement):
 class Result(athena.LiveElement):
     """One result"""
     docFactory = loaders.xmlfile(RESOURCE("elements/Result"))
+    jsClass = u'Goonmill.Result'
     def __init__(self, statblock, *a, **kw):
         super(Result, self).__init__(*a, **kw)
         self.statblock = statblock

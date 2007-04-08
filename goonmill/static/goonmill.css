@@ -1,7 +1,18 @@
 .configForm { display: none; }
 
+.plus:hover, .minus:hover {
+    cursor: pointer;
+    color: yellow;
+}
+
+.minus, .plus {
+    color: white;
+    text-decoration: none;
+}
+
 .monster_entry {
     float: left;
+    clear: left;
     width: 550px;
 }
 
