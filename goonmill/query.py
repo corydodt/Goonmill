@@ -20,6 +20,9 @@ class Skill(object):
 class Feat(object):
     """A skill mapped from the db"""
 
+    def __repr__(self):
+        return "<Feat %s>" % (self.name,)
+
 
 class SRDDatabase(object):
     """A complete SRD database"""
