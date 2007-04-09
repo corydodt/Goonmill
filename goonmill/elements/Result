@@ -43,8 +43,8 @@
         "speedFeats">;&#xA0;<n:slot name="speedFeats" /></span></p>
     <p class="TODO"><strong>Melee</strong> weapon +XX (damage) </p>
     <p><span class="TODO"><strong>Ranged</strong> weapon +XX (damage)</span> <span n:render="rangedAttackFeats">; <n:slot name="rangedAttackFeats" /></span></p>
-    <p n:render="space"><strong>Space</strong>&#xA0;<n:slot name="space"/> ft;
-        <strong>Reach</strong>&#xA0;<n:slot name="reach"/> ft</p>
+    <p n:render="space"><strong>Space</strong>&#xA0;<n:slot name="space"/>;
+        <strong>Reach</strong>&#xA0;<n:slot name="reach"/></p>
         <p><strong>Base Atk</strong>&#xA0;<n:slot name="baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name="grapple" /></p>
         <p><span class="TODO"><strong>Atk Options</strong> !!options</span> <span n:render=
         "attackOptionFeats">;&#xA0;<n:slot name="attackOptionFeats" />
