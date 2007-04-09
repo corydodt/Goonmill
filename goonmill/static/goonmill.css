@@ -1,3 +1,7 @@
+.TODO {
+    background-color: yellow;
+}
+
 input[name=search_terms] {
     width: 25em;
 }

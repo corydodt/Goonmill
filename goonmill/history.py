@@ -49,6 +49,11 @@ class Statblock(object):
         self.overrides = {
                 'count': self._count,
                 'label': self._label,
+                'acFeats': lambda: self.formatFeats(self.acFeats),
+                'speedFeats': lambda: self.formatFeats(self.speedFeats),
+                'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
+                'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
+                'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
                 }
         self.feats = self.parseFeats()
         self.skills = self.parseSkills()
@@ -109,8 +114,24 @@ class Statblock(object):
 
         return ret
 
+    def formatFeats(self, callable):
+        featList = callable()
+        return ', '.join([f.name for f in featList])
+
     def acFeats(self):
         return [f for f in self.feats if f.is_ac_feat]
+
+    def speedFeats(self):
+        return [f for f in self.feats if f.is_speed_feat]
+
+    def specialActionFeats(self):
+        return [f for f in self.feats if f.is_special_action_feat]
+
+    def attackOptionFeats(self):
+        return [f for f in self.feats if f.is_attack_option_feat]
+
+    def rangedAttackFeats(self):
+        return [f for f in self.feats if f.is_ranged_attack_feat]
 
     def hitPoints(self):
         """
@@ -156,7 +177,10 @@ class Statblock(object):
         it up in the monster's ORM object.
         """
         if attribute in self.overrides:
-            return self.overrides[attribute]
+            att = self.overrides[attribute]
+            if callable(att):
+                return att()
+            return att
         return getattr(self.monster, attribute)
 
     def setCount(self, count):

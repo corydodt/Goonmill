@@ -8,7 +8,7 @@
 <div class="foldable">
   <div style="clear:both" />
   <div class="statblock">
-    <p n:render="npcTraits">
+    <p class="TODO" n:render="npcTraits">
       <n:slot name="gender"/>
       <n:slot name="race"/>
       <n:slot name="class"/>
@@ -20,66 +20,71 @@
       <n:slot name="creatureType"/>
       <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
     </p>
-    <p><strong>Init</strong>&#xA0;<n:slot name="initiative"/> <span class="math">(+XX Dex, misc. mods)</span>; <strong>Senses</strong> [special senses;] Listen +XX, Spot +XX</p>
-    <p n:render="aura"><strong>Aura</strong> aura (range, DC XX)</p>
-    <p>
-      <strong>Languages</strong>
-      <n:slot name="languages"/>
+    <p><strong>Init</strong>&#xA0;<n:slot name=
+    "initiative"/>; <span class="TODO"><strong>Senses</strong> [special senses;] Listen +XX, Spot +XX</span></p>
+    <p class="TODO" n:render="aura"><strong>Aura</strong>&#xA0;aura (range, DC XX)</p>
+    <p class="TODO">
+      <strong>Languages</strong>&#xA0;<n:slot name="languages"/>
     </p>
   </div>
+
   <div class="statblock">
-    <p><strong>AC</strong>&#xA0;XX, touch XX, flat-footed XX <span
-        class="math">(+XX armor, +XX Dex, +XX size, misc. mods)</span>[;
-    defenses]<n:invisible n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></n:invisible></p>
-    <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (XX HD<span class="math"> (+XX Race, +XX Class)</span>)[; fast healing XX][; <strong>DR</strong> XX/XX]</p>
-    <p>[<strong>Immune</strong> immunities]</p>
-    <p>[<strong>Resist</strong> resistances; <strong>SR</strong> XX]</p>
-    <p><strong>Fort</strong> +XX, <strong>Ref</strong> +XX, <strong>Will</strong> +XX <span class="math">(Race F+XX, R+XX, W+XX; Class F+XX, R+XX, W+XX; Con +XX, Dex +XX, Wis +XX)</span>[; save modifiers]</p>
-    <p>[<strong>Weakness</strong> XX]</p>
+      <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO">[; defenses]</span>
+      <span n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
+      <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> <span class="TODO">(XX HD)[; fast healing XX][; <strong>DR</strong> XX/XX]</span></p>
+    <p class="TODO">[<strong>Immune</strong>&#xA0;immunities]</p>
+    <p class="TODO">[<strong>Resist</strong>&#xA0;resistances; <strong>SR</strong> XX]</p>
+    <p class="TODO"><strong>Fort</strong> +XX, <strong>Ref</strong> +XX, <strong>Will</strong> +XX [; save modifiers]</p>
+    <p class="TODO">[<strong>Weakness</strong> XX]</p>
   </div>
+
   <div class="statblock">
-    <p><strong>Spd</strong>&#xA0;<n:slot name="speed"/>[; <a title="Spring Attack | Ride-By Attack | Shot on the Run | Run">speed feats</a>]</p>
-    <p><strong>Melee</strong> weapon +XX (damage) <span class="math">(+XX BAB, +XX Str, +XX size, +XX weapon quality, +XX feat)</span></p>
-    <p><strong>Ranged</strong> weapon +XX (damage) <span class="math">(+XX BAB, +XX Dex, +XX size, +XX weapon quality, +XX feat)</span>[; <a title="Manyshot | Rapid Shot">ranged atk feats</a>]</p>
+    <p><strong>Spd</strong>&#xA0;<n:slot name="speed"/> <span n:render=
+        "speedFeats">;&#xA0;<n:slot name="speedFeats" /></span></p>
+    <p class="TODO"><strong>Melee</strong> weapon +XX (damage) </p>
+    <p><span class="TODO"><strong>Ranged</strong> weapon +XX (damage)</span> <span n:render="rangedAttackFeats">; <n:slot name="rangedAttackFeats" /></span></p>
     <p n:render="space"><strong>Space</strong>&#xA0;<n:slot name="space"/> ft;
         <strong>Reach</strong>&#xA0;<n:slot name="reach"/> ft</p>
-    <p><strong>Base Atk</strong>&#xA0;<n:slot name="baseAttack"/><span class="math">(+XX Race, +XX Class)</span>; <strong>Grp</strong> +XX</p>
-    <p>[<strong>Atk Options</strong> options; <a title="Blind-Fight | Cleave | Combat Reflexes | Far Shot | Great Cleave | Improved Bull Rush | Improved Disarm | Improved Feint | Improved Overrun | Improved Precise Shot | Improved Sunder | Improved Trip | Mounted Combat | Point Blank Shot | Power Attack | Powerful Charge | Precise Shot | Quick Draw | Rapid Reload | Spirited Charge | Stunning Fist | Trample | Whirlwind Attack; metamagic feats (if the creature casts spontaneously)">atk options feats</a>]</p>
-    <p>[<strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a>]</p>
-    <p><strong>Combat Gear</strong> gear</p>
-    <p>[<strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
-    <p>[<strong>Spell-Like Abilities</strong> (CL XX)]</p>
+        <p><strong>Base Atk</strong>&#xA0;<n:slot name="baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name="grapple" /></p>
+        <p><span class="TODO"><strong>Atk Options</strong> !!options</span> <span n:render=
+        "attackOptionFeats">;&#xA0;<n:slot name="attackOptionFeats" />
+        <!-- TODO metamagic feats (if the creature casts spontaneously)--> 
+      </span>
+    </p>
+    <p class="TODO"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
+    <p class="TODO"><strong>Combat Gear</strong> gear</p>
+    <p class="TODO"><strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
+    <p class="TODO"><strong>Spell-Like Abilities</strong> (CL XX)]</p>
   </div>
+
   <div class="statblock">
     <p>
-      <strong>Abilities</strong>
-      <n:slot name="abilities"/>
+      <strong>Abilities</strong>&#xA0;<n:slot name="abilities"/>
     </p>
     <p>
-      <strong>SQ</strong>
-      <n:slot name="specialQualities"/>
+      <strong>SQ</strong>&#xA0;<n:slot name="specialQualities"/>
     </p>
-    <p><strong>Feats</strong> Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span>, Feat <span class="math">XX level</span></p>
-    <p><strong>Skills</strong> Skill +XX, Skill +XX, Skill +XX, Skill +XX, Skill +XX</p>
-    <p><strong>Possessions</strong> <span class="math">money derived from DMG tables for NPC wealth-</span> item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, item <span class="math">cost gp</span>, XX gp<span class="math"> remaining wealth in coins</span></p>
-    <p>[<strong>Spellbook</strong> All spells prepared plus XX]</p>
+    <p><strong>Feats</strong>&#xA0;<n:slot name="feats" /></p>
+    <p><strong>Skills</strong>&#xA0;<n:slot name="skills" /></p>
+    <p class="TODO"><strong>Possessions</strong> item, item, item, item, item, XX gp</p>
+    <p class="TODO"><strong>Spellbook</strong> All spells prepared plus XX</p>
   </div>
+  
   <div class="statblock">
-    <p>[<strong>Hook</strong> hook]</p>
+    <p class="TODO"><strong>Hook</strong> hook</p>
   </div>
-  <div class="statblock">
+  
+  <div class="statblock TODO">
     <p>[<strong>Ability (Type)</strong> description]</p>
     <p>[<strong>Ability (Type)</strong> description]</p>
   </div>
-  <p>
+
+  <p class="TODO">
     <span class="math"><strong>Skills (class):</strong>
 Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX racial
 trait), Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX
 racial trait), Skill XX ranks (+XX ability score, +XX feat, +XX item,
 +XX racial trait), = XX (XX skill points)</span>
-  </p>
-  <p>
-    <span class="math"><strong>NOTE:</strong> Number of feats is derived as follows: XX.</span>
   </p>
   </div>
 </n:invisible>

@@ -136,10 +136,16 @@ class Result(athena.LiveElement):
         fill('creatureType', get('type'))
         fill('initiative', get('initiative'))
         fill('languages', u'LANGUAGES=FIXME')
-        fill('acFeats', get('feats'))
+        fill('ac', get('armor_class'))
+        fill('acFeats', get('acFeats'))
+        fill('speedFeats', get('speedFeats'))
+        fill('attackOptionFeats', get('attackOptionFeats'))
+        fill('specialActionFeats', get('specialActionFeats'))
+        fill('rangedAttackFeats', get('rangedAttackFeats'))
         fill('hp', guise('hp', readOnly=True, value=self.statblock.hitPoints()))
         fill('speed', get('speed'))
         fill('baseAttack', get('base_attack'))
+        fill('grapple', get('grapple'))
         fill('abilities', get('abilities'))
         fill('specialQualities', get('special_qualities'))
         fill('subtype', get('descriptor'))
@@ -150,6 +156,8 @@ class Result(athena.LiveElement):
             editHandler=s.setCount))
         fill('space', get('space'))
         fill('reach', get('reach'))
+        fill('feats', get('feats'))
+        fill('skills', get('skills'))
         fill('gender', '')
         fill('race', '')
         fill('class', '')
@@ -172,7 +180,7 @@ class Result(athena.LiveElement):
     page.renderer(subtype)
 
     def aura(self, req, tag):
-        return tag[u"FIXME - aura"]
+        return tag
 
     page.renderer(aura)
 
@@ -202,6 +210,33 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(acFeats)
+
+    def speedFeats(self, req, tag):
+        feats = self.statblock.speedFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    page.renderer(speedFeats)
+
+    def attackOptionFeats(self, req, tag):
+        feats = self.statblock.attackOptionFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    page.renderer(attackOptionFeats)
+
+    def rangedAttackFeats(self, req, tag):
+        feats = self.statblock.rangedAttackFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    page.renderer(rangedAttackFeats)
 
 
 class Guise(athena.LiveElement):
