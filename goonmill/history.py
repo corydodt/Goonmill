@@ -4,7 +4,7 @@ import re
 
 import pyparsing
 
-from goonmill import query, dice, diceparser, skillparser
+from goonmill import query, dice, diceparser, skillparser, featparser
 
 class History(object):
     """
@@ -75,44 +75,10 @@ class Statblock(object):
         self._handler = handler
 
     def parseFeats(self):
-        ret = []
-        if self.monster.feats in ['-', None]:
-            return []
-
-        parsed = [f.strip() for f in self.monster.feats.split(',')]
-
-        for feat in parsed:
-            ffeat = query.lookupFeat(feat)
-            ret.append(ffeat)
-
-        return ret
+        return parseFeats(self.monster.feats)
 
     def parseSkills(self):
-        ret = []
-        parsed = skillparser.skillStat.parseString(self.monster.skills)
-
-        if parsed.noSkillList:
-            return ret
-
-        for entry in parsed:
-            if entry.skillName: 
-                ## this is a language
-                base = entry.skillName
-                val = entry.number
-            else:
-                base = entry.languageName
-                val = None
-            qualifier = entry.qualifier
-            subs = entry.subSkillGroup
-            splat = entry.splat
-            if subs:
-                for sub in subs:
-                    ret.append(StatblockSkill(base, val, sub, splat or None, qualifier or None))
-            else:
-                ret.append(StatblockSkill(base, val, splat=(splat or None),
-                    qualifier=(qualifier or None)))
-
-        return ret
+        return parseSkills(self.monster.skills)
 
     def formatFeats(self, callable):
         featList = callable()
@@ -203,6 +169,7 @@ class StatblockSkill(object):
         self.splat = splat
         self.value = value
         self.skill = query.lookupSkill(id)
+        ## assert self.skill is not None
         self.subSkill = subSkill
         self.qualifier = qualifier
 
@@ -225,10 +192,79 @@ class StatblockSkill(object):
             return "<%s%s %s%s>" % (self.skill.name, sub, splat, qual)
 
 
+def parseFeats(featStat):
+    ret = []
+    # check this before trying to parse
+    if featStat is None:
+        return ret
+
+    parsed = featparser.featStat.parseString(featStat)
+
+    if parsed.emptyList:
+        return ret
+
+    for entry in parsed:
+        if entry.lycanthrope:
+            base = entry.lycanthrope
+        else:
+            base = entry.featName
+
+        subs = entry.subFeatGroup
+        if subs:
+            for sub in subs:
+                ret.append(StatblockFeat(base, sub))
+        else:
+            ret.append(StatblockFeat(base))
+
+    return ret
+
+
+def parseSkills(skillStat):
+    ret = []
+
+    # check this before trying to parse
+    if skillStat is None:
+        return ret
+
+    parsed = skillparser.skillStat.parseString(skillStat)
+
+    if parsed.emptyList:
+        return ret
+
+    for entry in parsed:
+        if entry.skillName: 
+            base = entry.skillName
+            val = entry.number
+        else:
+            ## this is a language - TODO set a language flag
+            base = entry.languageName
+            val = None
+        qualifier = entry.qualifier
+        subs = entry.subSkillGroup
+        splat = entry.splat
+        if subs:
+            for sub in subs:
+                ret.append(StatblockSkill(base, val, sub, splat or None, qualifier or None))
+        else:
+            ret.append(StatblockSkill(base, val, splat=(splat or None),
+                qualifier=(qualifier or None)))
+
+    return ret
+
+
 class StatblockFeat(object):
     """A feat owned by a monster"""
-    def __init__(self, id):
+    def __init__(self, id, qualifier=None):
         self.feat = query.lookupFeat(id)
+        ## assert self.feat is not None
+        self.qualifier = qualifier
+
+    def __repr__(self):
+        q = ""
+        if self.qualifier:
+            q = " (%s)" % (self.qualifier,)
+        return "<StatblockFeat %s%s>" % (self.feat.name, q)
+
 
 def test_statblockSkill():
     skillStats = query._allSkillStats()
@@ -237,11 +273,24 @@ def test_statblockSkill():
             continue
 
         try:
-            skillparser.skillStat.parseString(s)
+            parseSkills(s)
         except Exception, e:
             print s
+            print e
             raise
 
+def test_statblockFeat():
+    featStats = query._allFeatStats()
+    for f in featStats:
+        if f is None:
+            continue
+
+        try:
+            parseFeats(f)
+        except Exception, e:
+            print f
+            print e
+            raise
 
 def test_statblock():
     monsters = query._allMonsters()
@@ -250,11 +299,14 @@ def test_statblock():
             Statblock(monster.id)
         except Exception, e:
             print monster
+            print e
             import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
 
 if __name__ == '__main__': # {{{
     print 'testing statblockSkill'
-    ## test_statblockSkill()
+    test_statblockSkill()
+    print 'testing statblockFeat'
+    test_statblockFeat()
     print 'testing statblock'
     test_statblock()
 # }}}
