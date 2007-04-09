@@ -83,6 +83,11 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return [m.skills for m in ss.query(Monster)]
 
+    def _allHPStats(self):
+        """Return all hit dice as strings"""
+        ss = S.create_session(self.engine)
+        return [m.hit_dice for m in ss.query(Monster)]
+
     def _allFeatStats(self):
         """Return all feat names as strings"""
         ss = S.create_session(self.engine)
@@ -120,3 +125,6 @@ def _allFeatStats():
 
 def _allMonsters():
     return db._allMonsters()
+
+def _allHPStats():
+    return db._allHPStats()

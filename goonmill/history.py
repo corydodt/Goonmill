@@ -122,19 +122,7 @@ class Statblock(object):
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
-        m = hpParser.match(self.monster.hit_dice)
-        if m is None:
-            # monster has very non-standard hit dice (e.g. Psicrystal)
-            return 
-
-        p = diceparser.dice_string.parseString
-        # try parsing the first group as a dice expression. if that fails,
-        # return the second group as non-random hit points.
-        try:
-            _parsed = p(m.group(1))
-            return _parsed
-        except pyparsing.ParseException:
-            return p(m.group(2))
+        return parseHitPoints(self.monster.hit_dice)
 
     def get(self, attribute):
         """
@@ -169,7 +157,7 @@ class StatblockSkill(object):
         self.splat = splat
         self.value = value
         self.skill = query.lookupSkill(id)
-        ## assert self.skill is not None
+        assert self.skill is not None
         self.subSkill = subSkill
         self.qualifier = qualifier
 
@@ -218,6 +206,20 @@ def parseFeats(featStat):
 
     return ret
 
+def parseHitPoints(hpStat):
+    m = hpParser.match(hpStat)
+    if m is None:
+        # monster has very non-standard hit dice (e.g. Psicrystal)
+        return 
+
+    p = diceparser.dice_string.parseString
+    # try parsing the first group as a dice expression. if that fails,
+    # return the second group as non-random hit points.
+    try:
+        _parsed = p(m.group(1))
+        return _parsed
+    except pyparsing.ParseException:
+        return p(m.group(2))
 
 def parseSkills(skillStat):
     ret = []
@@ -256,7 +258,7 @@ class StatblockFeat(object):
     """A feat owned by a monster"""
     def __init__(self, id, qualifier=None):
         self.feat = query.lookupFeat(id)
-        ## assert self.feat is not None
+        assert self.feat is not None
         self.qualifier = qualifier
 
     def __repr__(self):
@@ -292,6 +294,19 @@ def test_statblockFeat():
             print e
             raise
 
+def test_hitPoints():
+    hpStats = query._allHPStats()
+    for hp in hpStats:
+        if hp is None:
+            continue
+
+        try:
+            parseHitPoints(hp)
+        except Exception, e:
+            print hp
+            print e
+            raise
+
 def test_statblock():
     monsters = query._allMonsters()
     for monster in monsters:
@@ -303,6 +318,8 @@ def test_statblock():
             import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
 
 if __name__ == '__main__': # {{{
+    print 'testing parseHitPoints'
+    test_hitPoints()
     print 'testing statblockSkill'
     test_statblockSkill()
     print 'testing statblockFeat'
