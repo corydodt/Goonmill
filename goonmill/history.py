@@ -82,22 +82,22 @@ class Statblock(object):
 
     def formatFeats(self, callable):
         featList = callable()
-        return ', '.join([f.name for f in featList])
+        return ', '.join([f.feat.name for f in featList])
 
     def acFeats(self):
-        return [f for f in self.feats if f.is_ac_feat]
+        return [f for f in self.feats if f.feat.is_ac_feat]
 
     def speedFeats(self):
-        return [f for f in self.feats if f.is_speed_feat]
+        return [f for f in self.feats if f.feat.is_speed_feat]
 
     def specialActionFeats(self):
-        return [f for f in self.feats if f.is_special_action_feat]
+        return [f for f in self.feats if f.feat.is_special_action_feat]
 
     def attackOptionFeats(self):
-        return [f for f in self.feats if f.is_attack_option_feat]
+        return [f for f in self.feats if f.feat.is_attack_option_feat]
 
     def rangedAttackFeats(self):
-        return [f for f in self.feats if f.is_ranged_attack_feat]
+        return [f for f in self.feats if f.feat.is_ranged_attack_feat]
 
     def hitPoints(self):
         """
