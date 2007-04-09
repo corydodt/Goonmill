@@ -1,3 +1,7 @@
+-- 
+-- Create columns for the specialty feats so it's easier to find them
+--
+
 ALTER TABLE feat ADD COLUMN is_ac_feat boolean;
 ALTER TABLE feat ADD COLUMN is_speed_feat boolean;
 ALTER TABLE feat ADD COLUMN is_attack_option_feat boolean;

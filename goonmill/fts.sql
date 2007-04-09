@@ -1,3 +1,7 @@
+--
+-- Full-text search table
+--
+
 DROP TABLE monster_text;
 CREATE TABLE monster_text (
     id INTEGER REFERENCES monster(id),
