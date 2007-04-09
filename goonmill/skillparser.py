@@ -1,34 +1,17 @@
 """
-Parse skills in the form
-Foo +1, Bar +2*, Knowledge (arcana, history) -8
+Parse skills in the form:
+
+    Foo +1, Bar +2*, Knowledge (arcana, history) -8
+
 ... etc.
 
 """
 import string
 
-import pyparsing as P
-
-L = P.Literal
-CL = P.CaselessLiteral
-Sup = P.Suppress
-SL = lambda c: Sup(L(c))
-W = P.Word
-
-# the noble number
-numberChars = P.nums + ','
-number = P.Combine(P.Optional(P.oneOf('+ -')) + P.Optional(P.White()) + W(numberChars)).setResultsName('number')
-
-def convertNumber(s,p,t):
-    return int(t[0].replace(',', ''))
-
-number.setParseAction(convertNumber)
-
+from parserbase import P, L, SL, W, number, emptyList, nameWord, namePrintables
 
 # skillName
-skillNamePrintables = ''.join([c for c in P.printables if c not in ',()-+'])
-skillNameWord = W(skillNamePrintables)
-
-skillName = P.Group(P.OneOrMore(skillNameWord)).setResultsName('skillName')
+skillName = P.Group(P.OneOrMore(nameWord)).setResultsName('skillName')
 
 def joinSkill(s,p,t):
     return ' '.join(t[0].asList())
@@ -45,7 +28,7 @@ subSkillGroup = P.Group(
 
 
 # a qualifier could be just about anything..
-qualifierChars = skillNamePrintables + '-+' + string.whitespace
+qualifierChars = namePrintables + '-+' + string.whitespace
 orQualifier = P.Combine(L('or ') + W(qualifierChars))
 
 inParenQualifierChars = qualifierChars + ','
@@ -67,14 +50,9 @@ language = P.Group(languageName + P.Optional(subSkillGroup)).setResultsName('lan
 languageOrSkill = (language | skill)
 skillList = P.delimitedList(P.OneOrMore(languageOrSkill)).setResultsName('skillList')
 
-# (an empty skill list)
-noSkillList = L('-').setResultsName('noSkillList')
-noSkillList.setParseAction(lambda s,p,t: 'empty')
-
-
 
 # The big boy: anything allowed in the 'skills' attribute of a monster
-skillStat = (noSkillList | skillList) + P.stringEnd
+skillStat = (emptyList | skillList) + P.stringEnd
 
 
 
@@ -83,6 +61,7 @@ tests = ( # {{{
 """-
 Speak Language (elven, common)
 Speak Language (any five), Jump +16*
+Concentration +19, Craft or Knowledge (any three) +19, Diplomacy +22, Escape Artist +19, Hide +19, Intimidate +20, Listen +23, Move Silently +19, Sense Motive +19, Spot +23, Use Rope +4 (+6 with bindings)
 Concentration -6, Hide +7, Move Silently +5, Psicraft +7, Ride +5, Spot +3
 Knowledge (psionics) +12, Jump +1
 Hide +15, Move Silently +7, Listen +6, Spot +2
