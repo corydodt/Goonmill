@@ -36,13 +36,8 @@ feat = P.Group(featName + P.Optional(subFeatGroup)).setResultsName('feat')
 featList = P.delimitedList(P.OneOrMore(feat)).setResultsName('featList')
 
 
-# lycanthropes have this literal text, so check for it
-lycanthrope = P.Group(P.Combine(L('(same as ') + 
-    P.OneOrMore(nameWord) + L(' form)'))).setResultsName('lycanthrope')
-
-
 # The big boy: anything allowed in the 'skills' attribute of a monster
-featStat = (emptyList | lycanthrope | featList) + P.stringEnd
+featStat = (emptyList | featList) + P.stringEnd
 
 
 
@@ -71,7 +66,7 @@ Alertness, Awesome Blow, Blind-Fight, Cleave, Combat Reflexes, Dodge, Great Clea
 Weapon Focus (longbow), item creation feat (any one)
 Alertness, Blind-Fight, Cleave, Empower Spell, Flyby Attack, Hover, Improved Initiative, Maximize Spell, Power Attack, Snatch, Weapon Focus (bite), Weapon Focus (claw), Wingover
 Alertness, Empower Spell, Flyby Attack, Hover, Improved Initiative, Power Attack, Weapon Focus (bite), Weapon Focus (claw)
-(same as human form)
+Lycanthrope Hybrid Feats (same as human form)
 """.splitlines()) # }}}
 
 if __name__ == '__main__':

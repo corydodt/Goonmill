@@ -192,10 +192,7 @@ def parseFeats(featStat):
         return ret
 
     for entry in parsed:
-        if entry.lycanthrope:
-            base = entry.lycanthrope
-        else:
-            base = entry.featName
+        base = entry.featName
 
         subs = entry.subFeatGroup
         if subs:
