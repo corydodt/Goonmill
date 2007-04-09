@@ -55,6 +55,25 @@ random = (P.Optional(dice_count, default=1) +
 dice = (random | nonrandom).setResultsName('DICE')
 dice_string = dice + P.StringEnd()
 
+def reverseFormatDice(parsed_dice):
+    """Take a parsed dice expression and return the string form"""
+    _dice_expr = []
+    if parsed_dice.dice_count:
+        _dice_expr.append(str(parsed_dice.dice_count))
+    if parsed_dice.dice_size:
+        _dice_expr.append('d' + str(parsed_dice.dice_size))
+    if parsed_dice.dice_hilo:
+        _dice_expr.append(str(parsed_dice.dice_hilo[0]))
+    if parsed_dice.dice_filter:
+        _dice_expr.append(str(parsed_dice.dice_filter))
+    if parsed_dice.dice_bonus:
+        _dice_expr.append('%+d' % (parsed_dice.dice_bonus,))
+    if parsed_dice.dice_repeat:
+        _dice_expr.append('x' + str(parsed_dice.dice_repeat))
+    if parsed_dice.dice_sorted:
+        _dice_expr.append('sort')
+    return ''.join(_dice_expr)
+
 _test_dice = [("5", "[5]"), # {{{
 ("5x3","[5, 3]"),
 ("5+1x3","[5, 1, 3]"),
@@ -74,6 +93,7 @@ _test_dice = [("5", "[5]"), # {{{
 ("1d6h3l3", P.ParseException),
 ("d6h+1", P.ParseException),
 ] # }}}
+
 
 def passed():
     global passcount

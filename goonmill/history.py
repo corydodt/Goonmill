@@ -46,7 +46,10 @@ class Statblock(object):
         self.monster = query.lookup(id)
         self._count = 1
         self._label = ''
-        self.overrides = {
+        self.overrides = { # when .get() is called, these will be looked up
+                           # first and possibly called
+                'hitPoints': self.hitPoints,
+                'hitDice': self.hitDice,
                 'count': self._count,
                 'label': self._label,
                 'acFeats': lambda: self.formatFeats(self.acFeats),
@@ -58,6 +61,7 @@ class Statblock(object):
         self.feats = self.parseFeats()
         self.skills = self.parseSkills()
         self._handler = None
+        self._parsedHitDice = None
 
     def update(self, attribute, newValue):
         """I will call this to notify handlers ot changed attributes"""
@@ -101,15 +105,19 @@ class Statblock(object):
 
     def hitPoints(self):
         """
-        @return: A sequence of hit points
+        @return: A string of multiple hit points
         """
-        _parsed = self.parseHitPoints()
+        if self._parsedHitDice is None:
+            self._parsedHitDice = self.parseHitPoints()
+
         hplist = []
-        if _parsed is None:
+
+        # STILL None.. (i.e. no valid dice expression)
+        if self._parsedHitDice is None: 
             hplist = ['Special'] * self._count
         else:
             for n in range(self._count):
-                rolled = list(dice.roll(_parsed))
+                rolled = list(dice.roll(self._parsedHitDice))
                 assert len(rolled) == 1, "Too many repeats in this expression - a monter may have only one hit dice expression with no repeats!"
                 hplist.append(rolled[0].sum())
 
@@ -119,6 +127,15 @@ class Statblock(object):
                     hplist[n] = 1
 
         return ', '.join(map(str, hplist))
+
+    def hitDice(self):
+        """
+        @return: The hit dice expression for the monster as a string.
+        """
+        if self._parsedHitDice is None:
+            self._parsedHitDice = self.parseHitPoints()
+
+        return diceparser.reverseFormatDice(self._parsedHitDice)
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
@@ -181,6 +198,7 @@ class StatblockSkill(object):
 
 
 def parseFeats(featStat):
+    """All feats of the monster, as a list of StatblockFeat objects."""
     ret = []
     # check this before trying to parse
     if featStat is None:
@@ -204,6 +222,9 @@ def parseFeats(featStat):
     return ret
 
 def parseHitPoints(hpStat):
+    """Hit points of the monster as a ParseResults object (should be a
+    StatblockHitPoints object!)
+    """
     m = hpParser.match(hpStat)
     if m is None:
         # monster has very non-standard hit dice (e.g. Psicrystal)
@@ -219,6 +240,7 @@ def parseHitPoints(hpStat):
         return p(m.group(2))
 
 def parseSkills(skillStat):
+    """All skills of the monster as a list of StatblockSkill objects"""
     ret = []
 
     # check this before trying to parse
