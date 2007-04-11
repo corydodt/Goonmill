@@ -93,6 +93,11 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return [m.feats for m in ss.query(Monster)]
 
+    def _allSaveStats(self):
+        """Return all save names as strings"""
+        ss = S.create_session(self.engine)
+        return [m.saves for m in ss.query(Monster)]
+
     def _allMonsters(self):
         ss = S.create_session(self.engine)
         return ss.query(Monster)
@@ -122,6 +127,10 @@ def _allSkillStats():
 def _allFeatStats():
     """Return the feat attribute for every monster"""
     return db._allFeatStats()
+
+def _allSaveStats():
+    """Return the save attribute for every monster"""
+    return db._allSaveStats()
 
 def _allMonsters():
     return db._allMonsters()

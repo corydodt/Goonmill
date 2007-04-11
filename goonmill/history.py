@@ -4,7 +4,7 @@ import re
 
 import pyparsing
 
-from goonmill import query, dice, diceparser, skillparser, featparser
+from goonmill import query, dice, diceparser, skillparser, featparser, saveparser
 
 class History(object):
     """
@@ -272,6 +272,45 @@ def parseSkills(skillStat):
 
     return ret
 
+def parseSaves(saveStat):
+    """Fort, Ref and Will saves as a StatblockSaves object"""
+    parsed = saveparser.saveStat.parseString(saveStat)
+
+    quals = {}
+
+    if parsed.fort:
+        fort = parsed.fort.number
+        fq = parsed.fort.qualifier
+        ref = parsed.ref.number
+        rq = parsed.ref.qualifier
+        will = parsed.will.number
+        wq = parsed.will.qualifier
+        if fq: quals['fortQualifier'] = fq
+        if rq: quals['refQualifier'] = rq
+        if wq: quals['willQualifier'] = wq
+        return StatblockSaves(fort, ref, will, **quals)
+
+    other = parsed.other
+    quals['fortQualifier'] = other
+    quals['refQualifier'] = other
+    quals['willQualifier'] = other
+
+    return StatblockSaves(None, None, None, **quals)
+
+
+class StatblockSaves(object):
+    """The set of saves owned by a monster"""
+    def __init__(self, fort, ref, will, fortQualifier=None, 
+            refQualifier=None, willQualifier=None):
+        self.fort = fort
+        self.ref = ref
+        self.will = will
+        self.fortQualifier = fortQualifier
+        self.refQualifier = refQualifier
+        self.willQualifier = willQualifier
+
+    def __repr__(self):
+        return "<StatblockSaves %s/%s/%s>" % (self.fort, self.ref, self.will)
 
 class StatblockFeat(object):
     """A feat owned by a monster"""
@@ -326,6 +365,19 @@ def test_hitPoints():
             print e
             raise
 
+def test_saves():
+    saveStats = query._allSaveStats()
+    for saves in saveStats:
+        if saves is None:
+            continue
+
+        try:
+            parseSaves(saves)
+        except Exception, e:
+            print saves
+            print e
+            raise
+
 def test_statblock():
     monsters = query._allMonsters()
     for monster in monsters:
@@ -337,6 +389,8 @@ def test_statblock():
             import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
 
 if __name__ == '__main__': # {{{
+    print 'testing parseSaves'
+    test_saves()
     print 'testing parseHitPoints'
     test_hitPoints()
     print 'testing statblockSkill'
