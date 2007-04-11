@@ -58,6 +58,10 @@ class Statblock(object):
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
                 }
+        savesDict = self.parseSaves()
+        for k in savesDict:
+            self.overrides[k] = self.formatSaves(savesDict[k])
+
         self.feats = self.parseFeats()
         self.skills = self.parseSkills()
         self._handler = None
@@ -83,6 +87,24 @@ class Statblock(object):
 
     def parseSkills(self):
         return parseSkills(self.monster.skills)
+
+    def formatSaves(self, sbs):
+        if sbs.other:
+            return '(%s)' % (sbs.other,)
+        else:
+            splat = ''
+            qual = ''
+
+            if sbs.splat:
+                splat = '*'
+
+            if sbs.qualifier:
+                qual = ' (%s)' % (sbs.qualifier,)
+
+            return '%+d%s%s' % (sbs.value, splat, qual)
+
+    def parseSaves(self):
+        return parseSaves(self.monster.saves)
 
     def formatFeats(self, callable):
         featList = callable()
@@ -197,6 +219,35 @@ class StatblockSkill(object):
             return "<%s%s %s%s>" % (self.skill.name, sub, splat, qual)
 
 
+class StatblockSave(object):
+    """The set of saves owned by a monster"""
+    def __init__(self, name, value, splat=None, qualifier=None, other=None):
+        self.name = name
+        self.value = value
+        self.qualifier = qualifier
+        self.splat = splat
+        self.other = other
+
+    def __repr__(self):
+        if self.other is not None:
+            return "<StatblockSave %s>" % (self.other,)
+        return "<StatblockSave %s=%s>" % (self.name, self.value)
+
+
+class StatblockFeat(object):
+    """A feat owned by a monster"""
+    def __init__(self, id, qualifier=None):
+        self.feat = query.lookupFeat(id)
+        assert self.feat is not None
+        self.qualifier = qualifier
+
+    def __repr__(self):
+        q = ""
+        if self.qualifier:
+            q = " (%s)" % (self.qualifier,)
+        return "<StatblockFeat %s%s>" % (self.feat.name, q)
+
+
 def parseFeats(featStat):
     """All feats of the monster, as a list of StatblockFeat objects."""
     ret = []
@@ -273,59 +324,29 @@ def parseSkills(skillStat):
     return ret
 
 def parseSaves(saveStat):
-    """Fort, Ref and Will saves as a StatblockSaves object"""
+    """Fort, Ref and Will saves as dict of StatblockSave objects"""
     parsed = saveparser.saveStat.parseString(saveStat)
 
-    quals = {}
+    ret = {}
 
-    if parsed.fort:
-        fort = parsed.fort.number
-        fq = parsed.fort.qualifier
-        ref = parsed.ref.number
-        rq = parsed.ref.qualifier
-        will = parsed.will.number
-        wq = parsed.will.qualifier
-        if fq: quals['fortQualifier'] = fq
-        if rq: quals['refQualifier'] = rq
-        if wq: quals['willQualifier'] = wq
-        return StatblockSaves(fort, ref, will, **quals)
+    for key in ('fort', 'ref', 'will'):
+        # check to make sure this had anything parseable
+        if parsed.fort:
+            piece = getattr(parsed, key)
+            value = piece.number
+            qual = piece.qualifier
+            splat = piece.splat
+            sbs = StatblockSave(key, value, splat, qual, )
+        else:
+            # nothing parseable, we just glue in "other" for all three
+            other = parsed.other
+            sbs = StatblockSave(key, None, other=other)
+        ret[key] = sbs
 
-    other = parsed.other
-    quals['fortQualifier'] = other
-    quals['refQualifier'] = other
-    quals['willQualifier'] = other
-
-    return StatblockSaves(None, None, None, **quals)
+    return ret
 
 
-class StatblockSaves(object):
-    """The set of saves owned by a monster"""
-    def __init__(self, fort, ref, will, fortQualifier=None, 
-            refQualifier=None, willQualifier=None):
-        self.fort = fort
-        self.ref = ref
-        self.will = will
-        self.fortQualifier = fortQualifier
-        self.refQualifier = refQualifier
-        self.willQualifier = willQualifier
-
-    def __repr__(self):
-        return "<StatblockSaves %s/%s/%s>" % (self.fort, self.ref, self.will)
-
-class StatblockFeat(object):
-    """A feat owned by a monster"""
-    def __init__(self, id, qualifier=None):
-        self.feat = query.lookupFeat(id)
-        assert self.feat is not None
-        self.qualifier = qualifier
-
-    def __repr__(self):
-        q = ""
-        if self.qualifier:
-            q = " (%s)" % (self.qualifier,)
-        return "<StatblockFeat %s%s>" % (self.feat.name, q)
-
-
+# tests
 def test_statblockSkill():
     skillStats = query._allSkillStats()
     for s in skillStats:
@@ -388,6 +409,8 @@ def test_statblock():
             print e
             import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
 
+
+# run the tests
 if __name__ == '__main__': # {{{
     print 'testing parseSaves'
     test_saves()
