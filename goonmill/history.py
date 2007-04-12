@@ -57,6 +57,8 @@ class Statblock(object):
                 'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
+                'listen': 0, # may be reset later
+                'spot': 0, # may be reset later
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -64,6 +66,13 @@ class Statblock(object):
 
         self.feats = self.parseFeats()
         self.skills = self.parseSkills()
+
+        listen = self.skills.get(('Listen',), None)
+        if listen is not None: self.overrides['listen'] = listen.value
+
+        spot = self.skills.get(('Spot',), None)
+        if spot is not None: self.overrides['spot'] = spot.value
+
         self._handler = None
         self._parsedHitDice = None
 
@@ -291,8 +300,8 @@ def parseHitPoints(hpStat):
         return p(m.group(2))
 
 def parseSkills(skillStat):
-    """All skills of the monster as a list of StatblockSkill objects"""
-    ret = []
+    """All skills of the monster as a dict of StatblockSkill objects"""
+    ret = {}
 
     # check this before trying to parse
     if skillStat is None:
@@ -316,10 +325,12 @@ def parseSkills(skillStat):
         splat = entry.splat
         if subs:
             for sub in subs:
-                ret.append(StatblockSkill(base, val, sub, splat or None, qualifier or None))
+                ret[(base, sub)] = StatblockSkill(base, val, sub, 
+                        splat=(splat or None), 
+                        qualifier=(qualifier or None))
         else:
-            ret.append(StatblockSkill(base, val, splat=(splat or None),
-                qualifier=(qualifier or None)))
+            ret[(base,)] = StatblockSkill(base, val, splat=(splat or None),
+                qualifier=(qualifier or None))
 
     return ret
 

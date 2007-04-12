@@ -135,6 +135,8 @@ class Result(athena.LiveElement):
         fill('size', get('size'))
         fill('creatureType', get('type'))
         fill('initiative', get('initiative'))
+        fill('spot', '%+d' % (get('spot'),))
+        fill('listen', '%+d' % (get('listen'),))
         fill('languages', u'LANGUAGES=FIXME')
         fill('ac', get('armor_class'))
         fill('acFeats', get('acFeats'))
