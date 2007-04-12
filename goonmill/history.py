@@ -59,6 +59,7 @@ class Statblock(object):
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
                 'listen': 0, # may be reset later
                 'spot': 0, # may be reset later
+                'alignment': self.formatAlignment(),
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -90,6 +91,15 @@ class Statblock(object):
         It will be called when an attribute of the statblock changes
         """
         self._handler = handler
+
+    alignmentRx = re.compile(r'Always (.*)')
+
+    def formatAlignment(self):
+        s = self.monster.alignment
+        matched = self.alignmentRx.match(s)
+        if matched is not None:
+            return matched.group(1).title()
+        return s
 
     def parseFeats(self):
         return parseFeats(self.monster.feats)
