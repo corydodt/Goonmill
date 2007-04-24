@@ -6,8 +6,7 @@ Parse skills in the form:
 ... etc.
 
 """
-from parserbase import P, L, SL, W, number, emptyList, nameWord, \
-        namePrintables, splat, qualifier
+from parserbase import P, L, SL, number, emptyList, nameWord, splat, qualifier, genericTestParser
 
 # skillName
 skillName = P.Group(P.OneOrMore(nameWord)).setResultsName('skillName')
@@ -73,7 +72,4 @@ Climb +2, Jump +2
 """.splitlines()) # }}}
 
 if __name__ == '__main__':
-    for slist in tests:
-        print slist
-        parsed = skillStat.parseString(slist)
-        print parsed
+    genericTestParser(skillStat, tests)
