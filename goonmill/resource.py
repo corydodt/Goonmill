@@ -162,7 +162,7 @@ class Result(athena.LiveElement):
             editHandler=s.setCount))
         fill('space', get('space'))
         fill('reach', get('reach'))
-        fill('feats', get('feats'))
+        fill('feats', get('feats') or '-')
         fill('skills', get('skills'))
         fill('gender', '')
         fill('race', '')
