@@ -10,7 +10,7 @@ SL = lambda c: P.Suppress(L(c))
 W = P.Word
 
 # the noble number
-numberChars = P.nums # + ','
+numberChars = P.nums
 numberBase = W(numberChars, min=1)
 number = P.Combine(P.Optional(P.oneOf('+ -')) + P.Optional(P.White()) +
         numberBase).setResultsName('number')
@@ -41,3 +41,12 @@ inParenQualifier = P.Combine(P.OneOrMore(W(inParenQualifierChars), ' '))
 parenQualifier = SL('(') + inParenQualifier + SL(')')
 
 qualifier = P.Combine(P.OneOrMore(parenQualifier)).setResultsName('qualifier')
+
+
+def genericTestParser(parser, tests):
+    """Parse all tests with parser.
+    """
+    for t in tests:
+        print t
+        parsed = parser.parseString(t)
+        print parsed
