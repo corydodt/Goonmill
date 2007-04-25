@@ -96,6 +96,10 @@ class Statblock(object):
 
     def formatAlignment(self):
         s = self.monster.alignment
+
+        if s is None:
+            return 'None'
+
         matched = self.alignmentRx.match(s)
         if matched is not None:
             return matched.group(1).title()
@@ -120,7 +124,10 @@ class Statblock(object):
             if sbs.qualifier:
                 qual = ' (%s)' % (sbs.qualifier,)
 
-            return '%+d%s%s' % (sbs.value, splat, qual)
+            if sbs.value:
+                return '%+d%s%s' % (sbs.value, splat, qual)
+            else:
+                return '-%s%s' % (splat, qual)
 
     def parseSaves(self):
         return parseSaves(self.monster.saves)
@@ -300,7 +307,7 @@ def parseHitPoints(hpStat):
         # monster has very non-standard hit dice (e.g. Psicrystal)
         return 
 
-    p = diceparser.dice_string.parseString
+    p = diceparser.parseDice
     # try parsing the first group as a dice expression. if that fails,
     # return the second group as non-random hit points.
     try:
