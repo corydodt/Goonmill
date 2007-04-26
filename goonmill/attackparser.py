@@ -69,8 +69,7 @@ class AttackOption(object):
         self.attackForms = []
 
     def __repr__(self):
-        return '<AttackOption with forms %s>' % (
-                [f for f in self.attackForms])
+        return '<AttackOption with %s forms>' % (len(self.attackForms),)
 
 class AttackForm(object):
     """A series of attacks with the same weapon"""
@@ -79,6 +78,8 @@ class AttackForm(object):
         self.crit = '20'
         self.count = 1
         self.touch = ''
+        self.type = None
+        self.damage = None
         self.rangeInformation = ''
 
     def __repr__(self):
@@ -89,6 +90,39 @@ class AttackForm(object):
                 self.crit, self.extraDamage, self.type,
                 self.touch,
                 self.rangeInformation)
+
+    def __str__(self):
+        # do minimizations
+        count = ''
+        if self.count > 1:
+            count = '%s ' % (self.count,)
+
+        weapon = self.weapon
+
+        bonus = '/'.join(['%+d'%(b,) for b in self.bonus])
+
+        damage = self.damage
+
+        crit = ''
+        if self.crit != '20':
+            crit = '/%s' % (self.crit,)
+
+        extra = ''
+        if self.extraDamage:
+            extra = ' (%s)' % (self.extraDamage,)
+
+        type = self.type
+
+        touch = ''
+        if self.touch:
+            touch = ' %s' % (self.touch,)
+
+        range = ''
+        if self.rangeInformation:
+            range = ' (%s)' % (self.rangeInformation,)
+
+        return '%s%s %s (%s%s%s) %s%s%s' % (
+                count, weapon, bonus, damage, crit, extra, type, touch, range)
 
 class Processor(disp.DispatchProcessor):
     def attackStat(self, (t,s1,s2,sub), buffer):
@@ -178,7 +212,11 @@ class Processor(disp.DispatchProcessor):
 if __name__ == '__main__':
     tests = query._allAttackStats()
     for id, test in tests:
-        print id, test,
+        print id, test
         suc, children, next = attackParser.parse(test, processor=Processor())
-        print children
+        for option in children[0]:
+            print option
+            for form in option.attackForms:
+                print ' -> %s' % (str(form),)
         assert next==len(test),  test[:next]
+
