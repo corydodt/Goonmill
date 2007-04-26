@@ -4,7 +4,8 @@ import re
 
 import pyparsing
 
-from goonmill import query, dice, diceparser, skillparser, featparser, saveparser
+from goonmill import query, dice, diceparser, skillparser, featparser, \
+        saveparser, attackparser
 
 class History(object):
     """
@@ -57,9 +58,10 @@ class Statblock(object):
                 'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
-                'listen': 0, # may be reset later
-                'spot': 0, # may be reset later
+                'listen': 0, # may be set again, down below
+                'spot': 0, # may be set again, down below
                 'alignment': self.formatAlignment(),
+                'attackOptions': self.attackOptions,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -176,6 +178,31 @@ class Statblock(object):
 
         return ', '.join(map(str, hplist))
 
+    def attackOptions(self):
+        """
+        @return: A dict:list of attack options, formatted.  The keys in the
+        dict will be 'melee' and 'ranged' and the values will be a list of
+        attack options for one of those two keys.
+        """
+        ret = {'melee':[], 'ranged':[]}
+
+        if getattr(self, '_parsedAttackOptions', None) is None:
+            options = self._parsedAttackOptions = self.parseAttackOptions()
+        else:
+            options = self._parsedAttackOptions
+
+        for option in options:
+            forms = option.attackForms
+            # we assume (and for all the entries in the existing database,
+            # this is true) that an option can either have *all* ranged
+            # attacks, or *all* melee attacks, not some mixture that can be
+            # used simultaneously.
+            optionType = forms[0].type # melee or ranged
+
+            ret[optionType].append(', and '.join(map(str, forms)))
+
+        return ret
+
     def hitDice(self):
         """
         @return: The hit dice expression for the monster as a string.
@@ -188,6 +215,10 @@ class Statblock(object):
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
         return parseHitPoints(self.monster.hit_dice)
+
+    def parseAttackOptions(self):
+        """Get the attack options dict"""
+        return parseAttackOptions(self.monster.full_attack)
 
     def get(self, attribute):
         """
@@ -340,6 +371,9 @@ def parseSaves(saveStat):
     """Fort, Ref and Will saves as dict of StatblockSave objects"""
     return saveparser.parseSaves(saveStat)[0]
 
+def parseAttackOptions(attackStat):
+    """Fort, Ref and Will saves as dict of StatblockSave objects"""
+    return attackparser.parseAttacks(attackStat)[0]
 
 # tests
 def test_statblockSkill():
