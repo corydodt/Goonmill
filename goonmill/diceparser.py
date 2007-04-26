@@ -50,11 +50,25 @@ class DiceExpression(object):
 
     def __str__(self):
         if self.staticNumber is None:
+            # minimize by dropping clauses that are defaults
+
+            # no filter if self.filterCount is None
             filter = ''
             if self.filterCount is not None:
                 filter = '%s%d' % (self.filterDirection, self.filterCount)
-            return '%dd%d%s%+dx%d%s' % (self.count, self.dieSize,
-                    filter, self.dieModifier, self.repeat, self.sort)
+
+            # no modifier if +0
+            modifier = ''
+            if self.dieModifier > 0:
+                modifier = '%+d' % (self.dieModifier,)
+
+            # no repeat if x1
+            repeat = ''
+            if self.repeat > 1:
+                repeat = 'x%d' % (self.repeat,)
+
+            return '%dd%d%s%s%s%s' % (self.count, self.dieSize,
+                    filter, modifier, repeat, self.sort)
         else:
             return str(self.staticNumber)
 

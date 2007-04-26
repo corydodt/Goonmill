@@ -183,7 +183,7 @@ class Statblock(object):
         if self._parsedHitDice is None:
             self._parsedHitDice = self.parseHitPoints()
 
-        return diceparser.reverseFormatDice(self._parsedHitDice)
+        return str(self._parsedHitDice[0])
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
@@ -292,7 +292,7 @@ def parseHitPoints(hpStat):
         # monster has very non-standard hit dice (e.g. Psicrystal)
         return 
 
-    p = lambda s: diceparser.parseDice(s)[0]
+    p = lambda s: diceparser.parseDice(s)
     # try parsing the first group as a dice expression. if that fails,
     # return the second group as non-random hit points.
     try:
