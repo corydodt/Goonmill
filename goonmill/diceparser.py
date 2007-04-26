@@ -115,7 +115,6 @@ tests = [ # {{{
     '2d20+1',
     '2d 20+1',
     '2 d 20- 1',
-    '1d20 +1x5 2d20',
     "2d6-2x2sort",
     "9d6l3-10x2",
     "9d6H3+10x2",
@@ -127,6 +126,6 @@ tests = [ # {{{
 if __name__ == '__main__':
     for test in tests:
         print test,
-        suc, children, next = parseDice(test)
+        suc, children, next = diceParser.parse(test, processor=Processor())
         assert suc and next==len(test)
         print children
