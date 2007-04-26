@@ -5,27 +5,33 @@ from simpleparse.common import numbers
 grammar = r'''# RPG-STYLE DICE EXPRESSIONS
 <ws> := [ \t]*
 <n> := int
+<ds> := digits
+<sign> := [-+]
+<comma_number> := (digit/',')+
 
 dieSize := 'd',ws,n
 count := n
 dieSet := count?,ws,dieSize
 
-filter := [hHlL], n
+filter := [hHlL], ds
 
-dieModifier := [+-],ws,n
+# this looks like int, but the ws is not parsed correctly by int
+dieModifier := sign,ws,comma_number
 
 repeat := n
 sorted := 'sort'
 rollRepeat := 'x',ws,repeat,ws,sorted?
 
-randomNumber := dieSet,ws,filter?,dieModifier?
+randomNumber := dieSet,ws,filter?
 staticNumber := n,ws,?-'d'
 
-diceExpression := (staticNumber/randomNumber),ws,rollRepeat?
+>generatedNumber< := staticNumber/randomNumber
+
+diceExpression := generatedNumber,dieModifier?,ws,rollRepeat?
 
 # normally my root production will not get called in the Processor,
 # so define a dummy root around it, and then it will
-diceExpressionRoot := (ws,diceExpression)+
+diceExpressionRoot := ws,diceExpression
 '''
 
 class DiceExpression(object):
@@ -40,14 +46,17 @@ class DiceExpression(object):
         self.staticNumber = None
 
     def __repr__(self):
+        return '<DiceExpression %s>' % (str(self),)
+
+    def __str__(self):
         if self.staticNumber is None:
             filter = ''
             if self.filterCount is not None:
                 filter = '%s%d' % (self.filterDirection, self.filterCount)
-
-            return '<DiceExpression %dd%d%s%+dx%d%s>' % (self.count, self.dieSize,
+            return '%dd%d%s%+dx%d%s' % (self.count, self.dieSize,
                     filter, self.dieModifier, self.repeat, self.sort)
-        return '<DiceExpression %d (static)>' % (self.staticNumber,)
+        else:
+            return str(self.staticNumber)
 
 class Processor(disp.DispatchProcessor):
     def diceExpression(self, (t,s1,s2,sub), buffer):
@@ -75,7 +84,8 @@ class Processor(disp.DispatchProcessor):
         self.expr.count = int(buffer[s1:s2])
 
     def dieModifier(self, (t,s1,s2,sub), buffer):
-        self.expr.dieModifier = int(buffer[s1:s2])
+        n = buffer[s1:s2].replace(',', '')
+        self.expr.dieModifier = int(n)
 
     def dieSize(self, (t,s1,s2,sub), buffer):
         self.expr.dieSize = int(buffer[s1+1:s2])
@@ -89,7 +99,10 @@ class Processor(disp.DispatchProcessor):
 diceParser = parser.Parser(grammar, root="diceExpressionRoot")
 
 def parseDice(s):
-    return diceParser.parse(s, processor=Processor())
+    succ, children, end = diceParser.parse(s, processor=Processor())
+    if not succ or not end == len(s):
+        raise RuntimeError('%s is not a valid dice expression' % (s,))
+    return children
 
 diceExpression = objectgenerator.LibraryElement(
 		generator = diceParser._generator,

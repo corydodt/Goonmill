@@ -36,47 +36,40 @@ def choosePercentile(percentiles):
 
 def parse(st):
     """The results of rolling this dice expression, as a list of sums"""
-    parsed = diceparser.dice_string.parseString(st)
+    parsed = diceparser.parseDice(st)
     rolled = roll(parsed)
     return list(rolled)
 
 def roll(parsed, temp_modifier=0):
     # set these to defaults in the finish step, not in the init, 
     # so the parser instance can be reused
-    if parsed.dice_count:
-        dice_count = parsed.dice_count
-    else:
-        dice_count = 1
-    if parsed.dice_filter:
-        dice_filter_count = int(parsed.dice_filter)
-        if dice_filter_count > dice_count:
+    expr = parsed[0]
+    count = expr.count
+    if expr.filterCount is not None:
+        dice_filter_count = expr.filterCount
+        if dice_filter_count > count:
             _m = "Hi/Lo filter uses more dice than are being rolled"
             raise RuntimeError(_m)
 
-        hilo = str(parsed.dice_hilo[0])
+        hilo = str(expr.filterDirection)
     else:
         dice_filter_count = 0
         hilo = None
 
-    if parsed.dice_repeat:
-        dice_repeat = parsed.dice_repeat
-    else:
-        dice_repeat = 1
-    if parsed.dice_bonus:
-        dice_bonus = parsed.dice_bonus
-    else:
-        dice_bonus = 0
-    if parsed.dice_size == '':
+    dice_repeat = expr.repeat
+
+    dice_bonus = expr.dieModifier
+
+    if expr.staticNumber is not None:
         # an int by itself is just an int.
-        if not parsed.dice_size:
-            for n in xrange(dice_repeat):
-                yield DiceResult([parsed.dice_count], dice_bonus, temp_modifier)
-            return
-        raise RuntimeError("Syntax error: No die size was given")
+        for n in xrange(dice_repeat):
+            yield DiceResult([expr.staticNumber], dice_bonus, temp_modifier)
+        return
+
     for n in xrange(dice_repeat):
         dierolls = []
-        for n in xrange(dice_count):
-            dierolls.append(rollDie(parsed.dice_size, 0))
+        for n in xrange(count):
+            dierolls.append(rollDie(expr.dieSize, 0))
         result = DiceResult(dierolls, 
                             dice_bonus, 
                             temp_modifier,
@@ -85,8 +78,8 @@ def roll(parsed, temp_modifier=0):
         yield result
 
 def test_roll():
-    assert roll(diceparser.dice.parseString('5'), -1).next().sum() == 4
-    assert roll(diceparser.dice.parseString('5d1'), 1).next().sum() == 6
+    assert roll(diceparser.parseDice('5'), -1).next().sum() == 4
+    assert roll(diceparser.parseDice('5d1'), 1).next().sum() == 6
 
 class DiceResult:
     """Representation of all the values rolled by a dice expression."""
@@ -172,6 +165,9 @@ def test():
     print parse('d 6 -2 x 3')
     print parse('2d6-2x1')
     print parse('2d6+1,234')
+
+    import sys
+    print "testing all of the above, 1000 times"
     for n in xrange(1000):
         assert parse('5')[0].sum() == 5
         assert parse('5x3')[2].sum() == 5
@@ -185,7 +181,11 @@ def test():
         assert 0 <= parse('2d6-2')[0].sum() <= 10
         assert 4 <= parse('9d6h3+1x2')[0].sum() <= 19
         assert 2 <= parse('9d6L3-1x2')[0].sum() <= 17
+        if n%100==0:
+            sys.stdout.write(str(n))
+            sys.stdout.flush()
     print 'passed all tests'
+    return 0
 
 def run(argv=None):
     if argv is None:
@@ -205,4 +205,4 @@ def run(argv=None):
             print e
 
 if __name__ == '__main__':
-    sys.exit(run())
+    sys.exit(test())
