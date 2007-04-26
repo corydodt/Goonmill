@@ -3,7 +3,8 @@ from goonmill import diceparser, query
 from simpleparse import parser, dispatchprocessor as disp, error
 from simpleparse.common import numbers, chartypes
 
-grammar = r'''# RPG-STYLE DICE EXPRESSIONS
+grammar = ( # {{{
+r'''# RPG-STYLE DICE EXPRESSIONS
 <wsc> := [ \t]
 <ws> := wsc*
 <n> := int
@@ -57,7 +58,7 @@ empty := '-'
 attackStat := empty/(attackOption, (';'?, ws, 'or', ws, attackOption)*)
 
 attackStatRoot := attackStat
-'''
+''') # }}}
 
 attackParser = parser.Parser(grammar, root='attackStatRoot', prebuilts = [
     ('diceExpression', diceparser.diceExpression)
@@ -209,7 +210,13 @@ class Processor(disp.DispatchProcessor):
     def staticNumber(self, (t,s1,s2,sub), buffer):
         self.expr.staticNumber = int(buffer[s1:s2])
 
-if __name__ == '__main__':
+def parseAttacks(s):
+    succ, children, end = attackParser.parse(s, processor=Processor())
+    if not succ or not end == len(s):
+        raise RuntimeError('%s is not a valid attack expression' % (s,))
+    return children
+
+if __name__ == '__main__': # {{{
     tests = query._allAttackStats()
     for id, test in tests:
         print id, test
@@ -219,4 +226,4 @@ if __name__ == '__main__':
             for form in option.attackForms:
                 print ' -> %s' % (str(form),)
         assert next==len(test),  test[:next]
-
+# }}}

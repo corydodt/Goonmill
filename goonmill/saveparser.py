@@ -9,7 +9,8 @@ Parse saves in the form:
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
 
-grammar = r'''# saving throw stats
+grammar = ( # {{{
+r'''# saving throw stats
 <ws> := [ \t]*
 <n> := int
 splat := '*'
@@ -34,7 +35,7 @@ saveList := fort, ',', ws, ref, ',', ws, will
 other := ?-('Fort'), p
 
 saveStat := other/saveList
-'''
+''') # }}}
 
 saveParser = parser.Parser(grammar, root="saveStat")
 

@@ -2,7 +2,8 @@ from simpleparse import parser, dispatchprocessor as disp, objectgenerator
 from simpleparse.common import numbers
 
 
-grammar = r'''# RPG-STYLE DICE EXPRESSIONS
+grammar = ( # {{{
+r'''# RPG-STYLE DICE EXPRESSIONS
 <ws> := [ \t]*
 <n> := int
 <ds> := digits
@@ -32,7 +33,7 @@ diceExpression := generatedNumber,dieModifier?,ws,rollRepeat?
 # normally my root production will not get called in the Processor,
 # so define a dummy root around it, and then it will
 diceExpressionRoot := ws,diceExpression
-'''
+''') # }}}
 
 class DiceExpression(object):
     def __init__(self):
