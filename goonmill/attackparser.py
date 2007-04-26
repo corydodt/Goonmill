@@ -74,7 +74,7 @@ class AttackOption(object):
 class AttackForm(object):
     """A series of attacks with the same weapon"""
     def __init__(self):
-        self.extraDamage = ''
+        self.extraDamage = []
         self.crit = '20'
         self.count = 1
         self.touch = ''
@@ -108,8 +108,8 @@ class AttackForm(object):
             crit = '/%s' % (self.crit,)
 
         extra = ''
-        if self.extraDamage:
-            extra = ' (%s)' % (self.extraDamage,)
+        for ed in self.extraDamage:
+            extra = extra + ' (%s)' % (ed,)
 
         type = self.type
 
@@ -171,8 +171,8 @@ class Processor(disp.DispatchProcessor):
         return disp.dispatchList(self, sub, buffer)
 
     def extraDamage(self, (t,s1,s2,sub), buffer):
-        ed = disp.getString((t,s1,s2,sub), buffer)
-        self.attackForm.extraDamage = self.attackForm.extraDamage + ed
+        ed = disp.getString((t,s1,s2,sub), buffer).strip()
+        self.attackForm.extraDamage.append(ed)
 
     def crit(self, (t,s1,s2,sub), buffer):
         self.attackForm.crit = disp.getString((t,s1,s2,sub), buffer)
