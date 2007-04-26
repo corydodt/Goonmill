@@ -124,8 +124,8 @@ class Statblock(object):
             if sbs.qualifier:
                 qual = ' (%s)' % (sbs.qualifier,)
 
-            if sbs.value:
-                return '%+d%s%s' % (sbs.value, splat, qual)
+            if sbs.bonus:
+                return '%+d%s%s' % (sbs.bonus, splat, qual)
             else:
                 return '-%s%s' % (splat, qual)
 
@@ -245,21 +245,6 @@ class StatblockSkill(object):
             return "<%s%s %s%s>" % (self.skill.name, sub, splat, qual)
 
 
-class StatblockSave(object):
-    """The set of saves owned by a monster"""
-    def __init__(self, name, value, splat=None, qualifier=None, other=None):
-        self.name = name
-        self.value = value
-        self.qualifier = qualifier
-        self.splat = splat
-        self.other = other
-
-    def __repr__(self):
-        if self.other is not None:
-            return "<StatblockSave %s>" % (self.other,)
-        return "<StatblockSave %s=%s>" % (self.name, self.value)
-
-
 class StatblockFeat(object):
     """A feat owned by a monster"""
     def __init__(self, id, qualifier=None):
@@ -313,7 +298,7 @@ def parseHitPoints(hpStat):
     try:
         _parsed = p(m.group(1))
         return _parsed
-    except pyparsing.ParseException:
+    except RuntimeError:
         return p(m.group(2))
 
 def parseSkills(skillStat):
@@ -353,25 +338,7 @@ def parseSkills(skillStat):
 
 def parseSaves(saveStat):
     """Fort, Ref and Will saves as dict of StatblockSave objects"""
-    parsed = saveparser.saveStat.parseString(saveStat)
-
-    ret = {}
-
-    for key in ('fort', 'ref', 'will'):
-        # check to make sure this had anything parseable
-        if parsed.fort:
-            piece = getattr(parsed, key)
-            value = piece.number
-            qual = piece.qualifier
-            splat = piece.splat
-            sbs = StatblockSave(key, value, splat, qual, )
-        else:
-            # nothing parseable, we just glue in "other" for all three
-            other = parsed.other
-            sbs = StatblockSave(key, None, other=other)
-        ret[key] = sbs
-
-    return ret
+    return saveparser.parseSaves(saveStat)[0]
 
 
 # tests
@@ -440,14 +407,27 @@ def test_statblock():
 
 # run the tests
 if __name__ == '__main__': # {{{
+    import time
+
     print 'testing parseSaves'
+    t1 = time.time()
     test_saves()
+    print time.time() - t1
+    t1 = time.time()
     print 'testing parseHitPoints'
     test_hitPoints()
+    print time.time() - t1
+    t1 = time.time()
     print 'testing statblockSkill'
     test_statblockSkill()
+    print time.time() - t1
+    t1 = time.time()
     print 'testing statblockFeat'
     test_statblockFeat()
+    print time.time() - t1
+    t1 = time.time()
     print 'testing statblock'
     test_statblock()
+    print time.time() - t1
+    t1 = time.time()
 # }}}

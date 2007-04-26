@@ -6,28 +6,99 @@ Parse saves in the form:
 ... etc.
 
 """
+from simpleparse import parser, dispatchprocessor as disp
+from simpleparse.common import numbers, chartypes
 
-from parserbase import P, L, SL, W, number, splat, qualifier
+grammar = r'''# saving throw stats
+<ws> := [ \t]*
+<n> := int
+splat := '*'
+<p> := printable
 
-undefined = L('-').setResultsName('undefined')
+undefined := '-', ?-n
 
-optQual = P.Optional(qualifier)
-optSplat = P.Optional(splat)
+<nonParen> := letter/digit/whitespacechar/['"{}!@#*&^$%;:.<>/?+-]
 
-fortSave = L('Fort') + (undefined ^ number)
-fortSave = P.Group(fortSave + optSplat + optQual).setResultsName('fort')
-refSave = L('Ref') + (undefined ^ number)
-refSave = P.Group(refSave + optSplat + optQual).setResultsName('ref')
-willSave = L('Will') + (undefined ^ number)
-willSave = P.Group(willSave + optSplat + optQual).setResultsName('will')
+qualifier := '(', nonParen*, ')'
 
-# all three saves
-saveList = P.delimitedList((fortSave | refSave | willSave)).setResultsName('saveList')
+bonus := n
 
-other = (P.NotAny(L('Fort')) + P.restOfLine).setResultsName('other')
+>value< := undefined/bonus, splat?, ws, qualifier?
 
-# The big boy: anything allowed in the 'saves' attribute of a monster
-saveStat = (other | saveList) + P.stringEnd
+fort := 'Fort', ws, value
+ref := 'Ref', ws, value
+will := 'Will', ws, value
+
+saveList := fort, ',', ws, ref, ',', ws, will 
+
+other := ?-('Fort'), p
+
+saveStat := other/saveList
+'''
+
+saveParser = parser.Parser(grammar, root="saveStat")
+
+def parseSaves(s):
+    succ, children, end = saveParser.parse(s, processor=Processor())
+    if not succ or not end == len(s):
+        raise RuntimeError('%s is not a valid save expression' % (s,))
+    return children
+
+class SaveStat(object):
+    """The set of saves owned by a monster"""
+    def __init__(self, name):
+        self.name = name
+        self.bonus = 0
+        self.qualifier = ''
+        self.splat = ''
+        self.other = None
+
+    def __repr__(self):
+        if self.other is not None:
+            return "<SaveStat %s>" % (self.other,)
+        return "<SaveStat %s=%s>" % (self.name, self.bonus)
+
+class Processor(disp.DispatchProcessor):
+    def other(self, (t,s1,s2,sub), buffer):
+        fort = SaveStat('fort')
+        fort.other = buffer
+        ref = SaveStat('ref')
+        ref.other = buffer
+        will = SaveStat('will')
+        will.other = buffer
+        return dict(fort=fort, ref=ref, will=will)
+
+    def saveList(self, (t,s1,s2,sub), buffer):
+        self.saves = {}
+        disp.dispatchList(self, sub, buffer)
+        return self.saves
+
+    def undefined(self, (t,s1,s2,sub), buffer):
+        self.currentSave.other = disp.getString((t,s1,s2,sub), buffer)
+
+    def fort(self, (t,s1,s2,sub), buffer):
+        self.currentSave = SaveStat('fort')
+        self.saves['fort'] = self.currentSave
+        return disp.dispatchList(self, sub, buffer)
+
+    def ref(self, (t,s1,s2,sub), buffer):
+        self.currentSave = SaveStat('ref')
+        self.saves['ref'] = self.currentSave
+        return disp.dispatchList(self, sub, buffer)
+
+    def will(self, (t,s1,s2,sub), buffer):
+        self.currentSave = SaveStat('will')
+        self.saves['will'] = self.currentSave
+        return disp.dispatchList(self, sub, buffer)
+
+    def bonus(self, (t,s1,s2,sub), buffer):
+        self.currentSave.bonus = int(buffer[s1:s2]) 
+
+    def splat(self, (t,s1,s2,sub), buffer):
+        self.currentSave.splat = '*'
+
+    def qualifier(self, (t,s1,s2,sub), buffer):
+        self.currentSave.qualifier = disp.getString((t,s1,s2,sub), buffer)
 
 tests = ( # {{{
 """Fort +9, Ref +6, Will +8
@@ -43,7 +114,7 @@ if __name__ == '__main__': # {{{
     for slist in tests:
         print slist
         try:
-            parsed = saveStat.parseString(slist)
+            parsed = parseSaves(slist)
         except Exception, e:
             raise##import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
         print parsed
