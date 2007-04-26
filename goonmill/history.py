@@ -307,7 +307,7 @@ def parseHitPoints(hpStat):
         # monster has very non-standard hit dice (e.g. Psicrystal)
         return 
 
-    p = diceparser.parseDice
+    p = lambda s: diceparser.parseDice(s)[0]
     # try parsing the first group as a dice expression. if that fails,
     # return the second group as non-random hit points.
     try:
