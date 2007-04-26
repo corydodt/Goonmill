@@ -226,6 +226,28 @@ class Result(athena.LiveElement):
 
     page.renderer(speedFeats)
 
+    def meleeAttacks(self, req, tag):
+        options = self.statblock.get('attackOptions')['melee']
+        content = []
+        pg = tag.patternGenerator('meleeAttack')
+        for option in options:
+            content.append(pg().fillSlots('value', option))
+
+        return tag[content]
+
+    page.renderer(meleeAttacks)
+
+    def rangedAttacks(self, req, tag):
+        options = self.statblock.get('attackOptions')['ranged']
+        content = []
+        pg = tag.patternGenerator('rangedAttack')
+        for option in options:
+            content.append(pg().fillSlots('value', option))
+
+        return tag[content]
+
+    page.renderer(rangedAttacks)
+
     def attackOptionFeats(self, req, tag):
         feats = self.statblock.attackOptionFeats()
         if len(feats) > 0:

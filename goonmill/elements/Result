@@ -7,6 +7,8 @@
 &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;CR <n:slot name="challengeRating"/></h4>
 <div class="foldable">
   <div style="clear:both" />
+
+  <!-- basic information block -->
   <div class="statblock">
     <p class="TODO" n:render="npcTraits">
       <n:slot name="gender"/>
@@ -30,6 +32,7 @@
     </p>
   </div>
 
+  <!-- defense block -->
   <div class="statblock">
       <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO">[; defenses]</span>
       <span n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
@@ -42,25 +45,44 @@
     <p class="TODO">[<strong>Weakness</strong> XX]</p>
   </div>
 
+  <!-- attack block -->
   <div class="statblock">
     <p><strong>Spd</strong>&#xA0;<n:slot name="speed"/> <span n:render=
         "speedFeats">;&#xA0;<n:slot name="speedFeats" /></span></p>
-    <p class="TODO"><strong>Melee</strong> weapon +XX (damage) </p>
-    <p><span class="TODO"><strong>Ranged</strong> weapon +XX (damage)</span> <span n:render="rangedAttackFeats">; <n:slot name="rangedAttackFeats" /></span></p>
+
+    <span n:render="meleeAttacks">
+        <p n:pattern="meleeAttack"><strong>Melee</strong>&#xA0;<n:slot name=
+            "value" /></p>
+    </span>
+
+    <span n:render="rangedAttacks">
+        <p n:pattern="rangedAttack"><strong>Ranged</strong>&#xA0;<n:slot name=
+                "value" /><span n:render=
+                "rangedAttackFeats">; <n:slot name=
+                    "rangedAttackFeats" /></span></p>
+    </span>
+
     <p n:render="space"><strong>Space</strong>&#xA0;<n:slot name="space"/>;
         <strong>Reach</strong>&#xA0;<n:slot name="reach"/></p>
-        <p><strong>Base Atk</strong>&#xA0;<n:slot name="baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name="grapple" /></p>
-        <p><span class="TODO"><strong>Atk Options</strong> !!options</span> <span n:render=
-        "attackOptionFeats">;&#xA0;<n:slot name="attackOptionFeats" />
-        <!-- TODO metamagic feats (if the creature casts spontaneously)--> 
-      </span>
+
+    <p><strong>Base Atk</strong>&#xA0;<n:slot name=
+        "baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name=
+        "grapple" /></p>
+
+    <p><span class="TODO"><strong>Atk Options</strong> !!options</span>
+        <span n:render="attackOptionFeats">;&#xA0;<n:slot name=
+            "attackOptionFeats" />
+            <!-- TODO metamagic feats (if the creature casts spontaneously)--> 
+        </span>
     </p>
+
     <p class="TODO"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
     <p class="TODO"><strong>Combat Gear</strong> gear</p>
     <p class="TODO"><strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
     <p class="TODO"><strong>Spell-Like Abilities</strong> (CL XX)]</p>
   </div>
 
+  <!-- skills, abilities and feats block -->
   <div class="statblock">
     <p>
       <strong>Abilities</strong>&#xA0;<n:slot name="abilities"/>
@@ -74,15 +96,18 @@
     <p class="TODO"><strong>Spellbook</strong> All spells prepared plus XX</p>
   </div>
   
+  <!-- color block -->
   <div class="statblock">
     <p class="TODO"><strong>Hook</strong> hook</p>
   </div>
   
+  <!-- ability detail drilldown block -->
   <div class="statblock TODO">
     <p>[<strong>Ability (Type)</strong> description]</p>
     <p>[<strong>Ability (Type)</strong> description]</p>
   </div>
 
+  <!-- FIXME - notes for statblock creator -->
   <p class="TODO">
     <span class="math"><strong>Skills (class):</strong>
 Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX racial
