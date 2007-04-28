@@ -6,38 +6,71 @@ Parse feats in the form:
 ... etc.
 
 """
-import string
-
-from parserbase import P, L, SL, W, number, emptyList, namePrintables, nameWord
-
-
-# featName
-featNamePrintables = namePrintables + '-'
-featNameWord = W(featNamePrintables)
-featName = P.Group(P.OneOrMore(featNameWord)).setResultsName('featName')
-
-def joinFeat(s,p,t):
-    return ' '.join(t[0].asList())
-
-featName.setParseAction(joinFeat)
+from simpleparse import parser, dispatchprocessor as disp
+from simpleparse.common import numbers
 
 
-# subfeats 
-subFeatGroup = P.Group(
-        SL('(') + P.delimitedList(P.OneOrMore(featName)) + SL(')')
-        ).setResultsName('subFeatGroup')
+grammar = ( # {{{
+'''# feats aplenty
+<ws> := [ \t]*
+<nameChar> := [][-0-9a-zA-Z'" \t]
+<name> := nameChar+
+
+empty := '-'
+
+>featList< := feat, (',', ws, !, feat)*
+
+<subFeatName> := name
+subFeatGroup := '(', !, name, (',', ws, !, name)*, ')'
+
+baseFeatName := name
+>feat< := baseFeatName, subFeatGroup?
+
+featStat := empty/featList
+featStatRoot := featStat
+''' ) # }}}
 
 
-# one whole feat
-feat = P.Group(featName + P.Optional(subFeatGroup)).setResultsName('feat')
+featParser = parser.Parser(grammar, root='featStatRoot')
 
 
-# all the feats a feat-having monster has
-featList = P.delimitedList(P.OneOrMore(feat)).setResultsName('featList')
+class Feat(object):
+    def __init__(self):
+        self.qualifier = None
+
+    def __repr__(self):
+        return '<%s>' % (str(self),)
+
+    def __str__(self):
+        q = ''
+        if self.qualifier is not None:
+            q = ' (%s)' % (self.qualifier,)
+        return '%s%s' % (self.name, q)
 
 
-# The big boy: anything allowed in the 'skills' attribute of a monster
-featStat = (emptyList | featList) + P.stringEnd
+class Processor(disp.DispatchProcessor):
+    def featStat(self, (t,s1,s2,sub), buffer):
+        self.feats = []
+        disp.dispatchList(self, sub, buffer)
+        return self.feats
+
+    def empty(self, *a, **kw):
+        pass
+
+    def baseFeatName(self, (t,s1,s2,sub), buffer):
+        self.currentFeat = Feat()
+        self.feats.append(self.currentFeat)
+        self.currentFeat.name = disp.getString((t,s1,s2,sub), buffer).strip()
+
+    def subFeatGroup(self, (t,s1,s2,sub), buffer):
+        self.currentFeat.qualifier = disp.getString((t,s1+1,s2-1,sub),
+                buffer).strip()
+
+def parseFeats(s):
+    succ, children, end = featParser.parse(s, processor=Processor())
+    if not succ or not end == len(s):
+        raise RuntimeError('%s is not a valid feat expression' % (s,))
+    return children
 
 
 
@@ -72,5 +105,5 @@ Lycanthrope Hybrid Feats (same as human form)
 if __name__ == '__main__':
     for flist in tests:
         print flist
-        parsed = featStat.parseString(flist)
+        parsed = parseFeats(flist)
         print parsed

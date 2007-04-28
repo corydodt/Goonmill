@@ -136,22 +136,22 @@ class Statblock(object):
 
     def formatFeats(self, callable):
         featList = callable()
-        return ', '.join([f.feat.name for f in featList])
+        return ', '.join([f.name for f in featList])
 
     def acFeats(self):
-        return [f for f in self.feats if f.feat.is_ac_feat]
+        return [f for f in self.feats if f.dbFeat.is_ac_feat]
 
     def speedFeats(self):
-        return [f for f in self.feats if f.feat.is_speed_feat]
+        return [f for f in self.feats if f.dbFeat.is_speed_feat]
 
     def specialActionFeats(self):
-        return [f for f in self.feats if f.feat.is_special_action_feat]
+        return [f for f in self.feats if f.dbFeat.is_special_action_feat]
 
     def attackOptionFeats(self):
-        return [f for f in self.feats if f.feat.is_attack_option_feat]
+        return [f for f in self.feats if f.dbFeat.is_attack_option_feat]
 
     def rangedAttackFeats(self):
-        return [f for f in self.feats if f.feat.is_ranged_attack_feat]
+        return [f for f in self.feats if f.dbFeat.is_ranged_attack_feat]
 
     def hitPoints(self):
         """
@@ -247,41 +247,18 @@ class Statblock(object):
         self.overrides['alignment'] = alignment
 
 
-class StatblockFeat(object):
-    """A feat owned by a monster"""
-    def __init__(self, id, qualifier=None):
-        self.feat = query.lookupFeat(id)
-        assert self.feat is not None
-        self.qualifier = qualifier
-
-    def __repr__(self):
-        q = ""
-        if self.qualifier:
-            q = " (%s)" % (self.qualifier,)
-        return "<StatblockFeat %s%s>" % (self.feat.name, q)
-
-
 def parseFeats(featStat):
-    """All feats of the monster, as a list of StatblockFeat objects."""
+    """All feats of the monster, as a list of Feat."""
     ret = []
     # check this before trying to parse
     if featStat is None:
         return ret
 
-    parsed = featparser.featStat.parseString(featStat)
+    parsed = featparser.parseFeats(featStat)[0]
 
-    if parsed.emptyList:
-        return ret
-
-    for entry in parsed:
-        base = entry.featName
-
-        subs = entry.subFeatGroup
-        if subs:
-            for sub in subs:
-                ret.append(StatblockFeat(base, sub))
-        else:
-            ret.append(StatblockFeat(base))
+    for item in parsed:
+        item.dbFeat = query.lookupFeat(item.name)
+        ret.append(item)
 
     return ret
 
