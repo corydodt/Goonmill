@@ -66,6 +66,7 @@ class Processor(disp.DispatchProcessor):
         self.currentFeat.qualifier = disp.getString((t,s1+1,s2-1,sub),
                 buffer).strip()
 
+
 def parseFeats(s):
     succ, children, end = featParser.parse(s, processor=Processor())
     if not succ or not end == len(s):
