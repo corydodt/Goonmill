@@ -58,8 +58,8 @@ class Statblock(object):
                 'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
-                'listen': 0, # may be set again, down below
-                'spot': 0, # may be set again, down below
+                'listen': 'Listen +0', # may be set again, down below
+                'spot': 'Spot +0', # may be set again, down below
                 'alignment': self.formatAlignment(),
                 'attackOptions': self.attackOptions,
                 }
@@ -70,11 +70,11 @@ class Statblock(object):
         self.feats = self.parseFeats()
         self.skills = self.parseSkills()
 
-        listen = self.skills.get(('Listen',), None)
-        if listen is not None: self.overrides['listen'] = listen.value
+        listen = self.skills.get('Listen', None)
+        if listen is not None: self.overrides['listen'] = listen
 
-        spot = self.skills.get(('Spot',), None)
-        if spot is not None: self.overrides['spot'] = spot.value
+        spot = self.skills.get('Spot', None)
+        if spot is not None: self.overrides['spot'] = spot
 
         self._handler = None
         self._parsedHitDice = None
@@ -247,35 +247,6 @@ class Statblock(object):
         self.overrides['alignment'] = alignment
 
 
-class StatblockSkill(object):
-    """A skill owned by a monster"""
-    def __init__(self, id, value, subSkill=None, splat=None, qualifier=None):
-        self.splat = splat
-        self.value = value
-        self.skill = query.lookupSkill(id)
-        assert self.skill is not None
-        self.subSkill = subSkill
-        self.qualifier = qualifier
-
-    def __repr__(self):
-        sub = ''
-        if self.subSkill is not None:
-            sub = ' (%s)' % (self.subSkill,)
-
-        qual = ''
-        if self.qualifier is not None:
-            qual = ' (%s)' % (self.qualifier,)
-
-        splat = ''
-        if self.splat is not None:
-            splat = '*'
-
-        if self.value:
-            return "<%s%s %+g%s%s>" % (self.skill.name, sub, self.value, splat, qual)
-        else:
-            return "<%s%s %s%s>" % (self.skill.name, sub, splat, qual)
-
-
 class StatblockFeat(object):
     """A feat owned by a monster"""
     def __init__(self, id, qualifier=None):
@@ -333,39 +304,14 @@ def parseHitPoints(hpStat):
         return p(m.group(2))
 
 def parseSkills(skillStat):
-    """All skills of the monster as a dict of StatblockSkill objects"""
-    ret = {}
-
+    """All skills of the monster as a dict of strings"""
     # check this before trying to parse
     if skillStat is None:
-        return ret
+        return {}
 
-    parsed = skillparser.skillStat.parseString(skillStat)
+    parsed = skillparser.parseSkills(skillStat)[0]
 
-    if parsed.emptyList:
-        return ret
-
-    for entry in parsed:
-        if entry.skillName: 
-            base = entry.skillName
-            val = entry.number
-        else:
-            ## this is a language - TODO set a language flag
-            base = entry.languageName
-            val = None
-        qualifier = entry.qualifier
-        subs = entry.subSkillGroup
-        splat = entry.splat
-        if subs:
-            for sub in subs:
-                ret[(base, sub)] = StatblockSkill(base, val, sub, 
-                        splat=(splat or None), 
-                        qualifier=(qualifier or None))
-        else:
-            ret[(base,)] = StatblockSkill(base, val, splat=(splat or None),
-                qualifier=(qualifier or None))
-
-    return ret
+    return dict([(item.skillName, str(item)) for item in parsed])
 
 def parseSaves(saveStat):
     """Fort, Ref and Will saves as dict of StatblockSave objects"""

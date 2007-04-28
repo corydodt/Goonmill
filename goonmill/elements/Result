@@ -24,7 +24,7 @@
     </p>
     <p><strong>Init</strong>&#xA0;<n:slot name=
     "initiative"/>; <span class="TODO"><strong>Senses</strong> [special
-        senses;]</span> Listen <n:slot name="listen" />, Spot <n:slot
+        senses;]</span> <n:slot name="listen" />, <n:slot
     name="spot" /></p>
     <p class="TODO" n:render="aura"><strong>Aura</strong>&#xA0;aura (range, DC XX)</p>
     <p class="TODO">
