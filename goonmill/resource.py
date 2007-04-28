@@ -242,7 +242,7 @@ class Result(athena.LiveElement):
         content = []
         pg = tag.patternGenerator('rangedAttack')
         for option in options:
-            content.append(pg().fillSlots('value', option))
+            content.append(pg().fillSlots('value', option.capitalize()))
 
         return tag[content]
 
