@@ -107,6 +107,16 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return [(m.id, m.full_attack) for m in ss.query(Monster)]
 
+    def _allFullTextStats(self):
+        """Return all attacks for all monsters"""
+        ss = S.create_session(self.engine)
+        return [(m.id, m.full_text) for m in ss.query(Monster)]
+
+    def _allSQStats(self):
+        """Return all special qualitier for all monsters"""
+        ss = S.create_session(self.engine)
+        return [(m.id, m.special_qualities) for m in ss.query(Monster)]
+
     def _allSaveStats(self):
         """Return all save names as strings"""
         ss = S.create_session(self.engine)
@@ -149,6 +159,14 @@ def _allSaveStats():
 def _allAttackStats():
     """Return the full_attack attribute for every monster"""
     return db._allAttackStats()
+
+def _allFullTextStats():
+    """Return the full_attack attribute for every monster"""
+    return db._allFullTextStats()
+
+def _allSQStats():
+    """Return the special_qualities attribute for every monster"""
+    return db._allSQStats()
 
 def _allMonsters():
     return db._allMonsters()
