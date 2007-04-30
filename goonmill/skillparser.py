@@ -11,7 +11,7 @@ from simpleparse.common import numbers
 
 
 grammar = ( # {{{
-'''# skill stat
+r'''# skill stat
 <n> := digit+
 <ws> := [ \t]*
 <nameChar> := [0-9a-zA-Z'" \t]
