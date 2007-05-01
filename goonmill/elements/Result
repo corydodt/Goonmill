@@ -80,7 +80,7 @@
     <p class="TODO"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
     <p class="TODO"><strong>Combat Gear</strong> gear</p>
     <p class="TODO"><strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
-    <p class="TODO"><strong>Spell-Like Abilities</strong> (CL XX)]</p>
+    <p n:render="spellLikeAbilities" />
   </div>
 
   <!-- skills, abilities and feats block -->
@@ -103,20 +103,10 @@
   </div>
   
   <!-- ability detail drilldown block -->
-  <div class="statblock TODO">
-    <p>[<strong>Ability (Type)</strong> description]</p>
-    <p>[<strong>Ability (Type)</strong> description]</p>
-  </div>
+  <div class="statblock" n:render='fullAbilities' />
 
-  <!-- FIXME - notes for statblock creator -->
-  <p class="TODO">
-    <span class="math"><strong>Skills (class):</strong>
-Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX racial
-trait), Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX
-racial trait), Skill XX ranks (+XX ability score, +XX feat, +XX item,
-+XX racial trait), = XX (XX skill points)</span>
-  </p>
 </div>
+
 </n:invisible>
 <!-- vi:ft=html
 -->

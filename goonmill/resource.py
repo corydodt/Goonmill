@@ -126,9 +126,20 @@ class Result(athena.LiveElement):
             return _g
 
         fill = tag.fillSlots
-        fill('name', get('name'))
+
+        # basic information block
+        fill('count', guise('count',
+            value=get('count'), 
+            tooltip='Click to set the number of individuals', 
+            template=resourceData('guises/Count'),
+            editHandler=s.setCount))
         fill('label', guise('label', tooltip='Click to add a label', 
             editHandler=s.setLabel))
+        fill('gender', '')
+        fill('race', '')
+        fill('class', '')
+        fill('level', '')
+        fill('name', get('name'))
         fill('challengeRating', get('challenge_rating'))
         fill('alignment', guise('alignment', 
             readOnly=False, value=get('alignment'), 
@@ -136,40 +147,46 @@ class Result(athena.LiveElement):
             editHandler=s.setAlignment))
         fill('size', get('size'))
         fill('creatureType', get('type'))
+        fill('subtype', get('descriptor'))
         fill('initiative', get('initiative'))
-        fill('spot', '%s' % (get('spot'),))
         fill('listen', '%s' % (get('listen'),))
-        fill('languages', u'LANGUAGES=FIXME')
+        fill('spot', '%s' % (get('spot'),))
+        fill('languages', u'languages')
+
+        # defense block
         fill('ac', get('armor_class'))
         fill('acFeats', get('acFeats'))
-        fill('speedFeats', get('speedFeats'))
-        fill('attackOptionFeats', get('attackOptionFeats'))
-        fill('specialActionFeats', get('specialActionFeats'))
-        fill('rangedAttackFeats', get('rangedAttackFeats'))
         fill('hp', guise('hp', readOnly=True, value=get('hitPoints')))
         fill('hitDice', get('hitDice'))
         fill('fort', get('fort'))
         fill('ref', get('ref'))
         fill('will', get('will'))
+
+        # attack block
         fill('speed', get('speed'))
-        fill('baseAttack', get('base_attack'))
-        fill('grapple', get('grapple'))
-        fill('abilities', get('abilities'))
-        fill('specialQualities', get('special_qualities'))
-        fill('subtype', get('descriptor'))
-        fill('count', guise('count',
-            value=get('count'), 
-            tooltip='Click to set the number of individuals', 
-            template=resourceData('guises/Count'),
-            editHandler=s.setCount))
+        fill('speedFeats', get('speedFeats'))
+        attackOptions = get('attackOptions')
+        ## meleeAttacks - see renderer
+        ## rangedAttacks - see renderer
+        fill('rangedAttackFeats', get('rangedAttackFeats'))
         fill('space', get('space'))
         fill('reach', get('reach'))
+        fill('baseAttack', get('base_attack'))
+        fill('grapple', get('grapple'))
+        fill('attackOptionFeats', get('attackOptionFeats'))
+        ## fill('specialActionFeats', get('specialActionFeats'))  ## TODO
+        ## gear TODO
+        ## spells TODO
+        ## spellLikeAbilities
+
+        # skills, abilities, feats block
+        fill('abilities', get('abilities'))
+        fill('specialQualities', get('special_qualities'))
         fill('feats', get('feats') or '-')
         fill('skills', get('skills'))
-        fill('gender', '')
-        fill('race', '')
-        fill('class', '')
-        fill('level', '')
+
+        # ability detail drilldown block
+        ## fullAbilities
 
         s.updateHandler(self.updateHandler)
 
@@ -223,6 +240,10 @@ class Result(athena.LiveElement):
 
     page.renderer(speedFeats)
 
+    def meleeAttack(self, pattern, option, tag):
+        pattern.fillSlots('value', option)
+        return 
+
     def meleeAttacks(self, req, tag):
         options = self.statblock.get('attackOptions')['melee']
         content = []
@@ -262,6 +283,24 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(rangedAttackFeats)
+
+    def spellLikeAbilities(self, req, tag):
+        spellLikes = self.statblock.get('spellLikeAbilities')
+        if spellLikes:
+            return tag[[T.xml(s) for s in spellLikes]]
+
+        return ''
+
+    page.renderer(spellLikeAbilities)
+
+    def fullAbilities(self, req, tag):
+        fulls = self.statblock.get('fullAbilities')
+        if fulls:
+            return tag[[T.xml(f) for f in fulls]]
+
+        return ''
+
+    page.renderer(fullAbilities)
 
 
 class Guise(athena.LiveElement):

@@ -3,7 +3,7 @@
 import re
 
 from goonmill import query, dice, diceparser, skillparser, featparser, \
-        saveparser, attackparser
+        saveparser, attackparser, fullabilityparser
 
 class History(object):
     """
@@ -45,6 +45,9 @@ class Statblock(object):
         self.monster = query.lookup(id)
         self._count = 1
         self._label = ''
+        self.skills = self.parseSkills()
+        self.feats = self.parseFeats()
+        parsedFullAbilities = self.parseFullAbilities()
         self.overrides = { # when .get() is called, these will be looked up
                            # first and possibly called
                 'hitPoints': self.hitPoints,
@@ -60,13 +63,16 @@ class Statblock(object):
                 'spot': 'Spot +0', # may be set again, down below
                 'alignment': self.formatAlignment(),
                 'attackOptions': self.attackOptions,
+                'fullAbilities': parsedFullAbilities[0],
+                'spellLikeAbilities': parsedFullAbilities[1],
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
             self.overrides[k] = self.formatSaves(savesDict[k])
 
-        self.feats = self.parseFeats()
-        self.skills = self.parseSkills()
+        ## self.feats = self.parseFeats()
+        ## self.skills = self.parseSkills()
+        ## self.fullAbilities = self.parseFullAbilities()
 
         listen = self.skills.get('Listen', None)
         if listen is not None: self.overrides['listen'] = listen
@@ -104,6 +110,9 @@ class Statblock(object):
         if matched is not None:
             return matched.group(1).title()
         return s
+
+    def parseFullAbilities(self):
+        return parseFullAbilities(self.monster.full_text)
 
     def parseFeats(self):
         return parseFeats(self.monster.feats)
@@ -293,8 +302,12 @@ def parseSaves(saveStat):
     return saveparser.parseSaves(saveStat)[0]
 
 def parseAttackOptions(attackStat):
-    """Fort, Ref and Will saves as dict of StatblockSave objects"""
+    """All grouped attack options as strings"""
     return attackparser.parseAttacks(attackStat)[0]
+
+def parseFullAbilities(fullTextStat):
+    """All full ability markup as a list of strings"""
+    return fullabilityparser.parseFullAbilities(fullTextStat)
 
 # tests
 def test_statblockSkill():
