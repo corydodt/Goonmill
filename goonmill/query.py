@@ -126,6 +126,10 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return ss.query(Monster)
 
+    def _allIds(self):
+        ss = S.create_session(self.engine)
+        return [m.id for m in ss.query(Monster)]
+
 db = SRDDatabase()
 
 def lookup(id):
@@ -170,6 +174,9 @@ def _allSQStats():
 
 def _allMonsters():
     return db._allMonsters()
+
+def _allIds():
+    return db._allIds()
 
 def _allHPStats():
     return db._allHPStats()
