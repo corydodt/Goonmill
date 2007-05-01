@@ -3,3 +3,4 @@
 (/|\\|^)twistd.log$
 (/|\\)srd35.db$
 (/|\\|^)twistd.pid$
+^goonmill/html/.*$
