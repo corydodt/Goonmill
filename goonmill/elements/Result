@@ -26,7 +26,7 @@
     "initiative"/>; <span class="TODO"><strong>Senses</strong> [special
         senses;]</span> <n:slot name="listen" />, <n:slot
     name="spot" /></p>
-    <p class="TODO" n:render="aura"><strong>Aura</strong>&#xA0;aura (range, DC XX)</p>
+    <p class="TODO"><strong>Aura</strong>&#xA0;aura (range, DC XX)</p>
     <p class="TODO">
       <strong>Languages</strong>&#xA0;<n:slot name="languages"/>
     </p>
@@ -116,7 +116,7 @@ trait), Skill XX ranks (+XX ability score, +XX feat, +XX item, +XX
 racial trait), Skill XX ranks (+XX ability score, +XX feat, +XX item,
 +XX racial trait), = XX (XX skill points)</span>
   </p>
-  </div>
+</div>
 </n:invisible>
 <!-- vi:ft=html
 -->

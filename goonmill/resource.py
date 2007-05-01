@@ -185,11 +185,6 @@ class Result(athena.LiveElement):
 
     page.renderer(subtype)
 
-    def aura(self, req, tag):
-        return tag
-
-    page.renderer(aura)
-
     def space(self, req, tag):
         g = self.statblock.get
         # don't need to print anything if this is just a typical Medium
