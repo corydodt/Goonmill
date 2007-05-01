@@ -64,6 +64,7 @@ attackParser = parser.Parser(grammar, root='attackStatRoot', prebuilts = [
     ('diceExpression', diceparser.diceExpression)
 ])
 
+
 class AttackOption(object):
     """A group of AttackForms which all may be used simultaneously"""
     def __init__(self):
@@ -71,6 +72,7 @@ class AttackOption(object):
 
     def __repr__(self):
         return '<AttackOption with %s forms>' % (len(self.attackForms),)
+
 
 class AttackForm(object):
     """A series of attacks with the same weapon"""
@@ -124,6 +126,7 @@ class AttackForm(object):
 
         return '%s%s %s (%s%s%s) %s%s%s' % (
                 count, weapon, bonus, damage, crit, extra, type, touch, range)
+
 
 class Processor(disp.DispatchProcessor):
     def attackStat(self, (t,s1,s2,sub), buffer):
@@ -210,11 +213,13 @@ class Processor(disp.DispatchProcessor):
     def staticNumber(self, (t,s1,s2,sub), buffer):
         self.expr.staticNumber = int(buffer[s1:s2])
 
+
 def parseAttacks(s):
     succ, children, end = attackParser.parse(s, processor=Processor())
     if not succ or not end == len(s):
         raise RuntimeError('%s is not a valid attack expression' % (s,))
     return children
+
 
 if __name__ == '__main__': # {{{
     tests = query._allAttackStats()
