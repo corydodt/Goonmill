@@ -3,7 +3,9 @@ import shlex
 
 from zope.interface import implements
 
-from nevow import rend, url, loaders, athena, flat, static, page, vhost, inevow
+from nevow import rend, url, loaders, athena, static, page, vhost, inevow, tags as T
+
+from nevow.testutil import renderLivePage, FragmentWrapper
 
 from goonmill.util import RESOURCE, resourceData
 from goonmill.history import History, Statblock
@@ -336,3 +338,35 @@ class VhostFakeRoot:
             return vhost.VHostMonsterResource(), segments[1:]
         else:
             return self.wrapped.locateChild(ctx, segments)
+
+
+class StyledFragmentWrapper(FragmentWrapper):
+    docFactory = loaders.xmlstr("""<html xmlns:n="http://nevow.com/ns/nevow/0.1">
+<head><link rel="stylesheet" type="text/css" href="../static/goonmill.css" />
+<meta name="content-type" http-equiv="text/html; charset=utf-8" />
+</head>
+<body n:render="fragment" />
+</html>""")
+    # fold nicely.
+
+
+if __name__ == '__main__': # {{{
+    # render each and every monster
+    ids = query._allIds()
+    
+    docFactory = loaders.stan(
+                    T.html[
+                        T.body[
+                            T.directive('fragment')]])
+    for id in ids:
+        print id,
+
+        sb = Statblock(id)
+        result = Result(sb)
+        wrapper = StyledFragmentWrapper(result)
+
+        def _gotResult(r):
+            file(RESOURCE('html/%s.html' % (id,)), 'w').write(r)
+
+        renderLivePage(wrapper).addCallback(_gotResult)
+# }}}
