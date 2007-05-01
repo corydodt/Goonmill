@@ -2,8 +2,6 @@
 
 import re
 
-import pyparsing
-
 from goonmill import query, dice, diceparser, skillparser, featparser, \
         saveparser, attackparser
 
