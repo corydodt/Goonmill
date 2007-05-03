@@ -4,8 +4,6 @@ Implement dice rolling using parsed dice
 import sys
 import random
 
-import pyparsing
-
 from goonmill import diceparser
 
 def rollDie(die, mod=0):
@@ -151,7 +149,7 @@ def test():
                  ]:
         try:
             parse(dice)
-        except (pyparsing.ParseException, RuntimeError), e:
+        except RuntimeError, e:
             print e
         else:
             assert 0, "%s did not cause an error, and should've" % (dice,)
