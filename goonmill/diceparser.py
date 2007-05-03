@@ -35,6 +35,7 @@ diceExpression := generatedNumber,dieModifier?,ws,rollRepeat?
 diceExpressionRoot := ws,diceExpression
 ''') # }}}
 
+
 class DiceExpression(object):
     def __init__(self):
         self.count = 1
@@ -72,6 +73,7 @@ class DiceExpression(object):
                     filter, modifier, repeat, self.sort)
         else:
             return str(self.staticNumber)
+
 
 class Processor(disp.DispatchProcessor):
     def diceExpression(self, (t,s1,s2,sub), buffer):
@@ -111,7 +113,9 @@ class Processor(disp.DispatchProcessor):
     def rollRepeat(self, (t,s1,s2,sub), buffer):
         return disp.dispatchList(self, sub, buffer)
 
+
 diceParser = parser.Parser(grammar, root="diceExpressionRoot")
+
 
 def parseDice(s):
     succ, children, end = diceParser.parse(s, processor=Processor())
@@ -119,10 +123,12 @@ def parseDice(s):
         raise RuntimeError('%s is not a valid dice expression' % (s,))
     return children
 
+
 diceExpression = objectgenerator.LibraryElement(
 		generator = diceParser._generator,
 		production = 'diceExpression',
         )
+
 
 tests = [ # {{{
     ' d10',
