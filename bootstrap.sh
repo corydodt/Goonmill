@@ -8,6 +8,8 @@ cat <<EOF
 :: Please check for any errors below, and fix them.
 EOF
 
+export errorStatus=""
+
 function testPython()
 {
     message="$1"
@@ -15,7 +17,8 @@ function testPython()
     while read l; do line="$l"; done
 
     if [ -n "$line" ]; then
-        echo "$message ($line)"
+        echo "** $message ($line)"
+        errorStatus="error"
     else
         echo "OK"
     fi
@@ -26,15 +29,21 @@ function p()
     python -c "$@" 2>&1
 }
 
-p 'import sqlalchemy' | testPython "Install SQLAlchemy"
-p 'import zope.interface' | testPython "Install zope.interface"
-p 'from twisted import __version__ as v; assert v>="2.5.0", "Twisted version is %s" % (v,)' | testPython "Install Twisted 2.5"
-p 'import nevow' | testPython "Install Divmod Nevow"
-p 'import simpleparse' | testPython "Install simpleparse"
-p 'import xml.etree' | testPython "Python 2.5 is required for xml.etree"
+testPython "Install SQLAlchemy" < <(p 'import sqlalchemy')
+testPython "Install zope.interface" < <(p 'import zope.interface')
+t='from twisted import __version__ as v; assert v>="2.5.0", "Twisted ver. is %s" % (v,)'
+testPython "Install Twisted 2.5" < <(p "$t")
+testPython "Install Divmod Nevow" < <(p 'import nevow')
+testPython "Install simpleparse" < <(p 'import simpleparse')
+testPython "Python 2.5 is required for xml.etree" < <(p 'import xml.etree')
 
+if [ "$errorStatus" == "error" ]; then
+    echo "** Errors occurred.  Please fix the above errors, then re-run this script."
+    exit 1
+fi
 
-echo ":: Uncompressing database"
-gzip -dc goonmill/srd35.db.gz > goonmill/srd35.db
+db=goonmill/srd35.db.gz
+echo ":: Uncompressing database $db"
+gzip -dc $db > ${db/.gz/}
 
 echo "Done."
