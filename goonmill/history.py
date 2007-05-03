@@ -217,6 +217,8 @@ class Statblock(object):
         if self._parsedHitDice is None:
             self._parsedHitDice = self.parseHitPoints()
 
+        if self._parsedHitDice is None:
+            return self.monster.hit_dice
         return str(self._parsedHitDice[0])
 
     def parseHitPoints(self):
