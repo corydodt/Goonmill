@@ -43,7 +43,13 @@ if [ "$errorStatus" == "error" ]; then
 fi
 
 db=goonmill/srd35.db.gz
-echo ":: Uncompressing database $db"
-gzip -dc $db > ${db/.gz/}
+if [ ! -r goonmill/srd35.db ]; then
+    echo ":: Uncompressing database $db"
+    gzip -dc $db > ${db/.gz/}
+else
+    echo "** ${db/.gz/} already exists, not willing to overwrite it!"
+    echo ":: To restore it, type: gzip -dc $db > ${db/.gz/}"
+    echo ":: Caution: This will DESTROY any changes you made to the database."
+fi
 
 echo "Done."
