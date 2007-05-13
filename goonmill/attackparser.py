@@ -4,7 +4,7 @@ from simpleparse import parser, dispatchprocessor as disp, error
 from simpleparse.common import numbers, chartypes
 
 grammar = ( # {{{
-r'''# RPG-STYLE DICE EXPRESSIONS
+r'''# Attacks!
 <wsc> := [ \t]
 <ws> := wsc*
 <n> := int
