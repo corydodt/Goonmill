@@ -68,7 +68,7 @@ class Statblock(object):
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
-            self.overrides[k] = self.formatSaves(savesDict[k])
+            self.overrides[k] = str(savesDict[k])
 
         ## self.feats = self.parseFeats()
         ## self.skills = self.parseSkills()
@@ -120,24 +120,6 @@ class Statblock(object):
     def parseSkills(self):
         return parseSkills(self.monster.skills)
 
-    def formatSaves(self, sbs):
-        if sbs.other:
-            return '(%s)' % (sbs.other,)
-        else:
-            splat = ''
-            qual = ''
-
-            if sbs.splat:
-                splat = '*'
-
-            if sbs.qualifier:
-                qual = ' (%s)' % (sbs.qualifier,)
-
-            if sbs.bonus:
-                return '%+d%s%s' % (sbs.bonus, splat, qual)
-            else:
-                return '-%s%s' % (splat, qual)
-
     def parseSaves(self):
         return parseSaves(self.monster.saves)
 
@@ -146,18 +128,23 @@ class Statblock(object):
         return ', '.join([f.name for f in featList])
 
     def acFeats(self):
+        """List of feats that can appear next to AC"""
         return [f for f in self.feats if f.dbFeat.is_ac_feat]
 
     def speedFeats(self):
+        """List of feats that can appear next to movement"""
         return [f for f in self.feats if f.dbFeat.is_speed_feat]
 
     def specialActionFeats(self):
+        """List of feats that can appear next to special actions"""
         return [f for f in self.feats if f.dbFeat.is_special_action_feat]
 
     def attackOptionFeats(self):
+        """List of feats that can appear next to attack options"""
         return [f for f in self.feats if f.dbFeat.is_attack_option_feat]
 
     def rangedAttackFeats(self):
+        """List of feats that can appear next to ranged attacks""" 
         return [f for f in self.feats if f.dbFeat.is_ranged_attack_feat]
 
     def hitPoints(self):

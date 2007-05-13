@@ -59,6 +59,24 @@ class SaveStat(object):
             return "<SaveStat %s>" % (self.other,)
         return "<SaveStat %s=%s>" % (self.name, self.bonus)
 
+    def __str__(self):
+        if self.other:
+            return '(%s)' % (self.other,)
+        else:
+            splat = ''
+            qual = ''
+
+            if self.splat:
+                splat = '*'
+
+            if self.qualifier:
+                qual = ' (%s)' % (self.qualifier,)
+
+            if self.bonus:
+                return '%+d%s%s' % (self.bonus, splat, qual)
+            else:
+                return '-%s%s' % (splat, qual)
+
 class Processor(disp.DispatchProcessor):
     def other(self, (t,s1,s2,sub), buffer):
         fort = SaveStat('fort')
