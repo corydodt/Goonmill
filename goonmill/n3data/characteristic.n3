@@ -1,0 +1,229 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+
+:Characteristic a rdfs:Class.
+
+:label a rdf:Property; rdfs:domain :Characteristic.
+:description a rdf:Property; rdfs:domain :Characteristic.
+
+
+:Save rdfs:subClassOf :Characteristic.
+
+:fort a :Save; :label "Fortitude" .
+:ref a :Save; :label "Reflex" .
+:will a :Save; :label "Will" .
+
+
+:Family rdfs:subClassOf :Characteristic.
+:features a rdf:Property; rdfs:domain :Family.
+:traits a rdf:Property; rdfs:domain :Family.
+
+
+:Sense rdfs:subClassOf :Characteristic.
+:darkvision a :Sense.
+:lowLightVision a :Sense; :label "Low-Light Vision" .
+:seeInDarkness
+    a :Sense;
+    :label "See in Darkness";
+    :description "Can see perfectly in darkness of any kind, even that created by a deeper darkness spell.";
+.
+:incorporealSenses
+    a :Sense;
+    :label "Senses like an incorporeal being";
+    :description "Nonvisual senses, such as scent and blindsight, are either ineffective or only partly effective with regard to this creature.  This creature has an innate sense of direction and can move at full speed even when it cannot see.";
+.
+
+
+
+:Alignment rdfs:subClassOf :Characteristic.
+
+:lawfulGood a :Alignment.
+:neutralGood a :Alignment.
+:chaoticGood a :Alignment.
+:lawfulNeutral a :Alignment.
+:neutral a :Alignment.
+:chaoticNeutral a :Alignment.
+:lawfulEvil a :Alignment.
+:neutralEvil a :Alignment.
+:chaoticEvil a :Alignment.
+
+
+:AttackEffect rdfs:subClassOf :Characteristic.
+
+:mindAffecting a :AttackEffect.
+:poison a :AttackEffect.
+:sleep a :AttackEffect.
+:paralysis a :AttackEffect.
+:polymorph a :AttackEffect.
+:stunning a :AttackEffect.
+:disease a :AttackEffect.
+:deathEffects a :AttackEffect.
+:necromancy a :AttackEffect.
+:electricity a :AttackEffect.
+:petrification a :AttackEffect.
+:nonMagical a :AttackEffect.
+:piercing a :AttackEffect.
+:slashing a :AttackEffect.
+:areaEffect a :AttackEffect.
+
+
+:SpecialAbility rdfs:subClassOf :Characteristic.
+:telepathy a :SpecialAbility.
+:protectiveAura a :SpecialAbility;
+    :label "Protective Aura";
+    :description "Against attacks made or effects created by evil creatures, this ability provides a +4 deflection bonus to AC and a +4 resistance bonus on saving throws to anyone within 20 feet of the creature. Otherwise, it functions as a magic circle against evil effect and a lesser globe of invulnerability, both with a radius of 20 feet (caster level equals creature’s HD). (The defensive benefits from the circle are not included in an creature’s statistics block.)";
+.
+:tongues a :SpecialAbility;
+    :description "Creature can speak with any creature that has a language, as though using a tongues spell (caster level equal to creature’s Hit Dice). This ability is always active.";
+.
+:summon a :SpecialAbility;
+    :description "Creature has the ability to summon others of its kind (the success chance and type of creature summoned are noted in each monster description). Creature will often be reluctant to use this power until in obvious peril or extreme circumstances.";
+.
+:breatheUnderwater a :SpecialAbility;
+    :label "Breathe Underwater";
+.
+:auraOfMenace a :SpecialAbility;
+    :label "Aura of Menace";
+    :description "A righteous aura surrounds a creature of this type that fights or gets angry.  Any hostile creature within a 20-foot radius of a the creature must succeed on a Will save to resist its effects. The save DC varies with the type of creature, is Charisma-based, and includes a +2 racial bonus. Those who fail take a -2 penalty on attacks, AC, and saves for 24 hours or until they successfully hit the creature that generated the aura. A creature that has resisted or broken the effect cannot be affected again by the same archon’s aura for 24 hours.";
+.
+:magicCircleAgainstEvil a :SpecialAbility;
+    :label "Magic Circle against Evil";
+    :description "A magic circle against evil effect always surrounds a creature of this type (caster level equals the creature’s Hit Dice). (The defensive benefits from the circle are not included in creature’s statistics block.)";
+.
+:teleport a :SpecialAbility .
+:completelySilent a :SpecialAbility;
+    :label "Completely Silent";
+    :description "Moves silently and cannot be heard with Listen checks if it doesn't wish to be";
+.
+:distraction a :SpecialAbility;
+    :description "Any living creature vulnerable to this creature’s damage that begins its turn with the creature in its square is nauseated for 1 round; a Fortitude save (DC 10 + ½ swarm’s HD + creature’s Con modifier; the exact DC is given in the creature’s description) negates the effect. Spellcasting or concentrating on spells within the area of the creature requires a Concentration check (DC 20 + spell level). Using skills that involve patience and concentration requires a DC 20 Concentration check.";
+.
+:fortitudeImmunity a :SpecialAbility;
+    :label "Immune to effects that allow a Fort save";
+    :description "Immunity to any effect that requires a Fortitude save (unless the effect also works on objects, or is harmless).";
+.
+
+
+
+:Language rdfs:subClassOf :Characteristic.
+:celestial a :Language.
+:draconic a :Language.
+:abyssal a :Language.
+:infernal a :Language.
+
+
+:SpecialQuality rdfs:subClassOf :Characteristic.
+:quasiSoulless a :SpecialQuality;
+    :description "Does not have a dual nature—either it has no soul or its soul and body form one unit.  When this creature is slain, no soul is set loose. Spells that restore souls to their bodies, such as raise dead, reincarnate, and resurrection, don’t work on this creature. It takes a different magical effect, such as limited wish, wish, miracle, or true resurrection, to restore it to life.";
+.
+:soulless a :SpecialQuality; :description "Cannot be raised or resurrected."; .
+:aligned a :SpecialQuality;
+    :description "For some given alignment aspect (example: evil, lawful), any effect that depends on alignment affects a creature with this subtype as if the creature has that alignment, no matter what its alignment actually is. The creature also suffers effects according to its actual alignment. A creature with the aligned quality overcomes damage reduction as if its natural weapons and any weapons it wields were aligned to that alignment.";
+.
+
+
+
+:Proficiency rdfs:subClassOf :Characteristic.
+:martialWeapons a :Proficiency; :label "Martial Weapons" .
+:simpleWeapons a :Proficiency; :label "Simple Weapons".
+:naturalWeapons a :Proficiency; :label "Natural Weapons".
+:armorNone a :Proficiency; :label "Proficient with no armor".
+:weaponsAsDescribed a :Proficiency;
+    :label "Proficient with whatever weapons are in its description";
+    :description "If generally humanoid in form, proficient with whatever weapons are in its description";
+.
+:armorAsDescribed a :Proficiency;
+    :label "Proficient with whatever armor it is described as wearing";
+    :description "Proficient with whatever type of armor (light, medium, or heavy) that it is described as wearing, as well as all lighter types.  This creature, when not indicated as wearing armor is not proficient with armor. This creature is proficient with shields if it is proficient with any form of armor.";
+.
+
+
+
+:Vitality rdfs:subClassOf :Characteristic.
+:noEat a :Vitality.
+:noBreathe a :Vitality.
+:noSleep a :Vitality.
+
+
+
+:CombatMechanic rdfs:subClassOf :Characteristic.
+:noCriticalHits a :CombatMechanic;
+    :label "Not subject to critical hits"
+.
+:noFlanking a :CombatMechanic;
+    :label "Not subject to flanking";
+.
+:noTiring a :CombatMechanic;
+    :label "Not subject to exhaustion or fatigue";
+.
+:noNonLethalDamage a :CombatMechanic;
+    :label "Not subject to non-lethal damage";
+.
+:noAbilityDamage a :CombatMechanic;
+    :label "Not subject to ability damage";
+.
+:noAbilityDrain a :CombatMechanic;
+    :label "Not subject to ability drain";
+.
+:noEnergyDrain a :CombatMechanic;
+    :label "Not subject to energy drain";
+.
+:noDeathFromMassiveDamage a :CombatMechanic;
+    :label "No Death from Massive Damage";
+    :decription "Not subject to death from massive damage";
+.
+:destroyedAtZero a :CombatMechanic;
+    :label "Destroyed at 0 hit points";
+    :description "When reduced to 0 hit points or less, it is immediately destroyed.";
+.
+:weaponFinesseAlways a :CombatMechanic;
+    :label "Weapon Finesse for All Attacks";
+    :description "Can only use Dex modifier for attack rolls, never Str.";
+.
+:incorporealDefense a :CombatMechanic;
+    :label "Incorporeal Defense";
+    :description "This creature has no physical body. It can be harmed only by other incorporeal creatures, magic weapons or creatures that strike as magic weapons, and spells, spell-like abilities, or supernatural abilities. It is immune to all nonmagical attack forms. Even when hit by spells or magic weapons, it has a 50% chance to ignore any damage from a corporeal source (except for positive energy, negative energy, force effects such as magic missile, or attacks made with ghost touch weapons).";
+.
+:charismaDeflection a :CombatMechanic;
+    :label "Deflection Bonus from Charisma";
+    :description "This creature has no natural armor bonus but has a deflection bonus equal to its Charisma bonus (always at least +1, even if the creature’s Charisma score does not normally provide a bonus).";
+.
+:incorporealAttacks a :CombatMechanic;
+    :label "Incorporeal Attacks";
+    :description "This creature’s attacks pass through (ignore) natural armor, armor, and shields, although deflection bonuses and force effects (such as mage armor) work normally against it.  This creature can pass through and operate in water as easily as it does in air. Incorporeal creatures cannot fall or take falling damage. Incorporeal creatures cannot make trip or grapple attacks, nor can it be tripped or grappled.";
+.
+:noTrip a :CombatMechanic;
+    :label "Cannot be tripped";
+.
+:noGrapple a :CombatMechanic;
+    :label "Cannot be grappled";
+.
+:noBullRush a :CombatMechanic;
+    :label "Cannot be bull rushed";
+.
+:cannotGrapple a :CombatMechanic;
+    :label "Cannot grapple an opponent";
+.
+:diffuseTarget a :CombatMechanic;
+    :label "Composed of parts that cannot be targetted individually.";
+    :description "This creature is immune to any spell or effect that targets a specific number of creatures (including single-target spells such as disintegrate), with the exception of mind-affecting effects (charms, compulsions, phantasms, patterns, and morale effects) if these would otherwise affect it.";
+.
+:swarmDamage a :CombatMechanic;
+    :label "Automatic damage as a swarm";
+    :description "Creatures with the swarm subtype don’t make standard melee attacks. Instead, they deal automatic damage to any creature whose space they occupy at the end of their move, with no attack roll needed. Swarm attacks are not subject to a miss chance for concealment or cover. A swarm’s statistics block has “swarm” in the Attack and Full Attack entries, with no attack bonus given. The amount of damage a swarm deals is based on its Hit Dice, as shown in the table. [table]";
+.
+:cannotMakeAttackOfOpportunity a :CombatMechanic;
+    :label "Cannot make any attacks of opportunity";
+.
+
+
+:MoveMechanic rdfs:subClassOf :Characteristic.
+:fly a :MoveMechanic.
+:swim a :MoveMechanic.
+:burrow a :MoveMechanic.
+:incorporealMovement a :MoveMechanic;
+    :label "Movement as an incorporeal creature";
+    :description "This creature can enter or pass through solid objects, but must remain adjacent to the object’s exterior, and so cannot pass entirely through an object whose space is larger than its own. It can sense the presence of creatures or objects within a square adjacent to its current location, but enemies have total concealment (50% miss chance) from an incorporeal creature that is inside an object. In order to see farther from the object it is in and attack normally, the incorporeal creature must emerge. An incorporeal creature inside an object has total cover, but when it attacks a creature outside the object it only has cover, so a creature outside with a readied action could strike at it as it attacks. An incorporeal creature cannot pass through a force effect.";
+.
+

@@ -1,0 +1,478 @@
+
+@prefix : <http://thesoftworld.com/2007/characteristic.n3#>.
+@prefix die: <http://thesoftworld.com/2007/dice.n3#>.
+
+:aberration
+    a :Family;
+    :features [ 
+       :hitDice die:d8;
+       :babTable :cleric;
+       :goodSaves :will;
+       :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses [ :darkvision [ :range "60ft." ]];
+        :proficiencies :naturalWeapons, :armorAsDescribed;
+    ];
+.
+
+:animal
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+        :goodSaves :fort, :ref;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :ability [ :int [ :max 2 ]];
+        :senses :low_light_vision;
+        :alignment :neutral;
+        :treasure [];
+        :proficiencies :naturalWeapons, :armorNone;
+        :additional "noncombative animals -5 to attack, 1/2 str bonus to dam";
+    ];
+.
+
+:construct
+    a :Family;
+    :features [
+        :hitDice die:d10;
+        :babTable :cleric;
+        :goodSaves [];
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :ability [ :con [ :equal 0 ]];
+        :senses [
+            :lowLightVision [];
+            :darkvision [ :range "60ft." ];
+        ];
+        :immunities :mindAffecting, :poison, :sleep, :paralysis, :stunning, 
+                    :disease, :deathEffects, :necromancy;
+        :noAbilityDamage [];
+        :noAbilityDrain [];
+        :noEnergyDrain [];
+        :noNonLethalDamage [];
+        :noCriticalHits [];
+        :noTiring [];
+        :noDeathFromMassiveDamage [];
+        :destroyedAtZero [];
+        :soulless [];
+        :proficiencies :naturalWeapons, :armorNone, :weaponsAsDescribed;
+        :vitalities :noEat, :noSleep, :noBreathe;
+        :fortitudeImmunity [];
+        :additional 
+            "Cannot heal damage on their own, but often can be repaired by exposing them to a certain kind of effect (see the creature’s description for details) or through the use of the Craft Construct feat. A construct with the fast healing special quality still benefits from that quality.", 
+            "Because its body is a mass of unliving matter, a construct is hard to destroy. It gains bonus hit points based on size, as shown on the table. [table]"
+        ;
+    ];
+.
+
+:dragon
+    a :Family;
+    :features [
+        :hitDice die:d10;
+        :babTable :fighter;
+        :goodSaves :fort, :ref, :will;
+        :skillPoints "(int+6)*hitDice";
+    ];
+    :traits [
+        :senses [
+            :darkvision [ :range "60ft." ];
+            :lowLightVision [];
+        ];
+        :immunities :sleep, :paralysis;
+        :proficiencies :naturalWeapons, :weaponsAsDescribed, :armorNone;
+        :additional "In human form, proficient with simple weapons.";
+    ];
+.
+
+:elemental
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+##         :goodSaves [
+##             { :elemental^:monster :subType :air => :ref };
+##             { :elemental^:monster :subType :fire => :ref };
+##             { :elemental^:monster :subType :earth => :fort };
+##             { :elemental^:monster :subType :water => :fort };
+##         ];
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses [ :darkvision [ :range "60ft."] ];
+        :immunities :poison, :sleep, :paralysis, :stunning;
+        :noCriticalHits [];
+        :noFlanking [];
+        :quasiSoulless [];
+        :proficiencies :naturalWeapons, :weaponsAsDescribed, :armorAsDescribed;
+        :vitalities :noEat, :noSleep, :noBreathe;
+    ];
+.
+
+:fey
+    a :Family;
+    :features [
+        :hitDice die:d6;
+        :babTable :wizard;
+        :goodSaves :ref, :will;
+        :skillPoints "(int+6)*hitDice";
+    ];
+    :traits [
+        :senses :lowLightVision;
+        :proficiencies :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+    ];
+.
+
+:giant
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+        :goodSaves :fort;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses :lowLightVision;
+        :proficiencies :simpleWeapons, :martialWeapons, :naturalWeapons, :armorAsDescribed;
+    ];
+.
+
+:humanoid
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+        :goodSaves :ref;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :proficiencies :simpleWeapons, :armorAsDescribed;
+        :additional "Proficiencies may be determined by character class.";
+    ];
+.
+
+:magical_beast
+    a :Family;
+    :label "Magical Beast";
+    :features [
+        :hitDice die:d10;
+        :babTable :fighter;
+        :goodSaves :fort, :ref;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses [
+            :darkvision [ :range "60ft," ];
+            :lowLightVision [];
+        ];
+        :proficiencies :naturalWeapons, :armorNone;
+    ];
+.
+
+:monstrous_humanoid
+    a :Family;
+    :label "Monstrous Humanoid";
+    :features [
+        :hitDice die:d8;
+        :babTable :fighter;
+        :goodSaves :ref, :will;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses [ :darkvision [ :range "60ft."] ];
+        :proficiencies :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+    ];
+.
+
+:ooze
+    a :Family;
+    :features [
+        :hitDice die:d10;
+        :babTable :cleric;
+        :goodSaves [];
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :ability [ :int [ :equal 0 ]];
+        :immunities :poison, :sleep, :paralysis, :polymorph, :stunning, :mindAffecting;
+        :noCriticalHits [];
+        :noFlanking [];
+        :proficiencies :naturalWeapons, :armorNone;
+        :vitalities :noSleep;
+        :additional 
+            "Blind (but have the blindsight special quality), with immunity to gaze attacks, visual effects, illusions, and other attack forms that rely on sight.", 
+            "Some oozes have the ability to deal acid damage to objects. In such a case, the amount of damage is equal to 10 + ½ ooze’s HD + ooze’s Con modifier per full round of contact."
+        ;
+    ];
+.
+
+:outsider
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :fighter;
+        :goodSaves :fort, :ref, :will;
+        :skillPoints "(int+8)*hitDice";
+    ];
+    :traits [
+        :senses [ :darkvision [ :range "60ft." ]];
+        :quasiSoulless [];
+        # unless native
+        :proficiencies :simpleWeapons, :martialWeapons, :weaponsAsDescribed, :armorAsDescribed;
+        :vitalities :noEat, :noSleep;
+        # unless native
+    ];
+.
+
+:plant
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+        :goodSaves :fort;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :senses :lowLightVision;
+        :immunities :mindAffecting, :poison, :sleep, :paralysis, :polymorph, :stunning;
+        :noCriticalHits [];
+        :proficiencies :naturalWeapons, :armorNone;
+        :vitalities :noSleep;
+    ];
+.
+
+:undead
+    a :Family;
+    :features [
+        :hitDice die:d12;
+        :babTable :wizard;
+        :goodSaves :will;
+        :skillPoints "(int+4)*hitDice";
+    ];
+    :traits [
+        :ability [ :con [ :equal 0 ]];
+        :senses [ :darkvision [ :range "60ft." ]];
+        :immunities :mindAffecting, :poison, :sleep, :paralysis, :stunning, :disease, :deathEffects;
+        :noCriticalHits [];
+        :noNonLethalDamage [];
+        :noAbilityDrain [];
+        :noAbilityDamage [];
+        :noEnergyDrain [];
+        :noTiring [];
+        :noDeathFromMassiveDamage [];
+        :destroyedAtZero [];
+        :soulless [];
+        :fortitudeImmunity [];
+        :proficiencies :naturalWeapons, :weaponsAsDescribed, :simpleWeapons, :armorAsDescribed;
+        :vitalities :noBreathe, :noEat, :noSleep;
+        :additional "Cannot heal damage on its own if it has no Intelligence score, although it can be healed. Negative energy (such as an inflict spell) can heal undead creatures. The fast healing special quality works regardless of the creature’s Intelligence score.";
+    ];
+.
+
+:vermin
+    a :Family;
+    :features [
+        :hitDice die:d8;
+        :babTable :cleric;
+        :goodSaves :fort;
+        :skillPoints "(int+2)*hitDice";
+    ];
+    :traits [
+        :ability [ :int [ :equal 0 ]];
+        :senses [ :darkvision [ :range "60ft." ]];
+        :proficients :naturalWeapons, :armorNone;
+        :immunities :mindAffecting;
+    ];
+.
+
+:air
+    a :Family;
+    :traits [
+        :fly :perfectFlight;
+    ];
+.
+
+:angel
+    a :Family;
+    :traits [
+        :senses [ :darkvision [ :range "60ft." ]];
+        :immunities :acid, :cold, :petrification;
+        :resistances [ :electricity 10 ], [ :fire 10 ];
+        :saveBonuses [ :poison +4 ];
+        :protectiveAura [];
+        :tongues [];
+    ];
+.
+
+:aquatic
+    a :Family;
+    :traits [
+        :swim [];
+        :breatheUnderwater [];
+        # cannot breathe air unless amphibious
+    ];
+.
+
+:archon
+    a :Family;
+    :traits [
+        :senses [ :darkvision [ :range "60ft." ]];
+        :auraOfMenace [];
+        :immunities :electricity, :petrification;
+        :saveBonuses [ :poison +4 ];
+        :magicCircleAgainstEvil [];
+        :teleport [];
+        :tongues [];
+    ];
+.
+
+:augmented
+    a :Family;
+    # combined with some other type or subtype, has the traits of current type and features of original type
+.
+
+:chaotic
+    a :Family;
+    :traits [
+        :aligned :chaotic;
+    ];
+.
+
+:cold
+    a :Family;
+    :traits [
+        :immunities :cold;
+        :vulnerabilities :fire;
+    ];
+.
+
+:demon
+    a :Family;
+    :traits [
+        :immunities :electricity, :poison;
+        :resistances [ :acid 10 ], [ :cold 10 ], [ :fire 10 ];
+        :summon [];
+        :telepathy [];
+        :languages :abyssal, :celestial, :draconic;
+    ];
+.
+
+:devil
+    a :Family;
+    :traits [
+        :immunities :fire, :poison;
+        :resistances [ :acid 10 ], [ :cold 10 ];
+        :senses :seeInDarkness;
+        :summon [];
+        :telepathy [];
+        :languages :infernal, :celestial, :draconic;
+    ];
+.
+
+:earth
+    a :Family;
+    :traits [
+        :burrow [];
+    ];
+.
+
+:evil
+    a :Family;
+    :traits [
+        :aligned :evil;
+    ];
+.
+
+:extraplanar
+    a :Family;
+    :traits [
+    ];
+.
+
+:fire
+    a :Family;
+    :traits [
+        :immunities :fire;
+        :vulnerabilities :cold;
+    ];
+.
+
+:goblinoid
+    a :Family;
+.
+
+:good
+    a :Family;
+    :traits [
+        :aligned :good;
+    ];
+.
+
+:incorporeal
+    a :Family;
+    :traits [
+        :immunities :nonMagical;
+        :ability [ :str [ :equal 0 ]];
+        :weaponFinesseAlways [];
+        :incorporealSenses [];
+        :incorporealDefense [];
+        :charismaDeflection [];
+        :incorporealMovement [];
+        :additional 
+            "Although it is not a magical attack, holy water can affect incorporeal undead, but a hit with holy water has a 50% chance of not affecting an incorporeal creature.",
+            "It cannot take any physical action that would move or manipulate an opponent or its equipment, nor is it subject to such actions. Incorporeal creatures have no weight and do not set off traps that are triggered by weight."
+        ;
+    ]
+.
+
+:lawful
+    a :Family;
+    :traits [
+        :aligned :lawful;
+    ];
+.
+
+:native a :Family.
+
+:reptilian a :Family.
+
+:shapechanger
+    a :Family;
+    :traits [
+        :proficiencies :naturalWeapons, :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+    ];
+.
+
+:swarm
+    a :Family;
+    :traits [
+        :noCriticalHits [];
+        :noFlanking [];
+        # A swarm made up of Tiny creatures takes half damage from slashing and piercing weapons. A swarm composed of Fine or Diminutive creatures is immune to all weapon damage.
+        #   ---> :resistances [ :piercing "50%" ], [ :slashing "50%" ]
+        :destroyedAtZero [];
+        :noTrip [];
+        :noGrapple [];
+        :noBullRush [];
+        :diffuseTarget [];
+        :cannotGrapple [];
+        :cannotMakeAttackOfOpportunity [];
+        :vulnerabilities :areaEffect;
+        :distraction [];
+        :additional "Swarms made up of Diminutive or Fine creatures are susceptible to high winds such as that created by a gust of wind spell. For purposes of determining the effects of wind on a swarm, treat the swarm as a creature of the same size as its constituent creatures. A swarm rendered unconscious by means of nonlethal damage becomes disorganized and dispersed, and does not reform until its hit points exceed its nonlethal damage.";
+    ];
+.
+
+:water
+    a :Family;
+    :traits [
+        :swim [];
+        :breatheUnderwater [];
+    ];
+.
+
+
+# vim:si
