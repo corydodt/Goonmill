@@ -97,11 +97,6 @@
     <p class="TODO"><strong>Spellbook</strong> All spells prepared plus XX</p>
   </div>
   
-  <!-- color block -->
-  <div class="statblock">
-    <p class="TODO"><strong>Hook</strong> hook</p>
-  </div>
-  
   <!-- ability detail drilldown block -->
   <div class="statblock" n:render='fullAbilities' />
 
