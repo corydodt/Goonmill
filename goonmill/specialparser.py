@@ -46,16 +46,18 @@ blindSight := c'blindsight', !, range
 telepathy := c'telepathy', !, range
 tremorsense := c'tremorsense', !, range
 lowLightVision := c'low-light vision'
-spells := c'spells (caster level ', n, l+, ')'
+spells := c'spells (caster level ', n, l*, ')'
 scent := c'scent'
 keenSenses := c'keen senses'
+alternateForm := c'alternate form'
+waterBreathing := c'water breathing'
 
 # catcher for stuff like "immune to foo, bar, and zam"
 illegalAnd := 'and', ws, !, 'DIE'
 
 unknownQuality := (qualityChar/parenExpression)*
 
->quality< := illegalAnd/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
+>quality< := illegalAnd/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
 
 empty := '-'
 
@@ -75,8 +77,21 @@ class Quality(object):
 
 
 class UnknownQuality(Quality):
+    frequency = {}
+    def __init__(self, s):
+        s = s.lower()
+        self.s = s
+        fq = self.frequency.get(s)
+        if fq is None:
+            self.frequency[s] = 1
+        else:
+            self.frequency[s] = fq + 1
+
     def __repr__(self):
         return '<UQ %s>' % (self.s,)
+
+class AlternateForm(Quality):
+    repr = "AF"
 
 class KeenSenses(Quality):
     repr = "KS"
@@ -126,12 +141,25 @@ class Tremorsense(Quality):
 class LowLightVision(Quality):
     repr = "LLV"
 
+class WaterBreathing(Quality):
+    repr = "WB"
+
 
 class Processor(disp.DispatchProcessor):
     def specialQualityStat(self, (t,s1,s2,sub), buffer):
         self.specialQualities = []
         disp.dispatchList(self, sub, buffer)
         return self.specialQualities
+
+    def waterBreathing(self, (t,s1,s2,sub), buffer):
+        q = WaterBreathing()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
+
+    def alternateForm(self, (t,s1,s2,sub), buffer):
+        q = AlternateForm()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
 
     def keenSenses(self, (t,s1,s2,sub), buffer):
         q = KeenSenses()
@@ -217,8 +245,7 @@ class Processor(disp.DispatchProcessor):
         pass
 
     def unknownQuality(self, (t,s1,s2,sub), buffer):
-        q = UnknownQuality()
-        q.s = buffer[s1:s2]
+        q = UnknownQuality(buffer[s1:s2])
         self.specialQualities.append(q)
 
 
@@ -229,11 +256,21 @@ def parseSpecialQualities(s):
     return children
 
 
+def printFrequenciesOfUnknowns():
+    items = UnknownQuality.frequency.items()
+    for n, (k, freq) in enumerate(items):
+        items[n] = freq, k
+    import pprint
+    pprint.pprint(sorted(items))
+
+
 if __name__ == '__main__': # {{{
     tests = query._allSQStats()
     for id, test in tests:
         #print id, test
         suc, children, next = specialQualityParser.parse(test, processor=Processor())
-        print children
+        #print children
         assert next==len(test),  test[:next] + '\n--\n' + test[next:]
+
+    #printFrequenciesOfUnknowns()
 # }}}
