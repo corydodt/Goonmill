@@ -196,6 +196,7 @@
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
+        :senses :blind, :blindsight;
         :ability [ :int [ :equal 0 ]];
         :immunities :poison, :sleep, :paralysis, :polymorph, :stunning, :mindAffecting;
         :noCriticalHits [];
@@ -203,7 +204,6 @@
         :proficiencies :naturalWeapons, :armorNone;
         :vitalities :noSleep;
         :additional 
-            "Blind (but have the blindsight special quality), with immunity to gaze attacks, visual effects, illusions, and other attack forms that rely on sight.", 
             "Some oozes have the ability to deal acid damage to objects. In such a case, the amount of damage is equal to 10 + ½ ooze’s HD + ooze’s Con modifier per full round of contact."
         ;
     ];

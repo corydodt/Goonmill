@@ -33,6 +33,11 @@
     :label "Senses like an incorporeal being";
     :description "Nonvisual senses, such as scent and blindsight, are either ineffective or only partly effective with regard to this creature.  This creature has an innate sense of direction and can move at full speed even when it cannot see.";
 .
+:blind
+    a :Sense;
+    :description "Cannot see, but has immunity to gaze attacks, visual effects, illusions, and other attack forms that rely on sight.";
+.
+:blindsight a :Sense .
 
 
 
