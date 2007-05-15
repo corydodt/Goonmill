@@ -16,8 +16,6 @@
 
 
 :Family rdfs:subClassOf :Characteristic.
-:features a rdf:Property; rdfs:domain :Family.
-:traits a rdf:Property; rdfs:domain :Family.
 
 
 :Sense rdfs:subClassOf :Characteristic.

@@ -1,9 +1,9 @@
 
-@prefix : <http://thesoftworld.com/2007/characteristic.n3#>.
+@prefix c: <http://thesoftworld.com/2007/characteristic.n3#>.
 @prefix die: <http://thesoftworld.com/2007/dice.n3#>.
 
 :aberration
-    a :Family;
+    a c:Family;
     :features [ 
        :hitDice die:d8;
        :babTable :cleric;
@@ -17,7 +17,7 @@
 .
 
 :animal
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -35,7 +35,7 @@
 .
 
 :construct
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d10;
         :babTable :cleric;
@@ -70,7 +70,7 @@
 .
 
 :dragon
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d10;
         :babTable :fighter;
@@ -89,7 +89,7 @@
 .
 
 :elemental
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -113,7 +113,7 @@
 .
 
 :fey
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d6;
         :babTable :wizard;
@@ -127,7 +127,7 @@
 .
 
 :giant
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -141,7 +141,7 @@
 .
 
 :humanoid
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -155,7 +155,7 @@
 .
 
 :magical_beast
-    a :Family;
+    a c:Family;
     :label "Magical Beast";
     :features [
         :hitDice die:d10;
@@ -173,7 +173,7 @@
 .
 
 :monstrous_humanoid
-    a :Family;
+    a c:Family;
     :label "Monstrous Humanoid";
     :features [
         :hitDice die:d8;
@@ -188,7 +188,7 @@
 .
 
 :ooze
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d10;
         :babTable :cleric;
@@ -210,7 +210,7 @@
 .
 
 :outsider
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :fighter;
@@ -228,7 +228,7 @@
 .
 
 :plant
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -245,7 +245,7 @@
 .
 
 :undead
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d12;
         :babTable :wizard;
@@ -273,7 +273,7 @@
 .
 
 :vermin
-    a :Family;
+    a c:Family;
     :features [
         :hitDice die:d8;
         :babTable :cleric;
@@ -289,14 +289,14 @@
 .
 
 :air
-    a :Family;
+    a c:Family;
     :traits [
         :fly :perfectFlight;
     ];
 .
 
 :angel
-    a :Family;
+    a c:Family;
     :traits [
         :senses [ :darkvision [ :range "60ft." ]];
         :immunities :acid, :cold, :petrification;
@@ -308,7 +308,7 @@
 .
 
 :aquatic
-    a :Family;
+    a c:Family;
     :traits [
         :swim [];
         :breatheUnderwater [];
@@ -317,7 +317,7 @@
 .
 
 :archon
-    a :Family;
+    a c:Family;
     :traits [
         :senses [ :darkvision [ :range "60ft." ]];
         :auraOfMenace [];
@@ -330,19 +330,19 @@
 .
 
 :augmented
-    a :Family;
+    a c:Family;
     # combined with some other type or subtype, has the traits of current type and features of original type
 .
 
 :chaotic
-    a :Family;
+    a c:Family;
     :traits [
         :aligned :chaotic;
     ];
 .
 
 :cold
-    a :Family;
+    a c:Family;
     :traits [
         :immunities :cold;
         :vulnerabilities :fire;
@@ -350,7 +350,7 @@
 .
 
 :demon
-    a :Family;
+    a c:Family;
     :traits [
         :immunities :electricity, :poison;
         :resistances [ :acid 10 ], [ :cold 10 ], [ :fire 10 ];
@@ -361,7 +361,7 @@
 .
 
 :devil
-    a :Family;
+    a c:Family;
     :traits [
         :immunities :fire, :poison;
         :resistances [ :acid 10 ], [ :cold 10 ];
@@ -373,27 +373,27 @@
 .
 
 :earth
-    a :Family;
+    a c:Family;
     :traits [
         :burrow [];
     ];
 .
 
 :evil
-    a :Family;
+    a c:Family;
     :traits [
         :aligned :evil;
     ];
 .
 
 :extraplanar
-    a :Family;
+    a c:Family;
     :traits [
     ];
 .
 
 :fire
-    a :Family;
+    a c:Family;
     :traits [
         :immunities :fire;
         :vulnerabilities :cold;
@@ -401,18 +401,18 @@
 .
 
 :goblinoid
-    a :Family;
+    a c:Family;
 .
 
 :good
-    a :Family;
+    a c:Family;
     :traits [
         :aligned :good;
     ];
 .
 
 :incorporeal
-    a :Family;
+    a c:Family;
     :traits [
         :immunities :nonMagical;
         :ability [ :str [ :equal 0 ]];
@@ -429,25 +429,25 @@
 .
 
 :lawful
-    a :Family;
+    a c:Family;
     :traits [
         :aligned :lawful;
     ];
 .
 
-:native a :Family.
+:native a c:Family.
 
-:reptilian a :Family.
+:reptilian a c:Family.
 
 :shapechanger
-    a :Family;
+    a c:Family;
     :traits [
         :proficiencies :naturalWeapons, :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
     ];
 .
 
 :swarm
-    a :Family;
+    a c:Family;
     :traits [
         :noCriticalHits [];
         :noFlanking [];
@@ -467,7 +467,7 @@
 .
 
 :water
-    a :Family;
+    a c:Family;
     :traits [
         :swim [];
         :breatheUnderwater [];
