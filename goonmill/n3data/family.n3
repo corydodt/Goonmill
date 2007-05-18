@@ -8,7 +8,7 @@
     a c:Family;
     :features [ 
        :hitDice die:d8;
-       :babTable pcclass:cleric;  # try pcclass:cleric!babTable maybe
+       :babTable pcclass:cleric!:babTable;
        :goodSaves c:will;
        :skillPoints "(int+2)*hitDice";
     ];
@@ -22,7 +22,7 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves c:fort, c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -40,7 +40,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves [];
         :skillPoints "(int+2)*hitDice";
     ];
@@ -75,7 +75,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable pcclass:fighter;
+        :babTable pcclass:fighter!:babTable;
         :goodSaves c:fort, c:ref, c:will;
         :skillPoints "(int+6)*hitDice";
     ];
@@ -94,7 +94,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
 ##         :goodSaves [
 ##             { :elemental^:monster :subType :air => c:ref };
 ##             { :elemental^:monster :subType :fire => c:ref };
@@ -118,7 +118,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d6;
-        :babTable pcclass:wizard;
+        :babTable pcclass:wizard!:babTable;
         :goodSaves c:ref, c:will;
         :skillPoints "(int+6)*hitDice";
     ];
@@ -132,7 +132,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -146,7 +146,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -161,7 +161,7 @@ c:construct
     c:label "Magical Beast";
     :features [
         :hitDice die:d10;
-        :babTable pcclass:fighter;
+        :babTable pcclass:fighter!:babTable;
         :goodSaves c:fort, c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -179,7 +179,7 @@ c:construct
     c:label "Monstrous Humanoid";
     :features [
         :hitDice die:d8;
-        :babTable pcclass:fighter;
+        :babTable pcclass:fighter!:babTable;
         :goodSaves c:ref, c:will;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -193,7 +193,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves [];
         :skillPoints "(int+2)*hitDice";
     ];
@@ -215,7 +215,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:fighter;
+        :babTable pcclass:fighter!:babTable;
         :goodSaves c:fort, c:ref, c:will;
         :skillPoints "(int+8)*hitDice";
     ];
@@ -233,7 +233,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
@@ -250,7 +250,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d12;
-        :babTable pcclass:wizard;
+        :babTable pcclass:wizard!:babTable;
         :goodSaves c:will;
         :skillPoints "(int+4)*hitDice";
     ];
@@ -278,7 +278,7 @@ c:construct
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable pcclass:cleric;
+        :babTable pcclass:cleric!:babTable;
         :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
