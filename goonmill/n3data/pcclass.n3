@@ -5,15 +5,61 @@
 
 :PCClass rdfs:subClassOf c:Characteristic .
 
-:cleric a :PCClass .
-:fighter a :PCClass .
-:barbarian a :PCClass .
-:wizard a :PCClass .
-:sorcerer a :PCClass .
-:druid a :PCClass .
-:bard a :PCClass .
-:rogue a :PCClass .
-:monk a :PCClass .
-:paladin a :PCClass .
-:ranger a :PCClass .
+:barbarian a :PCClass;
+    :goodSaves c:fort;
+    :babTable :fighter!:babTable;
+.
 
+:bard a :PCClass;
+    :goodSaves c:ref, c:will;
+    :babTable :cleric!:babTable;
+.
+
+:cleric a :PCClass;
+    :goodSaves c:fort, c:will;
+    :babTable "+0","+1","+2","+3","+3","+4","+5","+6/+1","+6/+1","+7/+2","+8/+3","+9/+4","+9/+4","+10/+5","+11/+6/+1","+12/+7/+2","+12/+7/+2","+13/+8/+3","+14/+9/+4","+15/+10/+5";
+.
+
+
+:druid a :PCClass;
+    :goodSaves c:fort, c:will;
+    :babTable :cleric!:babTable;
+.
+
+:fighter a :PCClass;
+    :goodSaves c:fort;
+    :babTable "+1","+2","+3","+4","+5","+6/+1","+7/+2","+8/+3","+9/+4","+10/+5","+11/+6/+1","+12/+7/+2","+13/+8/+3","+14/+9/+4","+15/+10/+5","+16/+11/+6/+1","+17/+12/+7/+2","+18/+13/+8/+3","+19/+14/+9/+4","+20/+15/+10/+5";
+    ## :specialAbilityTable c:bonusFeat, c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat, [], c:bonusFeat
+.
+
+:monk a :PCClass;
+    :goodSaves c:fort, c:ref, c:will;
+    :babTable :cleric!:babTable;
+.
+
+:paladin a :PCClass;
+    :goodSaves c:fort;
+    :babTable :fighter!:babTable;
+.
+
+:ranger a :PCClass;
+    :goodSaves c:fort, c:ref;
+    :babTable :fighter!:babTable;
+.
+
+:rogue a :PCClass;
+    :goodSaves c:ref;
+    :babTable :cleric!:babTable;
+.
+
+:sorcerer a :PCClass;
+    :goodSaves c:will;
+    :babTable :wizard!:babTable;
+.
+
+:wizard a :PCClass;
+    :goodSaves c:will;
+    :babTable "+0","+1","+1","+2","+2","+3","+3","+4","+4","+5","+5","+6/+1","+6/+1","+7/+2","+7/+2","+8/+3","+8/+3","+9/+4","+9/+4","+10/+5";
+.
+
+# vi:si
