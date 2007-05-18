@@ -1,0 +1,19 @@
+
+@prefix :  <http://thesoftworld.com/2007/pcclass.n3#>.
+@prefix c: <http://thesoftworld.com/2007/characteristic.n3#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:PCClass rdfs:subClassOf c:Characteristic .
+
+:cleric a :PCClass .
+:fighter a :PCClass .
+:barbarian a :PCClass .
+:wizard a :PCClass .
+:sorcerer a :PCClass .
+:druid a :PCClass .
+:bard a :PCClass .
+:rogue a :PCClass .
+:monk a :PCClass .
+:paladin a :PCClass .
+:ranger a :PCClass .
+

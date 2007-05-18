@@ -2,18 +2,19 @@
 @prefix : <http://thesoftworld.com/2007/family.n3#>.
 @prefix c: <http://thesoftworld.com/2007/characteristic.n3#>.
 @prefix die: <http://thesoftworld.com/2007/dice.n3#>.
+@prefix pcclass: <http://thesoftworld.com/2007/pcclass.n3#>.
 
 :aberration
     a c:Family;
     :features [ 
        :hitDice die:d8;
-       :babTable :cleric;
-       :goodSaves :will;
+       :babTable pcclass:cleric;  # try pcclass:cleric!babTable maybe
+       :goodSaves c:will;
        :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses [ :darkvision [ :range "60ft." ]];
-        :proficiencies :naturalWeapons, :armorAsDescribed;
+        :senses [ c:darkvision [ :range "60ft." ]];
+        :proficiencies c:naturalWeapons, c:armorAsDescribed;
     ];
 .
 
@@ -21,48 +22,48 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
-        :goodSaves :fort, :ref;
+        :babTable pcclass:cleric;
+        :goodSaves c:fort, c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :ability [ :int [ :max 2 ]];
-        :senses :low_light_vision;
-        :alignment :neutral;
+        :ability [ c:int [ :max 2 ]];
+        :senses c:lowLightVision;
+        :alignment c:neutral;
         :treasure [];
-        :proficiencies :naturalWeapons, :armorNone;
+        :proficiencies c:naturalWeapons, c:armorNone;
         :additional "noncombative animals -5 to attack, 1/2 str bonus to dam";
     ];
 .
 
-:construct
+c:construct
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable :cleric;
+        :babTable pcclass:cleric;
         :goodSaves [];
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :ability [ :con [ :equal 0 ]];
+        :ability [ c:con [ :equal 0 ]];
         :senses [
-            :lowLightVision [];
-            :darkvision [ :range "60ft." ];
+            c:lowLightVision [];
+            c:darkvision [ :range "60ft." ];
         ];
-        :immunities :mindAffecting, :poison, :sleep, :paralysis, :stunning, 
-                    :disease, :deathEffects, :necromancy;
-        :noAbilityDamage [];
-        :noAbilityDrain [];
-        :noEnergyDrain [];
-        :noNonLethalDamage [];
-        :noCriticalHits [];
-        :noTiring [];
-        :noDeathFromMassiveDamage [];
-        :destroyedAtZero [];
-        :soulless [];
-        :proficiencies :naturalWeapons, :armorNone, :weaponsAsDescribed;
-        :vitalities :noEat, :noSleep, :noBreathe;
-        :fortitudeImmunity [];
+        :immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
+                    c:disease, c:deathEffects, c:necromancy;
+        c:noAbilityDamage [];
+        c:noAbilityDrain [];
+        c:noEnergyDrain [];
+        c:noNonLethalDamage [];
+        c:noCriticalHits [];
+        c:noTiring [];
+        c:noDeathFromMassiveDamage [];
+        c:destroyedAtZero [];
+        c:soulless [];
+        :proficiencies c:naturalWeapons, c:armorNone, c:weaponsAsDescribed;
+        :vitalities c:noEat, c:noSleep, c:noBreathe;
+        c:fortitudeImmunity [];
         :additional 
             "Cannot heal damage on their own, but often can be repaired by exposing them to a certain kind of effect (see the creature’s description for details) or through the use of the Craft Construct feat. A construct with the fast healing special quality still benefits from that quality.", 
             "Because its body is a mass of unliving matter, a construct is hard to destroy. It gains bonus hit points based on size, as shown on the table. [table]"
@@ -74,17 +75,17 @@
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable :fighter;
-        :goodSaves :fort, :ref, :will;
+        :babTable pcclass:fighter;
+        :goodSaves c:fort, c:ref, c:will;
         :skillPoints "(int+6)*hitDice";
     ];
     :traits [
         :senses [
-            :darkvision [ :range "60ft." ];
-            :lowLightVision [];
+            c:darkvision [ :range "60ft." ];
+            c:lowLightVision [];
         ];
-        :immunities :sleep, :paralysis;
-        :proficiencies :naturalWeapons, :weaponsAsDescribed, :armorNone;
+        :immunities c:sleep, c:paralysis;
+        :proficiencies c:naturalWeapons, c:weaponsAsDescribed, c:armorNone;
         :additional "In human form, proficient with simple weapons.";
     ];
 .
@@ -93,23 +94,23 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
+        :babTable pcclass:cleric;
 ##         :goodSaves [
-##             { :elemental^:monster :subType :air => :ref };
-##             { :elemental^:monster :subType :fire => :ref };
-##             { :elemental^:monster :subType :earth => :fort };
-##             { :elemental^:monster :subType :water => :fort };
+##             { :elemental^:monster :subType :air => c:ref };
+##             { :elemental^:monster :subType :fire => c:ref };
+##             { :elemental^:monster :subType :earth => c:fort };
+##             { :elemental^:monster :subType :water => c:fort };
 ##         ];
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses [ :darkvision [ :range "60ft."] ];
-        :immunities :poison, :sleep, :paralysis, :stunning;
-        :noCriticalHits [];
-        :noFlanking [];
-        :quasiSoulless [];
-        :proficiencies :naturalWeapons, :weaponsAsDescribed, :armorAsDescribed;
-        :vitalities :noEat, :noSleep, :noBreathe;
+        :senses [ c:darkvision [ :range "60ft."] ];
+        :immunities c:poison, c:sleep, c:paralysis, c:stunning;
+        c:noCriticalHits [];
+        c:noFlanking [];
+        c:quasiSoulless [];
+        :proficiencies c:naturalWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
+        :vitalities c:noEat, c:noSleep, c:noBreathe;
     ];
 .
 
@@ -117,13 +118,13 @@
     a c:Family;
     :features [
         :hitDice die:d6;
-        :babTable :wizard;
-        :goodSaves :ref, :will;
+        :babTable pcclass:wizard;
+        :goodSaves c:ref, c:will;
         :skillPoints "(int+6)*hitDice";
     ];
     :traits [
-        :senses :lowLightVision;
-        :proficiencies :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+        :senses c:lowLightVision;
+        :proficiencies c:simpleWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
     ];
 .
 
@@ -131,13 +132,13 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
-        :goodSaves :fort;
+        :babTable pcclass:cleric;
+        :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses :lowLightVision;
-        :proficiencies :simpleWeapons, :martialWeapons, :naturalWeapons, :armorAsDescribed;
+        :senses c:lowLightVision;
+        :proficiencies c:simpleWeapons, c:martialWeapons, c:naturalWeapons, c:armorAsDescribed;
     ];
 .
 
@@ -145,46 +146,46 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
-        :goodSaves :ref;
+        :babTable pcclass:cleric;
+        :goodSaves c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :proficiencies :simpleWeapons, :armorAsDescribed;
+        :proficiencies c:simpleWeapons, c:armorAsDescribed;
         :additional "Proficiencies may be determined by character class.";
     ];
 .
 
 :magical_beast
     a c:Family;
-    :label "Magical Beast";
+    c:label "Magical Beast";
     :features [
         :hitDice die:d10;
-        :babTable :fighter;
-        :goodSaves :fort, :ref;
+        :babTable pcclass:fighter;
+        :goodSaves c:fort, c:ref;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
         :senses [
-            :darkvision [ :range "60ft," ];
-            :lowLightVision [];
+            c:darkvision [ :range "60ft," ];
+            c:lowLightVision [];
         ];
-        :proficiencies :naturalWeapons, :armorNone;
+        :proficiencies c:naturalWeapons, c:armorNone;
     ];
 .
 
 :monstrous_humanoid
     a c:Family;
-    :label "Monstrous Humanoid";
+    c:label "Monstrous Humanoid";
     :features [
         :hitDice die:d8;
-        :babTable :fighter;
-        :goodSaves :ref, :will;
+        :babTable pcclass:fighter;
+        :goodSaves c:ref, c:will;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses [ :darkvision [ :range "60ft."] ];
-        :proficiencies :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+        :senses [ c:darkvision [ :range "60ft."] ];
+        :proficiencies c:simpleWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
     ];
 .
 
@@ -192,18 +193,18 @@
     a c:Family;
     :features [
         :hitDice die:d10;
-        :babTable :cleric;
+        :babTable pcclass:cleric;
         :goodSaves [];
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses :blind, :blindsight;
-        :ability [ :int [ :equal 0 ]];
-        :immunities :poison, :sleep, :paralysis, :polymorph, :stunning, :mindAffecting;
-        :noCriticalHits [];
-        :noFlanking [];
-        :proficiencies :naturalWeapons, :armorNone;
-        :vitalities :noSleep;
+        :senses c:blind, c:blindsight;
+        :ability [ c:int [ :equal 0 ]];
+        :immunities c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning, c:mindAffecting;
+        c:noCriticalHits [];
+        c:noFlanking [];
+        :proficiencies c:naturalWeapons, c:armorNone;
+        :vitalities c:noSleep;
         :additional 
             "Some oozes have the ability to deal acid damage to objects. In such a case, the amount of damage is equal to 10 + ½ ooze’s HD + ooze’s Con modifier per full round of contact."
         ;
@@ -214,16 +215,16 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :fighter;
-        :goodSaves :fort, :ref, :will;
+        :babTable pcclass:fighter;
+        :goodSaves c:fort, c:ref, c:will;
         :skillPoints "(int+8)*hitDice";
     ];
     :traits [
-        :senses [ :darkvision [ :range "60ft." ]];
-        :quasiSoulless [];
+        :senses [ c:darkvision [ :range "60ft." ]];
+        c:quasiSoulless [];
         # unless native
-        :proficiencies :simpleWeapons, :martialWeapons, :weaponsAsDescribed, :armorAsDescribed;
-        :vitalities :noEat, :noSleep;
+        :proficiencies c:simpleWeapons, c:martialWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
+        :vitalities c:noEat, c:noSleep;
         # unless native
     ];
 .
@@ -232,16 +233,16 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
-        :goodSaves :fort;
+        :babTable pcclass:cleric;
+        :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses :lowLightVision;
-        :immunities :mindAffecting, :poison, :sleep, :paralysis, :polymorph, :stunning;
-        :noCriticalHits [];
-        :proficiencies :naturalWeapons, :armorNone;
-        :vitalities :noSleep;
+        :senses c:lowLightVision;
+        :immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning;
+        c:noCriticalHits [];
+        :proficiencies c:naturalWeapons, c:armorNone;
+        :vitalities c:noSleep;
     ];
 .
 
@@ -249,26 +250,26 @@
     a c:Family;
     :features [
         :hitDice die:d12;
-        :babTable :wizard;
-        :goodSaves :will;
+        :babTable pcclass:wizard;
+        :goodSaves c:will;
         :skillPoints "(int+4)*hitDice";
     ];
     :traits [
-        :ability [ :con [ :equal 0 ]];
-        :senses [ :darkvision [ :range "60ft." ]];
-        :immunities :mindAffecting, :poison, :sleep, :paralysis, :stunning, :disease, :deathEffects;
-        :noCriticalHits [];
-        :noNonLethalDamage [];
-        :noAbilityDrain [];
-        :noAbilityDamage [];
-        :noEnergyDrain [];
-        :noTiring [];
-        :noDeathFromMassiveDamage [];
-        :destroyedAtZero [];
-        :soulless [];
-        :fortitudeImmunity [];
-        :proficiencies :naturalWeapons, :weaponsAsDescribed, :simpleWeapons, :armorAsDescribed;
-        :vitalities :noBreathe, :noEat, :noSleep;
+        :ability [ c:con [ :equal 0 ]];
+        :senses [ c:darkvision [ :range "60ft." ]];
+        :immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, c:disease, c:deathEffects;
+        c:noCriticalHits [];
+        c:noNonLethalDamage [];
+        c:noAbilityDrain [];
+        c:noAbilityDamage [];
+        c:noEnergyDrain [];
+        c:noTiring [];
+        c:noDeathFromMassiveDamage [];
+        c:destroyedAtZero [];
+        c:soulless [];
+        c:fortitudeImmunity [];
+        :proficiencies c:naturalWeapons, c:weaponsAsDescribed, c:simpleWeapons, c:armorAsDescribed;
+        :vitalities c:noBreathe, c:noEat, c:noSleep;
         :additional "Cannot heal damage on its own if it has no Intelligence score, although it can be healed. Negative energy (such as an inflict spell) can heal undead creatures. The fast healing special quality works regardless of the creature’s Intelligence score.";
     ];
 .
@@ -277,42 +278,42 @@
     a c:Family;
     :features [
         :hitDice die:d8;
-        :babTable :cleric;
-        :goodSaves :fort;
+        :babTable pcclass:cleric;
+        :goodSaves c:fort;
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :ability [ :int [ :equal 0 ]];
-        :senses [ :darkvision [ :range "60ft." ]];
-        :proficients :naturalWeapons, :armorNone;
-        :immunities :mindAffecting;
+        :ability [ c:int [ :equal 0 ]];
+        :senses [ c:darkvision [ :range "60ft." ]];
+        :proficients c:naturalWeapons, c:armorNone;
+        :immunities c:mindAffecting;
     ];
 .
 
 :air
     a c:Family;
     :traits [
-        :fly :perfectFlight;
+        :fly c:perfectFlight;
     ];
 .
 
 :angel
     a c:Family;
     :traits [
-        :senses [ :darkvision [ :range "60ft." ]];
-        :immunities :acid, :cold, :petrification;
-        :resistances [ :electricity 10 ], [ :fire 10 ];
-        :saveBonuses [ :poison +4 ];
-        :protectiveAura [];
-        :tongues [];
+        :senses [ c:darkvision [ :range "60ft." ]];
+        :immunities c:acid, c:cold, c:petrification;
+        :resistances [ c:electricity 10 ], [ c:fire 10 ];
+        :saveBonuses [ c:poison +4 ];
+        c:protectiveAura [];
+        c:tongues [];
     ];
 .
 
 :aquatic
     a c:Family;
     :traits [
-        :swim [];
-        :breatheUnderwater [];
+        c:swim [];
+        c:breatheUnderwater [];
         # cannot breathe air unless amphibious
     ];
 .
@@ -320,13 +321,13 @@
 :archon
     a c:Family;
     :traits [
-        :senses [ :darkvision [ :range "60ft." ]];
-        :auraOfMenace [];
-        :immunities :electricity, :petrification;
-        :saveBonuses [ :poison +4 ];
-        :magicCircleAgainstEvil [];
-        :teleport [];
-        :tongues [];
+        :senses [ c:darkvision [ :range "60ft." ]];
+        c:auraOfMenace [];
+        :immunities c:electricity, c:petrification;
+        :saveBonuses [ c:poison +4 ];
+        c:magicCircleAgainstEvil [];
+        c:teleport [];
+        c:tongues [];
     ];
 .
 
@@ -338,52 +339,52 @@
 :chaotic
     a c:Family;
     :traits [
-        :aligned :chaotic;
+        c:aligned c:chaotic;
     ];
 .
 
 :cold
     a c:Family;
     :traits [
-        :immunities :cold;
-        :vulnerabilities :fire;
+        :immunities c:cold;
+        :vulnerabilities c:fire;
     ];
 .
 
 :demon
     a c:Family;
     :traits [
-        :immunities :electricity, :poison;
-        :resistances [ :acid 10 ], [ :cold 10 ], [ :fire 10 ];
-        :summon [];
-        :telepathy [];
-        :languages :abyssal, :celestial, :draconic;
+        :immunities c:electricity, c:poison;
+        :resistances [ c:acid 10 ], [ c:cold 10 ], [ c:fire 10 ];
+        c:summon [];
+        c:telepathy [];
+        :languages c:abyssal, c:celestial, c:draconic;
     ];
 .
 
 :devil
     a c:Family;
     :traits [
-        :immunities :fire, :poison;
-        :resistances [ :acid 10 ], [ :cold 10 ];
-        :senses :seeInDarkness;
-        :summon [];
-        :telepathy [];
-        :languages :infernal, :celestial, :draconic;
+        :immunities c:fire, c:poison;
+        :resistances [ c:acid 10 ], [ c:cold 10 ];
+        :senses c:seeInDarkness;
+        c:summon [];
+        c:telepathy [];
+        :languages c:infernal, c:celestial, c:draconic;
     ];
 .
 
 :earth
     a c:Family;
     :traits [
-        :burrow [];
+        c:burrow [];
     ];
 .
 
 :evil
     a c:Family;
     :traits [
-        :aligned :evil;
+        c:aligned c:evil;
     ];
 .
 
@@ -396,8 +397,8 @@
 :fire
     a c:Family;
     :traits [
-        :immunities :fire;
-        :vulnerabilities :cold;
+        :immunities c:fire;
+        :vulnerabilities c:cold;
     ];
 .
 
@@ -408,20 +409,20 @@
 :good
     a c:Family;
     :traits [
-        :aligned :good;
+        c:aligned c:good;
     ];
 .
 
 :incorporeal
     a c:Family;
     :traits [
-        :immunities :nonMagical;
-        :ability [ :str [ :equal 0 ]];
-        :weaponFinesseAlways [];
-        :incorporealSenses [];
-        :incorporealDefense [];
-        :charismaDeflection [];
-        :incorporealMovement [];
+        :immunities c:nonMagical;
+        :ability [ c:str [ :equal 0 ]];
+        :senses c:incorporealSenses;
+        c:weaponFinesseAlways [];
+        c:incorporealDefense [];
+        c:charismaDeflection [];
+        c:incorporealMovement [];
         :additional 
             "Although it is not a magical attack, holy water can affect incorporeal undead, but a hit with holy water has a 50% chance of not affecting an incorporeal creature.",
             "It cannot take any physical action that would move or manipulate an opponent or its equipment, nor is it subject to such actions. Incorporeal creatures have no weight and do not set off traps that are triggered by weight."
@@ -432,7 +433,7 @@
 :lawful
     a c:Family;
     :traits [
-        :aligned :lawful;
+        c:aligned c:lawful;
     ];
 .
 
@@ -443,26 +444,26 @@
 :shapechanger
     a c:Family;
     :traits [
-        :proficiencies :naturalWeapons, :simpleWeapons, :weaponsAsDescribed, :armorAsDescribed;
+        :proficiencies c:naturalWeapons, c:simpleWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
     ];
 .
 
 :swarm
     a c:Family;
     :traits [
-        :noCriticalHits [];
-        :noFlanking [];
+        c:noCriticalHits [];
+        c:noFlanking [];
         # A swarm made up of Tiny creatures takes half damage from slashing and piercing weapons. A swarm composed of Fine or Diminutive creatures is immune to all weapon damage.
-        #   ---> :resistances [ :piercing "50%" ], [ :slashing "50%" ]
-        :destroyedAtZero [];
-        :noTrip [];
-        :noGrapple [];
-        :noBullRush [];
-        :diffuseTarget [];
-        :cannotGrapple [];
-        :cannotMakeAttackOfOpportunity [];
-        :vulnerabilities :areaEffect;
-        :distraction [];
+        #   ---> :resistances [ c:piercing "50%" ], [ c:slashing "50%" ]
+        c:destroyedAtZero [];
+        c:noTrip [];
+        c:noGrapple [];
+        c:noBullRush [];
+        c:diffuseTarget [];
+        c:cannotGrapple [];
+        c:cannotMakeAttackOfOpportunity [];
+        :vulnerabilities c:areaEffect;
+        c:distraction [];
         :additional "Swarms made up of Diminutive or Fine creatures are susceptible to high winds such as that created by a gust of wind spell. For purposes of determining the effects of wind on a swarm, treat the swarm as a creature of the same size as its constituent creatures. A swarm rendered unconscious by means of nonlethal damage becomes disorganized and dispersed, and does not reform until its hit points exceed its nonlethal damage.";
     ];
 .
@@ -470,8 +471,8 @@
 :water
     a c:Family;
     :traits [
-        :swim [];
-        :breatheUnderwater [];
+        c:swim [];
+        c:breatheUnderwater [];
     ];
 .
 
