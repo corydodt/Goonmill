@@ -156,7 +156,7 @@
     ];
 .
 
-:magical_beast
+:magicalBeast
     a c:Family;
     c:label "Magical Beast";
     :features [
@@ -174,7 +174,7 @@
     ];
 .
 
-:monstrous_humanoid
+:monstrousHumanoid
     a c:Family;
     c:label "Monstrous Humanoid";
     :features [
