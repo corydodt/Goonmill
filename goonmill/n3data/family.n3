@@ -36,7 +36,7 @@
     ];
 .
 
-c:construct
+:construct
     a c:Family;
     :features [
         :hitDice die:d10;
