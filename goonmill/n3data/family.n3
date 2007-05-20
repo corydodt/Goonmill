@@ -28,7 +28,7 @@
     ];
     :traits [
         :ability [ c:int [ :max 2 ]];
-        :senses c:lowLightVision;
+        :senses [ c:lowLightVision [] ];
         :alignment c:neutral;
         :treasure [];
         :proficiencies c:naturalWeapons, c:armorNone;
@@ -123,7 +123,7 @@
         :skillPoints "(int+6)*hitDice";
     ];
     :traits [
-        :senses c:lowLightVision;
+        :senses [ c:lowLightVision [] ];
         :proficiencies c:simpleWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
     ];
 .
@@ -137,7 +137,7 @@
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses c:lowLightVision;
+        :senses [ c:lowLightVision [] ];
         :proficiencies c:simpleWeapons, c:martialWeapons, c:naturalWeapons, c:armorAsDescribed;
     ];
 .
@@ -198,7 +198,10 @@
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses c:blind, c:blindsight;
+        :senses [ 
+            c:blind []; 
+            c:blindsight [];
+        ];
         :ability [ c:int [ :equal 0 ]];
         :immunities c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning, c:mindAffecting;
         c:noCriticalHits [];
@@ -238,7 +241,7 @@
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
-        :senses c:lowLightVision;
+        :senses [ c:lowLightVision [] ];
         :immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning;
         c:noCriticalHits [];
         :proficiencies c:naturalWeapons, c:armorNone;
@@ -367,7 +370,7 @@
     :traits [
         :immunities c:fire, c:poison;
         :resistances [ c:acid 10 ], [ c:cold 10 ];
-        :senses c:seeInDarkness;
+        :senses [ c:seeInDarkness [] ];
         c:summon [];
         c:telepathy [];
         :languages c:infernal, c:celestial, c:draconic;
@@ -418,7 +421,7 @@
     :traits [
         :immunities c:nonMagical;
         :ability [ c:str [ :equal 0 ]];
-        :senses c:incorporealSenses;
+        :senses [ c:incorporealSenses [] ];
         c:weaponFinesseAlways [];
         c:incorporealDefense [];
         c:charismaDeflection [];
