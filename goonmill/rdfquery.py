@@ -24,7 +24,7 @@ def filenameAsUri(fn):
 
 
 # create the root database for my triples-based SRD
-prefixes = {'': str(fam), 'c': str(char) }
+prefixes = {'': fam, 'c': char }
 
 db = S.TriplesDatabase(
         str(fam),

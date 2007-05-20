@@ -12,38 +12,24 @@ import rdflib
 class SelectQuery(object):
     """
     I represent a SELECT query that can be turned into a query string.  I will
-    hold things like base and default namespaces.
+    hold things like base.
 
     >>> s = SPARQLQuery("http://thesoftworld.com/2007/family.n3")
     """
     def __init__(self, base, rest):
         self.base = base
         self.rest = rest
-        self.namespaces = {}
-
-    def stringifyPrefixes(self):
-        return "\n".join([
-            "PREFIX %s: <%s>" % (pfx, namespace) for
-            (pfx, namespace) in self.namespaces.items()
-            ])
 
     def __str__(self):
-        d = dict(base=self.base, rest=self.rest, prefixes=self.stringifyPrefixes())
+        d = dict(base=self.base, rest=self.rest, )
         return """BASE <%(base)s>
-%(prefixes)s
 %(rest)s
 """ % d
         ""
 
-    def bind(self, prefix, namespace):
-        """Make this prefix refer to this namespace for this query."""
-        self.namespaces[prefix] = namespace
 
-
-def select(base, prefixes, rest):
+def select(base, rest):
     qry = SelectQuery(base, rest)
-    for pfx, namespace in prefixes.items():
-        qry.bind(pfx, namespace)
     return str(qry)
 
 
@@ -151,9 +137,9 @@ class TriplesDatabase(object):
         [self.graph.load(d, format='n3') for d in datasets]
 
     def query(self, rest):
-        sel = select(self.base, self.prefixes, rest)
+        sel = select(self.base, rest) ## TODO - do i really need self.base any more?
         ## print sel
-        ret = self.graph.query(sel)
+        ret = self.graph.query(sel, initNs=self.prefixes)
         return ret
 
     def formatDatasetsClause(self):
