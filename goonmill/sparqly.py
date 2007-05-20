@@ -148,13 +148,11 @@ class TriplesDatabase(object):
         self.graph = ConjunctiveGraph()
         self.base = base
         self.prefixes = prefixes
-        self.datasets = datasets
+        [self.graph.load(d, format='n3') for d in datasets]
 
     def query(self, rest):
-        t = Template(rest)
-        s = t.safe_substitute(datasets=self.formatDatasetsClause())
-
-        sel = select(self.base, self.prefixes, s)
+        sel = select(self.base, self.prefixes, rest)
+        ## print sel
         ret = self.graph.query(sel)
         return ret
 

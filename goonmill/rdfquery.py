@@ -11,12 +11,12 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 
 class Sense(S.SparqItem):
-    label = S.Literal('SELECT ?l $datasets { $key c:label ?l }', default=S.Key(transform=S.iriToTitle))
-    description = S.Literal('SELECT ?d $datasets { $key c:description ?d }')
+    label = S.Literal('SELECT ?l { $key c:label ?l }', default=S.Key(transform=S.iriToTitle))
+    description = S.Literal('SELECT ?d { $key c:description ?d }')
 
 
 class Family(S.SparqItem):
-    senses = S.Ref(Sense, 'SELECT ?s $datasets { $key :traits [ :senses [ ?s [] ]]}')
+    senses = S.Ref(Sense, 'SELECT ?s { $key :traits [ :senses [ ?s [] ]]}')
 
 
 def filenameAsUri(fn):
