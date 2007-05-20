@@ -12,9 +12,7 @@ import rdflib
 
 def select(base, rest):
     d = dict(base=base, rest=rest, )
-    return """BASE <%(base)s>
-%(rest)s
-""" % d
+    return """BASE <%(base)s> %(rest)s""" % d
 
 
 NODEFAULT = ()
@@ -121,7 +119,7 @@ class TriplesDatabase(object):
         [self.graph.load(d, format='n3') for d in datasets]
 
     def query(self, rest):
-        sel = select(self.base, rest) ## TODO - do i really need self.base any more?
+        sel = select(self.base, rest)
         ## print sel
         ret = self.graph.query(sel, initNs=self.prefixes)
         return ret
