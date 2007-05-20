@@ -9,28 +9,12 @@ from string import Template
 from rdflib import ConjunctiveGraph
 import rdflib
 
-class SelectQuery(object):
-    """
-    I represent a SELECT query that can be turned into a query string.  I will
-    hold things like base.
-
-    >>> s = SPARQLQuery("http://thesoftworld.com/2007/family.n3")
-    """
-    def __init__(self, base, rest):
-        self.base = base
-        self.rest = rest
-
-    def __str__(self):
-        d = dict(base=self.base, rest=self.rest, )
-        return """BASE <%(base)s>
-%(rest)s
-""" % d
-        ""
-
 
 def select(base, rest):
-    qry = SelectQuery(base, rest)
-    return str(qry)
+    d = dict(base=base, rest=rest, )
+    return """BASE <%(base)s>
+%(rest)s
+""" % d
 
 
 NODEFAULT = ()
