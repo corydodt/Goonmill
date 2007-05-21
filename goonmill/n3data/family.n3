@@ -243,7 +243,8 @@
 # TODO - requires reasoning.
 { ?m c:Family :outsider; c:ExistentialStatus c:native. } =>
     { 
-      ?m :traits [ :vitalities [] ].
+      { ?m :traits [ :vitalities c:noEat ] } a log:Falsehood .
+      { ?m :traits [ :vitalities c:noSleep ] } a log:Falsehood .
       { ?m :traits [ c:quasiSoulless [] ] } a log:Falsehood .
     }
 .
