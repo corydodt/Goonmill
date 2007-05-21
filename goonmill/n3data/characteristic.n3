@@ -146,10 +146,10 @@
 :noEat a :Vitality;
     rdfs:label "Does not need food"
 .
-:noBreathe a :Vitality.
+:noBreathe a :Vitality;
     rdfs:label "Does not need to breathe"
 .
-:noSleep a :Vitality.
+:noSleep a :Vitality;
     rdfs:label "Does not need to sleep"
 .
 :mustBreatheWater a :Vitality;
