@@ -31,6 +31,10 @@ class SparqAttribute(object):
         return data[0]
 
     def retrieveData(self, db, key):
+        # rdflib.URIRef could be passed as key; handle that case
+        if hasattr(key, 'n3'):
+            key = key.n3()
+
         rest = self.selector.safe_substitute(key=key)
         data = [r[0] for r in db.query(rest)]  ## TODO - support multiple variable queries? probably not
         if len(data) == 0:

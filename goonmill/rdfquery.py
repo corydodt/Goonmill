@@ -35,10 +35,10 @@ db = S.TriplesDatabase(
                   ],
         )
 
-devil = Family(db=db, key=":devil")
+devil = Family(db=db, key=fam.devil)
 senses = devil.senses
 print senses[0].label
 
-ooze = Family(db=db, key=":ooze")
+ooze = Family(db=db, key=fam.ooze)
 senses = ooze.senses
 print senses[0].label, senses[1].label
