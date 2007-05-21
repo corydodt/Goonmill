@@ -1,7 +1,92 @@
 """
+========
 SPARQL-y
+========
 
-A really stupid SPARQL query string builder
+A really stupid SPARQL O*M (OSTM? object-semantic triple mapper.)
+
+Inspired by, but not really resembling, Divmod Axiom.
+
+Defining Objects and their Attributes
+=====================================
+
+The object side of the API is the SparqItem.  Create a subclass of this to
+represent your item:
+
+class Employee(SparqItem):
+    ...
+
+Next determine which attributes of Employee you want to represent.  These can
+be any relationships you can connect to an Employee-typed subject.  You might
+choose firstname, lastname, supervisor.  You use Attributes to
+represent these.  Attributes represent a query that retrieves the related data
+for an instance of that object.
+
+Here's how you would construct firstname and lastname on Employee:
+
+class Employee(SparqItem):
+    firstname = Literal("SELECT ?f { $key :firstname ?f }")
+    lastname = Literal("SELECT ?l { $key :lastname ?l }").setTransform(lambda n: n.upper())
+
+
+Note two things:
+    1) You have to write the SPARQL query that gets the item
+    2) The SPARQL query must contain $key to show how the attribute relates
+       to the Employee (your subclass of SparqItem).
+    3) Literal (and Key) have a setTransform() method which takes a 1-arg
+       callable that can modify the value after it is retrieved.  For one use
+       of this, see how the SparqItem.label attribute is defined below.
+
+Now let's add supervisor.  This is an attribute that actually refers to
+another item of the same type, Employee.
+
+class Employee(SparqItem):
+    firstname = Literal("SELECT ?f { $key :firstname ?f }")
+    lastname = Literal("SELECT ?l { $key :lastname ?l }")
+    supervisor = Ref(Employee, "SELECT ?sup { $key :supervisor ?sup }")
+
+Well that was easy.  The Ref attribute returns a list of Employee
+when accessed, which will usually have just one item, the employee's immediate
+supervisor.  (But it could return the list of all eight of your bosses.)
+
+Finally, the Key attribute type returns the key of the thing you are
+selecting, as an IRI string.
+
+
+Using Objects
+=============
+Assume we have:
+
+class Employee(SparqItem):
+    firstname = Literal("SELECT ?f { $key :firstname ?f }")
+    lastname = Literal("SELECT ?l { $key :lastname ?l }").setTransform(lambda n: n.upper())
+# need to define this after because it refers to a class that isn't defined
+# yet
+Employee.supervisor = Ref(Employee, "SELECT ?s { $key :supervisor $s }")
+
+>>> staff = Namespace('http://corp.com/staff#')
+>>> cg = rdflib.ConjunctiveGraph()
+>>> cg.load(...)
+>>> 
+>>> emp = Employee(db=cg, key=staff.e1230)
+>>> print emp.firstname, emp.lastname
+Peter GIBBONS
+>>> # look, lastname is uppercased thanks to our setTransform. :)
+>>> super = emp.supervisor
+>>> print super.firstname, super.lastname
+Bill LUMBERGH
+
+
+Limitations:
+    - There is no cache.  A SPARQL query must be issued against the data
+      *every* time the application wants the value.
+    - The constructor for Attributes is terrible.  It assumes you have set up
+      prefixes correctly on the TriplesDatabase, and it assumes you want to
+      learn SPARQL.  :-)
+    - Assignment (TODO) - currently can't be done at all.  I don't know how
+      assignment to Ref will work, since it returns a list.  Assignment to
+      Literal shouldn't be too hard.
+
 """
 
 from string import Template
@@ -23,6 +108,7 @@ def iriToTitle(iri):
 
 
 NODEFAULT = ()
+
 
 class SparqAttribute(object):
     """One attribute on a SparqItem, denoting type
@@ -57,14 +143,6 @@ class SparqAttribute(object):
         return data
 
 
-class URI(SparqAttribute):
-    """An attribute that returns as an rdflib.URIRef"""
-
-
-class Literal(SparqAttribute):
-    """An attribute that returns as a rdflib.Literal"""
-
-
 class Ref(SparqAttribute):
     """
     An item that must be loaded via another SparqItem
@@ -93,7 +171,45 @@ class Ref(SparqAttribute):
         return ret
 
 
-class Key(SparqAttribute):
+class LeafAttribute(SparqAttribute):
+    """
+    An attribute that returns some kind of literal when accessed, including
+    the string representation of something other than a Literal (e.g. Key).
+
+    LeafAttributes can return a modified representation if you call
+    setTransform on them.
+    """
+    def __init__(self, *a, **kw):
+        self.transform = None
+        super(LeafAttribute, self).__init__(*a, **kw)
+
+    def setTransform(self, transform):
+        """
+        transformer is a 1-argument callable that will be called when
+        solve'ing for this attribute
+
+        Returns self so you can call it in a class scope while defining the
+        attribute
+        """
+        self.transform = transform
+        return self
+
+    def solve(self, db, key):
+        data = super(LeafAttribute, self).solve(db, key)
+        if self.transform is not None:
+            return self.transform(data)
+        return data
+
+
+class Literal(LeafAttribute):
+    """An attribute that returns as a rdflib.Literal"""
+
+
+class Key(LeafAttribute):
+    """
+    An attribute that returns the IRI for the SparqItem that has it as an
+    attribute, as a string.
+    """
     def __init__(self, transform=None):
         self.transform = transform
         super(Key, self).__init__('')
@@ -111,13 +227,13 @@ class SparqItem(object):
     class Thinger(SparqItem):
         slangName = Literal("SELECT ?slang $datasets { $key :slangName ?slang }")
 
-    >>> myThinger = Thinger(db=someTripleStore, key=':marijuana')
+    >>> myThinger = Thinger(db=someTriplesDatabase, key=':marijuana')
     >>> myThinger.myAttr
     "Wacky Tabacky"
-        
+     
     """
     label = Literal(
-        'SELECT ?l { $key rdfs:label ?l }', default=Key(transform=iriToTitle))
+        'SELECT ?l { $key rdfs:label ?l }', default=Key().setTransform(iriToTitle))
     comment = Literal('SELECT ?d { $key rdfs:comment ?d }', default='')
 
     def __init__(self, db, key):
