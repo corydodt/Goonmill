@@ -143,9 +143,18 @@
 
 
 :Vitality rdfs:subClassOf :Characteristic.
-:noEat a :Vitality.
+:noEat a :Vitality;
+    rdfs:label "Does not need food"
+.
 :noBreathe a :Vitality.
+    rdfs:label "Does not need to breathe"
+.
 :noSleep a :Vitality.
+    rdfs:label "Does not need to sleep"
+.
+:mustBreatheWater a :Vitality;
+    rdfs:label "Needs water to breathe"
+.
 
 
 
@@ -238,3 +247,12 @@
 :wis a :AbilityScore.
 :cha a :AbilityScore.
 
+
+:ExistentialStatus rdfs:subClassOf :Characteristic.
+:native a :ExistentialStatus;
+    rdfs:comment "Creature is currently on its native plane.";
+.
+:nonNative a :ExistentialStatus;
+    rdfs:label "Non-Native";
+    rdfs:comment "Creature is not currently on its native plane.";
+.
