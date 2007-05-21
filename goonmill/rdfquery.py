@@ -14,6 +14,10 @@ class Sense(S.SparqItem):
     """A notable sense possessed by monsters, such as darkvision"""
 
 
+class Language(S.SparqItem):
+    """A language understood by monsters"""
+
+
 class SpecialAbility(S.SparqItem):
     """A notable ability of any kind that isn't a standard combat mechanic"""
 
@@ -24,6 +28,8 @@ class Family(S.SparqItem):
         'SELECT ?s { $key :traits [ :senses [ ?s [] ]]}')
     specialAbilities = S.Ref(SpecialAbility, 
         'SELECT ?spec { ?spec a c:SpecialAbility . $key :traits [ ?spec [] ] }')
+    languages = S.Ref(Language,
+        'SELECT ?lng { ?lng a c:Language . $key :traits [ :languages ?lng ] }')
 
 
 def filenameAsUri(fn):
@@ -41,22 +47,35 @@ db = S.TriplesDatabase(
                   ],
         )
 
-template = '''%s
-Senses: %s
-Special Abilities
------------------
-'''
+if __name__ == '__main__': # {{{
+    import string
+    template = string.Template('''$name
+    Senses: $senses
+    Languages: $languages
+    Special Abilities
+    -----------------
+    $specs
+    ''')
 
-specs = '''%s
- %s
-'''
+    specs = string.Template('''$specLabel
+     $specComment
+    ''')
 
-def formatFamily(key):
-    family = Family(db=db, key=key)
-    senses = ' '.join([s.label for s in family.senses])
-    print template % (family.label, senses)
-    for s in family.specialAbilities:
-        print specs % (s.label, s.comment)
+    def formatFamily(key):
+        fam = Family(db=db, key=key)
 
-formatFamily(fam.devil)
-formatFamily(fam.ooze)
+        senses = ', '.join([sen.label for sen in fam.senses])
+        languages = ', '.join([l.label for l in fam.languages])
+        abilities = []
+        for spec in fam.specialAbilities:
+            abilities.append(specs.substitute(specLabel=spec.label, 
+                specComment=spec.comment))
+        abilities = ''.join(abilities)
+
+        print template.substitute(name=fam.label, senses=senses, languages=languages, specs=abilities)
+        #
+
+
+    formatFamily(fam.devil)
+    formatFamily(fam.ooze)
+# }}}
