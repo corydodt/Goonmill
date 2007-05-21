@@ -4,7 +4,6 @@ from goonmill.util import RESOURCE
 from goonmill import sparqly as S
 
 from rdflib.Namespace import Namespace as NS
-from rdflib import RDFS
 
 fam = NS('http://thesoftworld.com/2007/family.n3#')
 char = NS('http://thesoftworld.com/2007/characteristic.n3#')
@@ -32,7 +31,7 @@ def filenameAsUri(fn):
 
 
 # create the root database for my triples-based SRD
-prefixes = {'': fam, 'c': char, 'rdfs': RDFS.RDFSNS}
+prefixes = {'': fam, 'c': char}
 
 db = S.TriplesDatabase(
         str(fam),

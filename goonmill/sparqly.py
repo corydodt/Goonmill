@@ -8,6 +8,7 @@ from string import Template
 
 from rdflib import ConjunctiveGraph
 import rdflib
+from rdflib import RDFS
 
 
 def select(base, rest):
@@ -135,7 +136,8 @@ class TriplesDatabase(object):
     def __init__(self, base, prefixes, datasets):
         self.graph = ConjunctiveGraph()
         self.base = base
-        self.prefixes = prefixes
+        self.prefixes = {'rdfs': RDFS.RDFSNS}
+        self.prefixes.update(prefixes)
         [self.graph.load(d, format='n3') for d in datasets]
 
     def query(self, rest):
