@@ -3,6 +3,7 @@
 @prefix c: <http://thesoftworld.com/2007/characteristic.n3#>.
 @prefix die: <http://thesoftworld.com/2007/dice.n3#>.
 @prefix pcclass: <http://thesoftworld.com/2007/pcclass.n3#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 :aberration
     a c:Family;
@@ -158,7 +159,7 @@
 
 :magicalBeast
     a c:Family;
-    c:label "Magical Beast";
+    rdfs:label "Magical Beast";
     :features [
         :hitDice die:d10;
         :babTable pcclass:fighter!:babTable;
@@ -176,7 +177,7 @@
 
 :monstrousHumanoid
     a c:Family;
-    c:label "Monstrous Humanoid";
+    rdfs:label "Monstrous Humanoid";
     :features [
         :hitDice die:d8;
         :babTable pcclass:fighter!:babTable;
