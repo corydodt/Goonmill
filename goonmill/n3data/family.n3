@@ -4,7 +4,14 @@
 @prefix die: <http://thesoftworld.com/2007/dice.n3#>.
 @prefix pcclass: <http://thesoftworld.com/2007/pcclass.n3#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
 
+# general rules of familial relationships.
+# Having a family means you have its traits and features.
+{ ?m c:Family ?fam } => { ?m :features ?fam!:features; :traits ?fam!:traits }.
+
+# Families
+# ========
 :aberration
     a c:Family;
     :features [ 
@@ -96,12 +103,6 @@
     :features [
         :hitDice die:d8;
         :babTable pcclass:cleric!:babTable;
-##         :goodSaves [
-##             { :elemental^:monster :subType :air => c:ref };
-##             { :elemental^:monster :subType :fire => c:ref };
-##             { :elemental^:monster :subType :earth => c:fort };
-##             { :elemental^:monster :subType :water => c:fort };
-##         ];
         :skillPoints "(int+2)*hitDice";
     ];
     :traits [
@@ -114,6 +115,14 @@
         :vitalities c:noEat, c:noSleep, c:noBreathe;
     ];
 .
+# the goodSaves of an elemental depend on the subType, as given below.
+# "For something with both families elemental and air, that thing has
+# goodSaves c:ref"
+# TODO - requires reasoning
+{ ?m c:Family :elemental, :air } => { ?m :traits [ :goodSaves c:ref ]}.
+{ ?m c:Family :elemental, :fire } => { ?m :traits [ :goodSaves c:ref ]}.
+{ ?m c:Family :elemental, :earth } => { ?m :traits [ :goodSaves c:fort ]}.
+{ ?m c:Family :elemental, :water } => { ?m :traits [ :goodSaves c:fort ]}.
 
 :fey
     a c:Family;
@@ -226,12 +235,19 @@
     :traits [
         :senses [ c:darkvision [ :range "60ft." ]];
         c:quasiSoulless [];
-        # unless native
         :proficiencies c:simpleWeapons, c:martialWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
         :vitalities c:noEat, c:noSleep;
-        # unless native
     ];
 .
+# outsiders on their native planes are different.
+# TODO - requires reasoning.
+{ ?m c:Family :outsider; c:ExistentialStatus c:native. } =>
+    { 
+      ?m :traits [ :vitalities [] ].
+      { ?m :traits [ c:quasiSoulless [] ] } a log:Falsehood .
+    }
+.
+
 
 :plant
     a c:Family;
@@ -318,9 +334,17 @@
     :traits [
         c:swim [];
         c:breatheUnderwater [];
-        # cannot breathe air unless amphibious
+        :vitalities :mustBreatheWater;
     ];
 .
+
+:amphibious a c:Family. # NOT a SRD-standard type!  but required to define aquatic.
+
+# TODO - requires reasoning
+{ ?m c:Family :aquatic, :amphibious } => 
+    { { ?m :traits [ :vitalities :mustBreatheWater ] } a log:Falsehood. }
+.
+
 
 :archon
     a c:Family;
