@@ -53,7 +53,7 @@ class SparqAttribute(object):
             if isinstance(self.default, SparqAttribute):
                 return self.default.solve(db, key)
 
-            return self.default
+            return [self.default]
         return data
 
 
