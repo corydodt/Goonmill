@@ -15,6 +15,12 @@ def select(base, rest):
     return """BASE <%(base)s> %(rest)s""" % d
 
 
+def iriToTitle(iri):
+    """Return the fragment id of the iri, in title-case"""
+    uri = iri.lstrip('<').rstrip('>')
+    return uri.split('#')[1].title()
+
+
 NODEFAULT = ()
 
 class SparqAttribute(object):
@@ -27,6 +33,8 @@ class SparqAttribute(object):
     def solve(self, db, key):
         """Return the value or values for this query."""
         data = self.retrieveData(db, key)
+        if len(data) == 0:
+            return None
         assert len(data) == 1
         return data[0]
 
@@ -70,6 +78,10 @@ class Ref(SparqAttribute):
 
         ret = []
         cls = self.itemClass
+
+        if data is None:
+            return ret
+
         for i in data:
             assert isinstance(i, rdflib.URIRef), (
                     "This query returned literals, not URIs!\n-- %s" % (i,))
@@ -103,6 +115,10 @@ class SparqItem(object):
     "Wacky Tabacky"
         
     """
+    label = Literal(
+        'SELECT ?l { $key rdfs:label ?l }', default=Key(transform=iriToTitle))
+    comment = Literal('SELECT ?d { $key rdfs:comment ?d }', default='')
+
     def __init__(self, db, key):
         self.db = db
         self.key = key
@@ -136,8 +152,3 @@ class TriplesDatabase(object):
         return '\n'.join(ret)
 
 
-
-def iriToTitle(iri):
-    """Return the fragment id of the iri, in title-case"""
-    uri = iri.lstrip('<').rstrip('>')
-    return uri.split('#')[1].title()

@@ -12,12 +12,19 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 
 class Sense(S.SparqItem):
-    label = S.Literal('SELECT ?l { $key rdfs:label ?l }', default=S.Key(transform=S.iriToTitle))
-    description = S.Literal('SELECT ?d { $key c:description ?d }')
+    """A notable sense possessed by monsters, such as darkvision"""
+
+
+class SpecialAbility(S.SparqItem):
+    """A notable ability of any kind that isn't a standard combat mechanic"""
 
 
 class Family(S.SparqItem):
-    senses = S.Ref(Sense, 'SELECT ?s { $key :traits [ :senses [ ?s [] ]]}')
+    """A family of monster with shared characteristics"""
+    senses = S.Ref(Sense, 
+        'SELECT ?s { $key :traits [ :senses [ ?s [] ]]}')
+    specialAbilities = S.Ref(SpecialAbility, 
+        'SELECT ?spec { ?spec a c:SpecialAbility . $key :traits [ ?spec [] ] }')
 
 
 def filenameAsUri(fn):
@@ -35,10 +42,22 @@ db = S.TriplesDatabase(
                   ],
         )
 
-devil = Family(db=db, key=fam.devil)
-senses = devil.senses
-print senses[0].label
+template = '''%s
+Senses: %s
+Special Abilities
+-----------------
+'''
 
-ooze = Family(db=db, key=fam.ooze)
-senses = ooze.senses
-print senses[0].label, senses[1].label
+specs = '''%s
+ %s
+'''
+
+def formatFamily(key):
+    family = Family(db=db, key=key)
+    senses = ' '.join([s.label for s in family.senses])
+    print template % (family.label, senses)
+    for s in family.specialAbilities:
+        print specs % (s.label, s.comment)
+
+formatFamily(fam.devil)
+formatFamily(fam.ooze)
