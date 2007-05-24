@@ -7,6 +7,14 @@
 :Characteristic a rdfs:Class.
 
 
+:Feature rdfs:subClassOf :Characteristic;
+    rdfs:comment "Aspect of a creature type that every creature type possesses, so every creature should be of a class that has these attributes.  Dunno why you'd want to know a characteristic is a \"Feature\", but there you go.";
+.
+
+:MiscTrait rdfs:subClassOf :Characteristic;
+    rdfs:comment "Aspect of a creature that does not fall into any other category.";
+.
+
 :Save rdfs:subClassOf :Characteristic.
 
 :fort a :Save; rdfs:label "Fortitude" .
@@ -18,7 +26,6 @@
 
 
 :Sense rdfs:subClassOf :Characteristic.
-:darkvision a :Sense.
 :lowLightVision a :Sense; rdfs:label "Low-Light Vision" .
 :seeInDarkness
     a :Sense;
@@ -35,6 +42,8 @@
     rdfs:comment "Cannot see, but has immunity to gaze attacks, visual effects, illusions, and other attack forms that rely on sight.";
 .
 :blindsight a :Sense .
+
+:Darkvision rdfs:subClassOf :Sense.
 
 
 
@@ -70,7 +79,7 @@
 :areaEffect a :AttackEffect.
 
 
-:SpecialAbility rdfs:subClassOf :Characteristic.
+:SpecialAbility rdfs:subClassOf :MiscTrait.
 :telepathy a :SpecialAbility.
 :protectiveAura a :SpecialAbility;
     rdfs:label "Protective Aura";
@@ -115,14 +124,11 @@
 :infernal a :Language.
 
 
-:SpecialQuality rdfs:subClassOf :Characteristic.
+:SpecialQuality rdfs:subClassOf :MiscTrait.
 :quasiSoulless a :SpecialQuality;
     rdfs:comment "Does not have a dual nature—either it has no soul or its soul and body form one unit.  When this creature is slain, no soul is set loose. Spells that restore souls to their bodies, such as raise dead, reincarnate, and resurrection, don’t work on this creature. It takes a different magical effect, such as limited wish, wish, miracle, or true resurrection, to restore it to life.";
 .
 :soulless a :SpecialQuality; rdfs:comment "Cannot be raised or resurrected."; .
-:aligned a :SpecialQuality;
-    rdfs:comment "For some given alignment aspect (example: evil, lawful), any effect that depends on alignment affects a creature with this subtype as if the creature has that alignment, no matter what its alignment actually is. The creature also suffers effects according to its actual alignment. A creature with the aligned quality overcomes damage reduction as if its natural weapons and any weapons it wields were aligned to that alignment.";
-.
 
 
 
@@ -202,7 +208,7 @@
 .
 :incorporealAttacks a :CombatMechanic;
     rdfs:label "Incorporeal Attacks";
-    rdfs:comment "This creature’s attacks pass through (ignore) natural armor, armor, and shields, although deflection bonuses and force effects (such as mage armor) work normally against it.  This creature can pass through and operate in water as easily as it does in air. Incorporeal creatures cannot fall or take falling damage. Incorporeal creatures cannot make trip or grapple attacks, nor can it be tripped or grappled.";
+    rdfs:comment "This creature’s attacks pass through (ignore) natural armor, armor, and shields, although deflection bonuses and force effects (such as mage armor) work normally against it.  This creature can pass through and operate in water as easily as it does in air. Incorporeal creatures cannot fall or take falling damage. Incorporeal creatures cannot make trip or grapple attacks, nor can they be tripped or grappled.";
 .
 :noTrip a :CombatMechanic;
     rdfs:label "Cannot be tripped";
@@ -227,16 +233,19 @@
 :cannotMakeAttackOfOpportunity a :CombatMechanic;
     rdfs:label "Cannot make any attacks of opportunity";
 .
+:noWeaponDamage a :CombatMechanic;
+    rdfs:label "Immune to all damage from weapons.";
+.
 
 
 :MoveMechanic rdfs:subClassOf :Characteristic.
-:fly a :MoveMechanic.
 :swim a :MoveMechanic.
 :burrow a :MoveMechanic.
 :incorporealMovement a :MoveMechanic;
     rdfs:label "Movement as an incorporeal creature";
     rdfs:comment "This creature can enter or pass through solid objects, but must remain adjacent to the object’s exterior, and so cannot pass entirely through an object whose space is larger than its own. It can sense the presence of creatures or objects within a square adjacent to its current location, but enemies have total concealment (50% miss chance) from an incorporeal creature that is inside an object. In order to see farther from the object it is in and attack normally, the incorporeal creature must emerge. An incorporeal creature inside an object has total cover, but when it attacks a creature outside the object it only has cover, so a creature outside with a readied action could strike at it as it attacks. An incorporeal creature cannot pass through a force effect.";
 .
+:Fly rdfs:subClassOf :MoveMechanic.
 
 
 :AbilityScore rdfs:subClassOf :Characteristic.
@@ -256,3 +265,15 @@
     rdfs:label "Non-Native";
     rdfs:comment "Creature is not currently on its native plane.";
 .
+
+:Size rdfs:subClassOf :Characteristic.
+:fine a :Size.
+:diminutive a :Size.
+:tiny a :Size.
+:small a :Size.
+:medium a :Size.
+:large a :Size.
+:huge a :Size.
+:gargantuan a :Size.
+:colossal a :Size.
+
