@@ -5,6 +5,10 @@
 
 :PCClass rdfs:subClassOf c:Characteristic .
 
+:babTable a c:Feature.
+
+
+
 :barbarian a :PCClass;
     :goodSaves c:fort;
     :babTable :fighter!:babTable;
