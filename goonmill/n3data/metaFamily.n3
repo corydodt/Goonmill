@@ -13,9 +13,9 @@
 .
 # members of this are Features
 
-:goodSaves a rdfs:Property
+:goodSaves a rdfs:Property;
     rdfs:comment "Of fort, ref, and will, which saves are computed using the \"good\" saves table.";
-    owl:allValuesFrom c:Save.
+    owl:allValuesFrom c:Save;
 .
 # objects of this are Features
 
