@@ -160,7 +160,7 @@
 
 
 
-:CombatMechanic rdfs:subClassOf :Characteristic.
+:CombatMechanic rdfs:subClassOf :MiscTrait.
 :noCriticalHits a :CombatMechanic;
     rdfs:label "Not subject to critical hits"
 .
