@@ -1,85 +1,32 @@
-# define the family ontology.
-
 @prefix : <http://thesoftworld.com/2007/metaFamily.n3#>.
-@prefix fam: <http://thesoftworld.com/2007/family.n3#>.
 @prefix c: <http://thesoftworld.com/2007/characteristic.n3#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns>.
-@prefix owl: <http://www.w3.org/2002/07/owl#>.
 
-# features
-:hitDiceType a rdfs:Property;
-    rdfs:comment "What size die is used to calculate this creature's hit points for each level.";
-.
-# members of this are Features
-
-:goodSaves a rdfs:Property;
-    rdfs:comment "Of fort, ref, and will, which saves are computed using the \"good\" saves table.";
-    owl:allValuesFrom c:Save;
-.
-# objects of this are Features
-
-:skillPoints a rdfs:Property;
-    rdfs:comment "Expression to determine how many skill points will be gained for each level or hit die.";
-.
-# objects of this are Features
-
-
-:miscTrait a rdfs:Property;
-    rdfs:comment "Possesses a generic special ability, quality or other attribute possessed by the creature arising from its families.";
-    owl:allValuesFrom c:MiscTrait;
-.
-
-:sense a rdfs:Property;
-    rdfs:comment "A sense possessed by the creature.";
-    owl:allValuesFrom c:Sense;
-.
-
-:proficiency a rdfs:Property;
-    rdfs:comment "Any proficiencies possessed by the creature.";
-    owl:allValuesFrom c:Proficiency;
-.
-
-:alignment a rdfs:Property;
-    owl:allValuesFrom c:Alignment;
-.
-
-:additional a rdfs:Property;
-    rdfs:comment "Prose description of any items not fully defined in the creature's graph.";
-.
-
-:treasure a rdfs:Property;
-    rdfs:comment "Type of treasure typically possessed by creatures of this type.";
-.
-
-:vitality a rdfs:Property;
-    rdfs:comment "Behaviors of the creature that differ from the basic needs of life, e.g. needs to eat, sleep, drink.";
-    owl:allValuesFrom c:Vitality;
-.
-
-:language a rdfs:Property;
-    rdfs:comment "What languages the creature can understand.";
-    owl:allValuesFrom c:Language;
-.
-
-:movement a rdfs:Property;
-    rdfs:comment "What type of movement this creature is capable of.";
-    owl:allValuesFrom c:Movement;
-.
-
-:size a rdfs:Property;
-    owl:allValuesFrom c:Size;
-.
-
-:family a rdfs:Property;
-    owl:allValuesFrom c:Family;
-.
-
-:alignmentEffect a rdfs:Property;
-    rdfs:comment "For some given alignment aspect (example: evil, lawful), any effect that depends on alignment affects a creature with this subtype as if the creature has that alignment, no matter what its alignment actually is. The creature also suffers effects according to its actual alignment. A creature with the aligned quality overcomes damage reduction as if its natural weapons and any weapons it wields were aligned to that alignment.";
-    owl:allValuesFrom c:Alignment;
-.
-
-:flight a rdfs:Property;
-    rdfs:comment "How much skill a creature has at flying.";
+# define the family ontology.
+:family a sp:SparqItem;
+    sp:att [ a sp:SparqAttribute;
+             rdfs:label "Sense";
+             sp:binding "?r";
+             sp:formula { sp:this m:sense ?r };
+    ];
+    sp:att [ a sp:SparqAttribute;
+             rdfs:label "SpecialAbility";
+             sp:binding "?r";
+             sp:formula { sp:this m:miscTrait ?r.  ?r a c:SpecialAbility };
+    ];
+    sp:att [ a sp:SparqAttribute;
+             rdfs:label "SpecialQuality";
+             sp:binding "?r";
+             sp:formula { sp:this m:miscTrait ?r.  ?r a c:SpecialQuality };
+    ];
+    sp:att [ a sp:SparqAttribute;
+             rdfs:label "CombatMechanic";
+             sp:binding "?r";
+             sp:formula { sp:this m:miscTrait ?r.  ?r a c:CombatMechanic };
+    ];
+    sp:att [ a sp:SparqAttribute;
+             rdfs:label "Language";
+             sp:binding "?r";
+             sp:formula { sp:this m:language ?r };
+    ];
 .
