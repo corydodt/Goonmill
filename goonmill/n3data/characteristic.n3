@@ -7,10 +7,6 @@
 :Characteristic a rdfs:Class.
 
 
-:Feature rdfs:subClassOf :Characteristic;
-    rdfs:comment "Aspect of a creature type that every creature type possesses, so every creature should be of a class that has these attributes.  Dunno why you'd want to know a characteristic is a \"Feature\", but there you go.";
-.
-
 :MiscTrait rdfs:subClassOf :Characteristic;
     rdfs:comment "Aspect of a creature that does not fall into any other category.";
 .
