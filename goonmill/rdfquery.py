@@ -9,6 +9,7 @@ fam = NS('http://thesoftworld.com/2007/family.n3#')
 char = NS('http://thesoftworld.com/2007/characteristic.n3#')
 dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
+prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
 class Sense(S.SparqItem):
     """A notable sense possessed by monsters, such as darkvision"""
@@ -22,14 +23,27 @@ class SpecialAbility(S.SparqItem):
     """A notable ability of any kind that isn't a standard combat mechanic"""
 
 
+class SpecialQuality(S.SparqItem):
+    """A notable quality possessed by the creature that is always on"""
+
+
+class CombatMechanic(S.SparqItem):
+    """A special combat mechanic that applies to this creature"""
+
+
 class Family(S.SparqItem):
     """A family of monster with shared characteristics"""
     senses = S.Ref(Sense, 
-        'SELECT ?s { $key :traits [ :senses [ ?s [] ]]}')
+        'SELECT ?s { $key p:sense ?s }')
     specialAbilities = S.Ref(SpecialAbility, 
-        'SELECT ?spec { ?spec a c:SpecialAbility . $key :traits [ ?spec [] ] }')
+        'SELECT ?spec { ?spec a c:SpecialAbility . $key p:miscTrait ?spec }')
+    specialQualities = S.Ref(SpecialQuality, 
+        'SELECT ?spec { ?spec a c:SpecialQuality . $key p:miscTrait ?spec }')
+    combatMechanics = S.Ref(SpecialQuality, 
+        'SELECT ?spec { ?spec a c:CombatMechanic . $key p:miscTrait ?spec }')
     languages = S.Ref(Language,
-        'SELECT ?lng { ?lng a c:Language . $key :traits [ :languages ?lng ] }')
+        'SELECT ?lng { $key p:language ?lng }')
+
 
 
 def filenameAsUri(fn):
@@ -37,7 +51,7 @@ def filenameAsUri(fn):
 
 
 # create the root database for my triples-based SRD
-prefixes = {'': fam, 'c': char}
+prefixes = {'': fam, 'c': char, 'p': prop}
 
 db = S.TriplesDatabase(
         str(fam),
@@ -55,11 +69,21 @@ if __name__ == '__main__': # {{{
     Special Abilities
     -----------------
     $specs
+    Special Qualities
+    -----------------
+    $specQ
+    Combat Mechanics
+    ----------------
+    $combatMech
     ''')
 
     specs = string.Template('''$specLabel
-     $specComment
+      $specComment
     ''')
+
+    from twisted.python import text
+    def formatComment(c):
+        return '\n      '.join(text.greedyWrap(c))
 
     def formatFamily(key):
         fam = Family(db=db, key=key)
@@ -68,11 +92,28 @@ if __name__ == '__main__': # {{{
         languages = ', '.join([l.label for l in fam.languages])
         abilities = []
         for spec in fam.specialAbilities:
-            abilities.append(specs.substitute(specLabel=spec.label, 
-                specComment=spec.comment))
+            abilities.append(specs.substitute(specLabel='- ' + spec.label, 
+                specComment=formatComment(spec.comment)))
         abilities = ''.join(abilities)
 
-        print template.substitute(name=fam.label, senses=senses, languages=languages, specs=abilities)
+        qualities = []
+        for spec in fam.specialQualities:
+            qualities.append(specs.substitute(specLabel='- ' + spec.label, 
+                specComment=formatComment(spec.comment)))
+        qualities= ''.join(qualities)
+
+        combatMechanics = []
+        for spec in fam.combatMechanics:
+            combatMechanics.append(specs.substitute(specLabel='- ' + spec.label, 
+                specComment=formatComment(spec.comment)))
+        combatMechanics= ''.join(combatMechanics)
+
+        print template.substitute(name=fam.label, 
+                senses=senses, 
+                languages=languages, 
+                specs=abilities,
+                specQ=qualities,
+                combatMech=combatMechanics)
         #
 
 
