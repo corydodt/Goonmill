@@ -8,18 +8,20 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 
 # features
-:hitDiceType a c:Feature;
+:hitDiceType a rdfs:Property;
     rdfs:comment "What size die is used to calculate this creature's hit points for each level.";
 .
+# members of this are Features
 
-:goodSaves a c:Feature;
+:goodSaves a rdfs:Property
     rdfs:comment "Of fort, ref, and will, which saves are computed using the \"good\" saves table.";
-    rdfs:range c:Save;
 .
+# objects of this are Features
 
-:skillPoints a c:Feature;
+:skillPoints a rdfs:Property;
     rdfs:comment "Expression to determine how many skill points will be gained for each level or hit die.";
 .
+# objects of this are Features
 
 
 :miscTrait a rdfs:Property;
@@ -28,16 +30,13 @@
 
 :sense a rdfs:Property;
     rdfs:comment "A sense possessed by the creature.";
-    rdfs:range c:Sense;
 .
 
 :proficiency a rdfs:Property;
     rdfs:comment "Any proficiencies possessed by the creature.";
-    rdfs:range c:Proficiency;
 .
 
 :alignment a rdfs:Property;
-    rdfs:range c:Alignment;
 .
 
 :additional a rdfs:Property;
@@ -50,30 +49,24 @@
 
 :vitality a rdfs:Property;
     rdfs:comment "Behaviors of the creature that differ from the basic needs of life, e.g. needs to eat, sleep, drink.";
-    rdfs:range c:Vitality;
 .
 
 :language a rdfs:Property;
     rdfs:comment "What languages the creature can understand.";
-    rdfs:range c:Language;
 .
 
 :movement a rdfs:Property;
     rdfs:comment "What type of movement this creature is capable of.";
-    rdfs:range c:MoveMechanic;
 .
 
 :size a rdfs:Property;
-    rdfs:range c:Size;
 .
 
 :family a rdfs:Property;
-    rdfs:range c:Family;
 .
 
 :alignmentEffect a rdfs:Property;
     rdfs:comment "For some given alignment aspect (example: evil, lawful), any effect that depends on alignment affects a creature with this subtype as if the creature has that alignment, no matter what its alignment actually is. The creature also suffers effects according to its actual alignment. A creature with the aligned quality overcomes damage reduction as if its natural weapons and any weapons it wields were aligned to that alignment.";
-    rdfs:range c:Alignment;
 .
 
 :flight a rdfs:Property;
