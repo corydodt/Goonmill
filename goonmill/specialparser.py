@@ -36,7 +36,7 @@ r'''# special quality stat
 damageReduction := c'damage reduction', !, ws, n, '/', (qWord, ws?)+
 regeneration := c'regeneration', !, ws, n
 fastHealing := c'fast healing', !, ws, n
-family := l+, ws, c'traits'
+family := (l+, ws, c'traits')/(l+, ws, 'subtype')
 immunity := ((c'immune to'/c'immunity to'),  ws, qWords)/((?-c'immunity', qWord, ws)+, c'immunity')
 vulnerability := (c'vulnerability to', !, ws, qWords)/((?-c'vulnerability', qWord, ws)+, c'vulnerability')
 resistance := (?-'resistance', qWord, ws)+, c'resistance', ws, n
@@ -47,18 +47,21 @@ telepathy := c'telepathy', !, range
 tremorsense := c'tremorsense', !, range
 lowLightVision := c'low-light vision'
 allAroundVision := c'all-around vision'
+seeInDarkness := c'see in darkness'
 spells := c'spells (caster level ', n, l*, ')'
 scent := c'scent'
 keenSenses := c'keen senses'
 alternateForm := c'alternate form'
 waterBreathing := c'water breathing'
+aura := (c'aura of', !, ws, (qWord, ws)+)/((?-c'aura', qWord, ws)+, 'aura')
+empathy := (?-'empathy', qWord, ws)+, 'empathy'
 
 # catcher for stuff like "immune to foo, bar, and zam"
 illegalAnd := 'and', ws, !, 'DIE'
 
 unknownQuality := (qualityChar/parenExpression)*
 
->quality< := illegalAnd/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/allAroundVision/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
+>quality< := illegalAnd/empathy/aura/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/allAroundVision/seeInDarkness/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
 
 empty := '-'
 
@@ -71,6 +74,10 @@ specialQualityParser = parser.Parser(grammar, root='specialQualityRoot')
 
 
 class Quality(object):
+    count = 0
+    def __init__(self):
+        Quality.count = Quality.count + 1
+
     def __repr__(self):
         if self.repr:
             return self.repr
@@ -139,6 +146,9 @@ class Scent(Quality):
 class Tremorsense(Quality):
     repr = "Tm"
 
+class SeeInDarkness(Quality):
+    repr = "SID"
+
 class AllAroundVision(Quality):
     repr = "AAV"
 
@@ -148,12 +158,90 @@ class LowLightVision(Quality):
 class WaterBreathing(Quality):
     repr = "WB"
 
+class SpellLike(Quality):
+    repr = "SL"
+
+class Aura(Quality):
+    repr = "Au"
+
+class Empathy(Quality):
+    repr = "Em"
+
+
+spellLikes = { # {{{
+'move earth': 1,
+'control water': 1,
+'speak with animals': 1,
+'fog cloud': 1,
+'suggestion': 1,
+'spider climb': 1,
+'create/destroy water': 1,
+'tongues': 1,
+'plant growth': 1,
+'control winds': 1,
+'resilient sphere': 1,
+'locate object': 1,
+'feather fall': 1,
+'darkness': 1,
+'blur': 1,
+'bless': 1,
+'stone shape': 1,
+'control weather': 1,
+'wall of force': 1,
+'ventriloquism': 1,
+'sunbeam': 1,
+'gust of wind': 1,
+'create food and water': 1,
+'transmute rock to mud/mud to rock': 1,
+'sunburst': 1,
+'hallucinatory terrain': 1,
+'geas/quest': 1,
+'forcecage': 1,
+'teleport': 1,
+'plane shift': 1,
+'wall of stone': 1,
+'prismatic wall': 1,
+'find the path': 1,
+'greater invisibility': 1,
+'air walk': 1,
+'blink': 1,
+'detect good': 1,
+'detect magic': 1,
+'dimension door': 1,
+'command undead': 1,
+'cure serious wounds': 1,
+'gaseous form': 1,
+'haste': 1,
+'invisibility': 1,
+'mirage arcana': 1,
+'prismatic sphere': 1,
+'telekinetic sphere': 1,
+'antimagic field': 1,
+'dominate person': 1,
+'etherealness': 1,
+'insect plague': 1,
+'maze': 1,
+'veil': 1,
+'wall of ice': 1,
+'foresight': 1,
+'endure elements': 1,
+'magic circle against evil': 1,
+'magic circle against good': 1,
+'ethereal jaunt': 1,
+'detect thoughts': 1,
+'displacement': 1,
+} # }}}
 
 class Processor(disp.DispatchProcessor):
     def specialQualityStat(self, (t,s1,s2,sub), buffer):
         self.specialQualities = []
         disp.dispatchList(self, sub, buffer)
         return self.specialQualities
+
+    def aura(self, (t,s1,s2,sub), buffer):
+        q = Aura()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
 
     def waterBreathing(self, (t,s1,s2,sub), buffer):
         q = WaterBreathing()
@@ -210,6 +298,11 @@ class Processor(disp.DispatchProcessor):
         q.s = buffer[s1:s2]
         self.specialQualities.append(q)
 
+    def seeInDarkness(self, (t,s1,s2,sub), buffer):
+        q = SeeInDarkness()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
+
     def lowLightVision(self, (t,s1,s2,sub), buffer):
         q = LowLightVision()
         q.s = buffer[s1:s2]
@@ -221,9 +314,20 @@ class Processor(disp.DispatchProcessor):
         self.specialQualities.append(q)
 
     def immunity(self, (t,s1,s2,sub), buffer):
-        q = Immunity()
-        q.s = buffer[s1:s2]
-        self.specialQualities.append(q)
+        newQualities = []
+        buf = buffer[s1:s2]
+        if ' and ' in buf:
+            assert buf.startswith('immunity')
+            imms = buf[len('immunity to'):].split(' and ')
+            for imm in imms:
+                q = Immunity()
+                q.s = 'immunity to %s' % (imm.strip(),)
+                newQualities.append(q)
+        else:
+            q = Immunity()
+            q.s = buffer[s1:s2]
+            newQualities = [q]
+        self.specialQualities.extend(newQualities)
 
     def resistance(self, (t,s1,s2,sub), buffer):
         q = Resistance()
@@ -245,6 +349,11 @@ class Processor(disp.DispatchProcessor):
         q.s = buffer[s1:s2]
         self.specialQualities.append(q)
 
+    def empathy(self, (t,s1,s2,sub), buffer):
+        q = Empathy()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
+
     def family(self, (t,s1,s2,sub), buffer):
         q = Family()
         q.s = buffer[s1:s2]
@@ -254,8 +363,14 @@ class Processor(disp.DispatchProcessor):
         pass
 
     def unknownQuality(self, (t,s1,s2,sub), buffer):
-        q = UnknownQuality(buffer[s1:s2])
-        self.specialQualities.append(q)
+        s = buffer[s1:s2]
+        if s.lower() in spellLikes:
+            q = SpellLike()
+            q.s = s
+            self.specialQualities.append(q)
+        else:
+            q = UnknownQuality(buffer[s1:s2])
+            self.specialQualities.append(q)
 
 
 def parseSpecialQualities(s):
@@ -272,6 +387,7 @@ def printFrequenciesOfUnknowns():
     import pprint
     pprint.pprint(sorted(items))
     print sum(zip(*items)[0]), "total unknowns"
+    print Quality.count, "total qualities parsed"
 
 
 if __name__ == '__main__': # {{{
@@ -282,5 +398,5 @@ if __name__ == '__main__': # {{{
         #print children
         assert next==len(test),  test[:next] + '\n--\n' + test[next:]
 
-    # printFrequenciesOfUnknowns()
+    printFrequenciesOfUnknowns()
 # }}}
