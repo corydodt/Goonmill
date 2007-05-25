@@ -46,6 +46,7 @@ blindSight := c'blindsight', !, range
 telepathy := c'telepathy', !, range
 tremorsense := c'tremorsense', !, range
 lowLightVision := c'low-light vision'
+allAroundVision := c'all-around vision'
 spells := c'spells (caster level ', n, l*, ')'
 scent := c'scent'
 keenSenses := c'keen senses'
@@ -57,7 +58,7 @@ illegalAnd := 'and', ws, !, 'DIE'
 
 unknownQuality := (qualityChar/parenExpression)*
 
->quality< := illegalAnd/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
+>quality< := illegalAnd/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/allAroundVision/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
 
 empty := '-'
 
@@ -138,6 +139,9 @@ class Scent(Quality):
 class Tremorsense(Quality):
     repr = "Tm"
 
+class AllAroundVision(Quality):
+    repr = "AAV"
+
 class LowLightVision(Quality):
     repr = "LLV"
 
@@ -198,6 +202,11 @@ class Processor(disp.DispatchProcessor):
 
     def darkvision(self, (t,s1,s2,sub), buffer):
         q = Darkvision()
+        q.s = buffer[s1:s2]
+        self.specialQualities.append(q)
+
+    def allAroundVision(self, (t,s1,s2,sub), buffer):
+        q = AllAroundVision()
         q.s = buffer[s1:s2]
         self.specialQualities.append(q)
 
@@ -262,6 +271,7 @@ def printFrequenciesOfUnknowns():
         items[n] = freq, k
     import pprint
     pprint.pprint(sorted(items))
+    print sum(zip(*items)[0]), "total unknowns"
 
 
 if __name__ == '__main__': # {{{
@@ -272,5 +282,5 @@ if __name__ == '__main__': # {{{
         #print children
         assert next==len(test),  test[:next] + '\n--\n' + test[next:]
 
-    #printFrequenciesOfUnknowns()
+    # printFrequenciesOfUnknowns()
 # }}}
