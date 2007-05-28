@@ -57,8 +57,11 @@ if [ ! -r goonmill/srd35.db ]; then
     gzip -dc $db > ${db/.gz/}
 else
     echo "** ${db/.gz/} already exists, not willing to overwrite it!"
+    echo ::
+    echo :: If you have already run bootstrap.sh once, this is not an error.
+    echo ::
     echo ":: To restore it, type: gzip -dc $db > ${db/.gz/}"
-    echo ":: Caution: This will DESTROY any changes you made to the database."
+    echo :: Caution: This will DESTROY any changes you made to the database.
 fi
 
 echo "Done."
