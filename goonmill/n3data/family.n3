@@ -70,7 +70,8 @@
 .
 # "In human form, proficient with simple weapons."
 # TODO - requires reasoning
-{ ?m c:ShapeChangeStatus c:asHumanoid } => { ?m p:proficiency c:simpleWeapons } .
+{ ?m p:family :dragon . ?m c:ShapeChangeStatus c:asHumanoid } => 
+    { ?m p:proficiency c:simpleWeapons } .
 
 :elemental
     a c:Family;
