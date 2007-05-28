@@ -51,7 +51,7 @@ def findSpecialAbilities(combat):
 
 def parseFullAbilities(s):
     """
-    Return a 2-tuple of (special abilities, spell-like abilities
+    Return a 2-tuple of (special abilities, spell-like abilities)
     """
     prepped = prepFullText(s)
     combat = findCombatTag(ElementTree.fromstring(prepped))
