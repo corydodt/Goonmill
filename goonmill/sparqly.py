@@ -80,12 +80,17 @@ Bill LUMBERGH
 Limitations:
     - There is no cache.  A SPARQL query must be issued against the data
       *every* time the application wants the value.
+    - There is no schema discovery.  Future idea: It may be possible to use
+      OWL/RDFS to describe object-oriented relationships, and read them into
+      your Python classes.
     - The constructor for Attributes is terrible.  It assumes you have set up
       prefixes correctly on the TriplesDatabase, and it assumes you want to
       learn SPARQL.  :-)
     - Assignment (TODO) - currently can't be done at all.  I don't know how
       assignment to Ref will work, since it returns a list.  Assignment to
       Literal shouldn't be too hard.
+    - As illustrated above, recursive relationships are awkward.  To make
+      supervisor, we had to define the attribute after defining the SparqItem.
 
 """
 
