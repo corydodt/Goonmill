@@ -1,0 +1,4 @@
+#!/bin/bash
+find -mindepth 1 -type d ! -path '*/.hg/*' -a ! -name '.hg' -a ! -name 'elements' \
+    -a !  -path '*/static/*' -a ! -name 'static' -a ! -name 'templates' \
+    -a ! -name 'guises' -a ! -name 'upstream' -a ! -name 'html'
