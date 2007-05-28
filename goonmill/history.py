@@ -2,8 +2,8 @@
 
 import re
 
-from goonmill import query, dice, diceparser, skillparser, featparser, \
-        saveparser, attackparser, fullabilityparser
+from goonmill import (query, dice, diceparser, skillparser, featparser,
+        saveparser, attackparser, fullabilityparser, specialparser, rdfquery)
 
 class History(object):
     """
@@ -65,6 +65,7 @@ class Statblock(object):
                 'attackOptions': self.attackOptions,
                 'fullAbilities': parsedFullAbilities[0],
                 'spellLikeAbilities': parsedFullAbilities[1],
+                'languages': self.languages,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -82,6 +83,37 @@ class Statblock(object):
 
         self._handler = None
         self._parsedHitDice = None
+
+        self._parsedSpecialQualities = self.parseSpecialQualities()
+
+        self.determineFamilies()
+
+    def determineFamilies(self):
+        """From several of the monster's attributes, compute its families."""
+        knownFamilies = rdfquery.allFamilies()
+        foundFamilies = set()
+
+        _f = self.monster.family.title()
+        if _f in knownFamilies:
+            foundFamilies.add(knownFamilies[_f])
+
+        _t = self.monster.type
+        if _t in knownFamilies:
+            foundFamilies.add(knownFamilies[_t])
+
+        _d = self.monster.descriptor
+        if _d is not None:
+            for descriptor in _d.split(', '):
+                if _d in knownFamilies:
+                    foundFamilies.add(knownFamilies[_d])
+
+        for q in self._parsedSpecialQualities:
+            if q.type == 'family':
+                what = q.what.title()
+                if what in knownFamilies:
+                    foundFamilies.add(knownFamilies[what])
+
+        self.families = sorted(foundFamilies)
 
     def update(self, attribute, newValue):
         """I will call this to notify handlers ot changed attributes"""
@@ -113,6 +145,9 @@ class Statblock(object):
 
     def parseFullAbilities(self):
         return parseFullAbilities(self.monster.full_text)
+
+    def parseSpecialQualities(self):
+        return parseSpecialQualities(self.monster.special_qualities)
 
     def parseFeats(self):
         return parseFeats(self.monster.feats)
@@ -171,6 +206,18 @@ class Statblock(object):
                     hplist[n] = 1
 
         return ', '.join(map(str, hplist))
+
+    def languages(self):
+        """Return the languages a creature knows, determined by inspecting
+        creature's families.
+        """
+        ret = set()
+
+        for f in self.families:
+            for l in f.languages:
+                ret.add(l.label)
+
+        return ', '.join(sorted(ret)) or '-'
 
     def attackOptions(self):
         """
@@ -297,6 +344,10 @@ def parseAttackOptions(attackStat):
 def parseFullAbilities(fullTextStat):
     """All full ability markup as a list of strings"""
     return fullabilityparser.parseFullAbilities(fullTextStat)
+
+def parseSpecialQualities(specialQualitiesStats):
+    """All full ability markup as a list of strings"""
+    return specialparser.parseSpecialQualities(specialQualitiesStats)
 
 # tests
 def test_statblockSkill():

@@ -155,7 +155,7 @@ class Result(athena.LiveElement):
         fill('initiative', get('initiative'))
         fill('listen', '%s' % (get('listen'),))
         fill('spot', '%s' % (get('spot'),))
-        fill('languages', u'languages')
+        fill('languages', (get('languages'),))
 
         # defense block
         fill('ac', get('armor_class'))
@@ -169,7 +169,6 @@ class Result(athena.LiveElement):
         # attack block
         fill('speed', get('speed'))
         fill('speedFeats', get('speedFeats'))
-        attackOptions = get('attackOptions')
         ## meleeAttacks - see renderer
         ## rangedAttacks - see renderer
         fill('rangedAttackFeats', get('rangedAttackFeats'))
