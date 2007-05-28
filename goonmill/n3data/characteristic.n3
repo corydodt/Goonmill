@@ -230,6 +230,14 @@
 :noWeaponDamage a :CombatMechanic;
     rdfs:label "Immune to all damage from weapons.";
 .
+:negativeEnergyHealing a :CombatMechanic;
+    rdfs:label "Can be healed by negative energy.";
+    rdfs:comment "Negative energy magic, e.g. inflict spells, can heal this creature.";
+.
+:cannotHealNaturally a :CombatMechanic;
+    rdfs:label "Cannot heal damage on its own.";
+    rdfs:comment "Does not heal normally by resting, although fast healing still applies and other forms of healing may apply.";
+.
 
 
 :MoveMechanic rdfs:subClassOf :Characteristic .

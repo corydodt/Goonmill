@@ -88,3 +88,16 @@
 :shapeChangeStatus a rdfs:Property;
     rdfs:comment "For a creature able to shape change, the shape it has currently assumed.";
 .
+:range a rdfs:Property;
+.
+:abilityScore a rdfs:Property;
+    rdfs:label "Ability Score";
+    rdfs:comment "Used to specify one of the 6 ability scores as a predicate.";
+    owl:allValuesFrom c:AbilityScore;
+.
+:maximum a rdfs:Property;
+    rdfs:comment "Numeric Constraint: May be no more than";
+.
+:minimum a rdfs:Property;
+    rdfs:comment "Numeric Constraint: May be no less than";
+.
