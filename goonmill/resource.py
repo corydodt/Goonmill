@@ -153,6 +153,7 @@ class Result(athena.LiveElement):
         fill('creatureType', get('type'))
         fill('subtype', get('descriptor'))
         fill('initiative', get('initiative'))
+        fill('aura', get('aura'))
         fill('listen', '%s' % (get('listen'),))
         fill('spot', '%s' % (get('spot'),))
         fill('languages', (get('languages'),))
@@ -199,6 +200,13 @@ class Result(athena.LiveElement):
 
     def updateHandler(self, attribute, newValue):
         self.guises[attribute].push(newValue)
+
+    def aura(self, req, tag):
+        if self.statblock.get('aura'):
+            return tag
+        return ''
+
+    page.renderer(aura)
 
     def subtype(self, req, tag):
         if self.statblock.get('descriptor'):

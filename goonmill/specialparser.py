@@ -197,7 +197,7 @@ class Processor(disp.DispatchProcessor):
 
     def auraArg(self, (t,s1,s2,sub), buffer):
         q = Quality('aura')
-        q.setArgs(what=buffer[s1:s2])
+        q.setArgs(what=buffer[s1:s2].strip())
         self.specialQualities.append(q)
 
     def spellsLevel(self, (t,s1,s2,sub), buffer):
@@ -278,7 +278,7 @@ class Processor(disp.DispatchProcessor):
 
 def parseSpecialQualities(s):
     """
-    Return dict of {'type': [list-of-matching-text], ...}
+    Return list of qualities
     """
     succ, children, end = specialQualityParser.parse(s, processor=Processor())
     if not succ or not end == len(s):

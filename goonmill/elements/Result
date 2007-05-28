@@ -26,7 +26,7 @@
     "initiative"/>; <span class="TODO"><strong>Senses</strong> [special
         senses;]</span> <n:slot name="listen" />, <n:slot
     name="spot" /></p>
-    <p class="TODO"><strong>Aura</strong>&#xA0;aura (range, DC XX)</p>
+    <p n:render="aura"><strong>Aura</strong>&#xA0;<n:slot name="aura" /></p>
     <p><strong>Languages</strong>&#xA0;<n:slot name="languages"/></p>
   </div>
 

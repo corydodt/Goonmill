@@ -66,6 +66,7 @@ class Statblock(object):
                 'fullAbilities': parsedFullAbilities[0],
                 'spellLikeAbilities': parsedFullAbilities[1],
                 'languages': self.languages,
+                'aura': self.aura,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -218,6 +219,15 @@ class Statblock(object):
                 ret.add(l.label)
 
         return ', '.join(sorted(ret)) or '-'
+
+    def aura(self):
+        """Return the creature's aura, if any"""
+        ret = []
+        for q in self._parsedSpecialQualities:
+            if q.type == 'aura':
+                ret.append(q.what)
+
+        return ', '.join(sorted(ret)) or None
 
     def attackOptions(self):
         """
