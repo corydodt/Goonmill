@@ -1,4 +1,8 @@
-"""The resource structure for Goonmill"""
+"""
+The resource structure for Goonmill
+
+API for building the goonmill page and its fragments.
+"""
 import shlex
 
 from zope.interface import implements
