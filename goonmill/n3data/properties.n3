@@ -81,4 +81,10 @@
     rdfs:comment "How much skill a creature has at flying.";
 .
 
+:existentialStatus a rdfs:Property;
+    rdfs:comment "Whether a creature is currently existing on its native plane or somwehere else.";
+.
 
+:shapeChangeStatus a rdfs:Property;
+    rdfs:comment "For a creature able to shape change, the shape it has currently assumed.";
+.

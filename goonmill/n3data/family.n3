@@ -70,7 +70,7 @@
 .
 # "In human form, proficient with simple weapons."
 # TODO - requires reasoning
-{ ?m p:family :dragon . ?m c:ShapeChangeStatus c:asHumanoid } => 
+{ ?m p:family :dragon . ?m p:shapeChangeStatus c:asHumanoid } => 
     { ?m p:proficiency c:simpleWeapons } .
 
 :elemental
@@ -178,7 +178,7 @@
 .
 # outsiders on their native planes are different.
 # TODO - requires reasoning.
-{ ?m p:family :outsider; c:ExistentialStatus c:native. } =>
+{ ?m p:family :outsider; p:existentialStatus c:native. } =>
     { 
       { ?m p:vitality c:noEat } a log:Falsehood .
       { ?m p:vitality c:noSleep } a log:Falsehood .
