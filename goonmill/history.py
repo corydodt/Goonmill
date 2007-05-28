@@ -67,6 +67,9 @@ class Statblock(object):
                 'spellLikeAbilities': parsedFullAbilities[1],
                 'languages': self.languages,
                 'aura': self.aura,
+                'fastHealing': self.fastHealing,
+                'regeneration': self.regeneration,
+                'damageReduction': self.damageReduction,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -219,6 +222,24 @@ class Statblock(object):
                 ret.add(l.label)
 
         return ', '.join(sorted(ret)) or '-'
+
+    def fastHealing(self):
+        """Return the creature's fast healing, if any"""
+        for q in self._parsedSpecialQualities:
+            if q.type == 'fastHealing':
+                return q.amount
+
+    def regeneration(self):
+        """Return the creature's regeneration, if any"""
+        for q in self._parsedSpecialQualities:
+            if q.type == 'regeneration':
+                return q.amount
+
+    def damageReduction(self):
+        """Return the creature's damage reduction, if any"""
+        for q in self._parsedSpecialQualities:
+            if q.type == 'damageReduction':
+                return q.amount
 
     def aura(self):
         """Return the creature's aura, if any"""

@@ -35,7 +35,11 @@
       <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO">[; defenses]</span>
       <span n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
       <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (<n:slot name="hitDice"
-      /> HD)<span class="TODO">[; fast healing XX; regneration XX][; <strong>DR</strong> XX/XX]</span></p>
+      /> HD)
+      <span n:render="fastHealing">; fast healing <n:slot name="fastHealing" /></span>
+      <span n:render="regeneration">; regeneration <n:slot name="regeneration" /></span>
+      <span n:render="damageReduction"><strong>DR</strong> <n:slot
+          name="damageReduction" /></span></p>
     <p class="TODO">[<strong>Immune</strong>&#xA0;immunities]</p>
     <p class="TODO">[<strong>Resist</strong>&#xA0;resistances; <strong>SR</strong> XX]</p>
     <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>
