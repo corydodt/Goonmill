@@ -123,7 +123,7 @@ class SparqAttribute(object):
         self.default = default
 
     def solve(self, db, key):
-        """Return the value or values for this query."""
+        """Return the value or values of this attribute."""
         data = self.retrieveData(db, key)
         if len(data) == 0:
             return None
@@ -131,7 +131,7 @@ class SparqAttribute(object):
         return data[0]
 
     def retrieveData(self, db, key):
-        """Do a query and return its result list.
+        """Do my query against a db and return its result list.
         If no result list and default is set, return default.
         """
         # rdflib.URIRef could be passed as key; handle that case
