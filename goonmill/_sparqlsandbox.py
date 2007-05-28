@@ -7,7 +7,9 @@ import rdflib
 from rdflib import RDFS
 from rdflib.Namespace import Namespace as NS
 
-from goonmill.rdfquery import fam, char, dice, pcclass, prop, db, prefixes
+from goonmill.rdfquery import (fam, char, dice, pcclass, prop, db, prefixes,
+        Family, Sense, Language, CombatMechanic, SpecialAbility,
+        SpecialQuality)
 
 def getSandbox(select):
     print select
