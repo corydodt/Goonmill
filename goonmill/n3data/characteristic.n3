@@ -260,6 +260,12 @@
     rdfs:comment "Creature is not currently on its native plane.";
 .
 
+:ShapeChangeStatus rdfs:subClassOf :Characteristic .
+:asHumanoid a :ShapeChangeStatus;
+    rdfs:label "As Humanoid";
+    rdfs:comment "Creature is currently in humanoid form.";
+.
+
 :Size rdfs:subClassOf :Characteristic .
 :fine a :Size .
 :diminutive a :Size .

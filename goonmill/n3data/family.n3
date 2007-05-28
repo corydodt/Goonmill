@@ -67,8 +67,10 @@
     p:sense [ a c:Darkvision; :range "60ft." ], c:lowLightVision;
     p:immunities c:sleep, c:paralysis;
     p:proficiency c:naturalWeapons, c:weaponsAsDescribed, c:armorNone;
-    p:additional "In human form, proficient with simple weapons.";
 .
+# "In human form, proficient with simple weapons."
+# TODO - requires reasoning
+{ ?m c:ShapeChangeStatus c:asHumanoid } => { ?m p:proficiency c:simpleWeapons } .
 
 :elemental
     a c:Family;
