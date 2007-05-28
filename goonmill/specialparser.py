@@ -30,39 +30,52 @@ r'''# special quality stat
 
 <parenExpression> := '(', !, (qualityChar/',')*, ')'
 
-<range> := ws, n, ws, 'ft.'
+range := ws, n, ws, 'ft.'
 
 
 # here we go with a whole buttload of specific elements
-damageReduction := c'damage reduction', !, ws, n, '/', (qWord, ws?)+
-regeneration := c'regeneration', !, ws, n
-fastHealing := c'fast healing', !, ws, n
-family := (l+, ws, c'traits')/(l+, ws, 'subtype')
-immunity := ((c'immune to'/c'immunity to'),  ws, qWords)/((?-c'immunity', qWord, ws)+, c'immunity')
-vulnerability := (c'vulnerability to', !, ws, qWords)/((?-c'vulnerability', qWord, ws)+, c'vulnerability')
-resistance := (?-'resistance', qWord, ws)+, c'resistance', ws, n
-darkvision := c'darkvision', !, range
-blindSense := c'blindsense', !, range
-blindSight := c'blindsight', !, range
-telepathy := c'telepathy', !, range
-tremorsense := c'tremorsense', !, range
-lowLightVision := c'low-light vision'
-allAroundVision := c'all-around vision'
-seeInDarkness := c'see in darkness'
-spells := c'spells (caster level ', n, l*, ')'
-scent := c'scent'
-keenSenses := c'keen senses'
-alternateForm := c'alternate form'
-waterBreathing := c'water breathing'
-aura := (c'aura of', !, ws, (qWord, ws)+)/((?-c'aura', qWord, ws)+, 'aura')
-empathy := (?-'empathy', qWord, ws)+, 'empathy'
+damageReductionArg := n, '/', (qWord, ws?)+
+>damageReduction< := c'damage reduction', !, ws, damageReductionArg
+
+regenerationArg := n
+>regeneration< := c'regeneration', !, ws, regenerationArg
+
+fastHealingArg := n
+>fastHealing< := c'fast healing', !, ws, fastHealingArg
+
+familyArg := qWord
+>family< := familyArg, ws, c'traits'/c'subtype'
+
+immunityArg := (?-c'immunity', qWord, ws)+
+>immunity< := ((c'immune to'/c'immunity to'),  ws, immunityArg)/(immunityArg, c'immunity')
+
+vulnerabilityArg := (?-c'vulnerability', qWord, ws)+
+>vulnerability< := (c'vulnerability to', !, ws, vulnerabilityArg)/(vulnerabilityArg, c'vulnerability')
+
+resistanceAmount := n
+resistanceName := (?-'resistance', qWord, ws)+
+>resistance< := resistanceName, c'resistance', ws, resistanceAmount
+
+rangedQualityName := c'darkvision'/c'blindsense'/c'blindsight'/c'telepathy'/c'tremorsense' 
+>rangedQuality< := rangedQualityName, !, range
+
+noArgumentQuality := c'low-light vision'/c'all-around vision'/c'see in darkness'/c'scent'/c'keen senses'/c'alternate form'/c'water breathing'/c'icewalking'/c'cloudwalking'
+
+spellsLevel := n, l*
+>spells< := c'spells (caster level ', !, spellsLevel, ')'
+
+auraArg := (?-c'aura', qWord, ws)+
+>aura< := (c'aura of', !, ws, auraArg)/(auraArg, 'aura')
+
+empathyArg := (?-'empathy', qWord, ws)+
+>empathy< := empathyArg, 'empathy'
 
 # catcher for stuff like "immune to foo, bar, and zam"
 illegalAnd := 'and', ws, !, 'DIE'
 
 unknownQuality := (qualityChar/parenExpression)*
 
->quality< := illegalAnd/empathy/aura/waterBreathing/alternateForm/keenSenses/telepathy/tremorsense/scent/darkvision/blindSense/blindSight/lowLightVision/allAroundVision/seeInDarkness/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
+>quality< := illegalAnd/noArgumentQuality/rangedQuality/empathy/aura/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
 
 empty := '-'
 
@@ -78,16 +91,27 @@ specialQualityParser = parser.Parser(grammar, root='specialQualityRoot')
 class Quality(object):
     count = 0
     unknowns = {}
-    def __init__(self, type, text):
+
+    def __init__(self, type, name=None):
         Quality.count = Quality.count + 1
+        self.kw = {}
         self.type = type
-        self.text = text
+        self.name = name
         if type == 'unknown':
-            uq = Quality.unknowns.get(text)
+            uq = Quality.unknowns.get(name)
             if uq is None:
-                self.unknowns[text] = 1
+                self.unknowns[name] = 1
             else:
-                self.unknowns[text] = uq + 1
+                self.unknowns[name] = uq + 1
+
+    def setArgs(self, **kw):
+        self.kw = kw
+
+    def __repr__(self):
+        return "<Quality %s %s kw=%s>" % (self.type, self.name, self.kw.keys())
+
+    def __getattr__(self, k):
+        return self.kw.get(k)
 
 
 spellLikes = { # {{{
@@ -161,102 +185,77 @@ class Processor(disp.DispatchProcessor):
         disp.dispatchList(self, sub, buffer)
         return self.specialQualities
 
-    def aura(self, (t,s1,s2,sub), buffer):
-        q = Quality('aura', buffer[s1:s2])
+    def rangedQualityName(self, (t,s1,s2,sub), buffer):
+        name = buffer[s1:s2]
+        q = Quality(t, name)
+        self.specialQualities.append(q)
+        disp.dispatchList(self, sub, buffer)
+
+    def noArgumentQuality(self, (t,s1,s2,sub), buffer):
+        q = Quality(t, buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def waterBreathing(self, (t,s1,s2,sub), buffer):
-        q = Quality('waterBreathing', buffer[s1:s2])
+    def auraArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('aura')
+        q.setArgs(what=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def alternateForm(self, (t,s1,s2,sub), buffer):
-        q = Quality('alternateForm', buffer[s1:s2])
+    def spellsLevel(self, (t,s1,s2,sub), buffer):
+        q = Quality('spells')
+        q.setArgs(level=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def keenSenses(self, (t,s1,s2,sub), buffer):
-        q = Quality('keenSenses', buffer[s1:s2])
+    def vulnerabilityArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('vulnerability')
+        q.setArgs(what=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def tremorsense(self, (t,s1,s2,sub), buffer):
-        q = Quality('tremorsense', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def telepathy(self, (t,s1,s2,sub), buffer):
-        q = Quality('telepathy', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def scent(self, (t,s1,s2,sub), buffer):
-        q = Quality('scent', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def spells(self, (t,s1,s2,sub), buffer):
-        q = Quality('spells', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def blindSense(self, (t,s1,s2,sub), buffer):
-        q = Quality('blindSense', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def blindSight(self, (t,s1,s2,sub), buffer):
-        q = Quality('blindSight', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def darkvision(self, (t,s1,s2,sub), buffer):
-        q = Quality('darkvision', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def allAroundVision(self, (t,s1,s2,sub), buffer):
-        q = Quality('allAroundVision', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def seeInDarkness(self, (t,s1,s2,sub), buffer):
-        q = Quality('seeInDarkness', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def lowLightVision(self, (t,s1,s2,sub), buffer):
-        q = Quality('lowLightVision', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def vulnerability(self, (t,s1,s2,sub), buffer):
-        q = Quality('vulnerability', buffer[s1:s2])
-        self.specialQualities.append(q)
-
-    def immunity(self, (t,s1,s2,sub), buffer):
+    def immunityArg(self, (t,s1,s2,sub), buffer):
         newQualities = []
         buf = buffer[s1:s2]
         if ' and ' in buf:
-            assert buf.startswith('immunity')
-            imms = buf[len('immunity to'):].split(' and ')
+            imms = buf.split(' and ')
             for imm in imms:
-                q = Quality('immunity', imm.strip())
+                q = Quality('immunity')
+                q.setArgs(what=imm)
                 newQualities.append(q)
         else:
-            q = Quality('immunity', buffer[s1:s2])
+            q = Quality('immunity')
+            q.setArgs(what=buffer[s1:s2])
             newQualities = [q]
         self.specialQualities.extend(newQualities)
 
-    def resistance(self, (t,s1,s2,sub), buffer):
-        q = Quality('resistance', buffer[s1:s2])
+    def resistanceName(self, (t,s1,s2,sub), buffer):
+        q = Quality('resistance')
+        q.setArgs(what=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def regeneration(self, (t,s1,s2,sub), buffer):
-        q = Quality('regeneration', buffer[s1:s2])
+    def resistanceAmount(self, (t, s1, s2, sub), buffer):
+        self.specialQualities[-1].setArgs(amount=buffer[s1:s2])
+
+    def regenerationArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('regeneration')
+        q.setArgs(amount=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def damageReduction(self, (t,s1,s2,sub), buffer):
-        q = Quality('damageReduction', buffer[s1:s2])
+    def damageReductionArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('damageReduction')
+        q.setArgs(amount=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def fastHealing(self, (t,s1,s2,sub), buffer):
-        q = Quality('fastHealing', buffer[s1:s2])
+    def fastHealingArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('fastHealing')
+        q.setArgs(amount=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def empathy(self, (t,s1,s2,sub), buffer):
-        q = Quality('empathy', buffer[s1:s2])
+    def empathyArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('empathy')
+        q.setArgs(what=buffer[s1:s2])
         self.specialQualities.append(q)
 
-    def family(self, (t,s1,s2,sub), buffer):
-        q = Quality('family', buffer[s1:s2])
+    def familyArg(self, (t,s1,s2,sub), buffer):
+        q = Quality('family')
+        q.setArgs(what=buffer[s1:s2])
         self.specialQualities.append(q)
 
     def empty(self, (t,s1,s2,sub), buffer):
@@ -265,18 +264,27 @@ class Processor(disp.DispatchProcessor):
     def unknownQuality(self, (t,s1,s2,sub), buffer):
         s = buffer[s1:s2]
         if s.lower() in spellLikes:
-            q = Quality('spellLike', s)
+            q = Quality('spellLike')
+            q.setArgs(spell=s)
             self.specialQualities.append(q)
         else:
             q = Quality('unknown', buffer[s1:s2])
             self.specialQualities.append(q)
 
+    def range(self, (t,s1,s2,sub), buffer):
+        q = self.specialQualities[-1]
+        q.setArgs(range=buffer[s1:s2].strip())
+
 
 def parseSpecialQualities(s):
-    succ, children, end = attackParser.parse(s, processor=Processor())
+    """
+    Return dict of {'type': [list-of-matching-text], ...}
+    """
+    succ, children, end = specialQualityParser.parse(s, processor=Processor())
     if not succ or not end == len(s):
-        raise RuntimeError('%s is not a valid attack expression' % (s,))
-    return children
+        raise RuntimeError('%s is not a valid special quality stat' % (s,))
+    qualities = children[0]
+    return qualities
 
 
 def printFrequenciesOfUnknowns():
