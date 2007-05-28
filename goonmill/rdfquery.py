@@ -53,7 +53,24 @@ def filenameAsUri(fn):
 # create the root database for my triples-based SRD
 prefixes = {'': fam, 'c': char, 'p': prop}
 
-db = S.TriplesDatabase(
+
+def allFamilies():
+    return db.allFamilies()
+
+
+class SRDTriplesDatabase(S.TriplesDatabase):
+    def allFamilies(self):
+        ret = {}
+        for k in db.query("SELECT ?f { ?f a c:Family }"):
+            k = k[0]
+            family = Family(db=db, key=k)
+            ret[family.label] = family
+
+        return ret
+                
+
+
+db = SRDTriplesDatabase(
         str(fam),
         prefixes=prefixes,
         datasets=[filenameAsUri(RESOURCE('n3data/family.n3')),
