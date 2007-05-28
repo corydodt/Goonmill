@@ -162,10 +162,11 @@ class Result(athena.LiveElement):
         fill('ac', get('armor_class'))
         fill('acFeats', get('acFeats'))
         fill('hp', guise('hp', readOnly=True, value=get('hitPoints')))
+        fill('hitDice', get('hitDice'))
         fill('fastHealing', get('fastHealing'))
         fill('regeneration', get('regeneration'))
         fill('damageReduction', get('damageReduction'))
-        fill('hitDice', get('hitDice'))
+        fill('spellResistance', get('spellResistance'))
         fill('fort', get('fort'))
         fill('ref', get('ref'))
         fill('will', get('will'))
@@ -203,6 +204,13 @@ class Result(athena.LiveElement):
 
     def updateHandler(self, attribute, newValue):
         self.guises[attribute].push(newValue)
+
+    def spellResistance(self, req, tag):
+        if self.statblock.get('spellResistance'):
+            return tag
+        return ''
+
+    page.renderer(spellResistance)
 
     def fastHealing(self, req, tag):
         if self.statblock.get('fastHealing'):

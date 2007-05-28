@@ -105,7 +105,7 @@ class Quality(object):
                 self.unknowns[name] = uq + 1
 
     def setArgs(self, **kw):
-        self.kw = kw
+        self.kw.update(kw)
 
     def __repr__(self):
         return "<Quality %s %s kw=%s>" % (self.type, self.name, self.kw.keys())
@@ -227,7 +227,7 @@ class Processor(disp.DispatchProcessor):
 
     def resistanceName(self, (t,s1,s2,sub), buffer):
         q = Quality('resistance')
-        q.setArgs(what=buffer[s1:s2])
+        q.setArgs(what=buffer[s1:s2].strip())
         self.specialQualities.append(q)
 
     def resistanceAmount(self, (t, s1, s2, sub), buffer):

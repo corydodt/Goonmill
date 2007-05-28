@@ -65,6 +65,7 @@ class Statblock(object):
                 'attackOptions': self.attackOptions,
                 'fullAbilities': parsedFullAbilities[0],
                 'spellLikeAbilities': parsedFullAbilities[1],
+                'spellResistance': self.spellResistance,
                 'languages': self.languages,
                 'aura': self.aura,
                 'fastHealing': self.fastHealing,
@@ -222,6 +223,12 @@ class Statblock(object):
                 ret.add(l.label)
 
         return ', '.join(sorted(ret)) or '-'
+
+    def spellResistance(self):
+        """Return the creature's spell resistance, if any"""
+        for q in self._parsedSpecialQualities:
+            if q.type == 'resistance' and q.what == 'spell':
+                return q.amount
 
     def fastHealing(self):
         """Return the creature's fast healing, if any"""
