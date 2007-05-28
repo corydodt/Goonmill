@@ -2,5 +2,5 @@
 (/|\\|)dropin.cache$
 (/|\\|^)twistd.log$
 (/|\\)srd35.db$
-(/|\\|^)twistd.pid$
+(/|\\|^).*\.pid$
 ^goonmill/html/.*$
