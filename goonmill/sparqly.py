@@ -131,6 +131,9 @@ class SparqAttribute(object):
         return data[0]
 
     def retrieveData(self, db, key):
+        """Do a query and return its result list.
+        If no result list and default is set, return default.
+        """
         # rdflib.URIRef could be passed as key; handle that case
         if hasattr(key, 'n3'):
             key = key.n3()
@@ -160,11 +163,11 @@ class Ref(SparqAttribute):
     def solve(self, db, key):
         data = self.retrieveData(db, key)
 
+        if data is None:
+            return []
+
         ret = []
         cls = self.itemClass
-
-        if data is None:
-            return ret
 
         for i in data:
             assert isinstance(i, rdflib.URIRef), (
