@@ -45,12 +45,16 @@
         "immunities" /></p>
     <p class="TODO"><span n:render="resistances"><strong>Resist</strong>&#xA0;<n:slot name=
         "resistances" />
-        </span><span n:render="spellResistance"><strong>SR</strong> <n:slot
-        name="spellResistance" /></span></p>
+        </span><span n:render="spellResistance"><strong>SR</strong> <n:slot name=
+            "spellResistance" /></span></p>
     <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>
         <n:slot name="ref" />, <strong>Will</strong> <n:slot name="will" /> <span
         class="TODO">[; save modifiers]</span></p>
-    <p class="TODO">[<strong>Weakness</strong> XX]</p>
+    <p><strong>Weakness</strong>
+        <span n:render="vulnerabilities" ><span n:pattern=
+            "vulnerability">vulnerability to <n:slot name=
+            "attackEffect" /> </span></span>
+    </p>
   </div>
 
   <!-- attack block -->

@@ -15,6 +15,10 @@ class Resistance(S.SparqItem):
     """A resistance possessed by monsters"""
 
 
+class Vulnerability(S.SparqItem):
+    """A vulnerability possessed by monsters"""
+
+
 class Immunity(S.SparqItem):
     """An immunity possessed by monsters"""
 
@@ -56,6 +60,8 @@ class Family(S.SparqItem):
         'SELECT ?i { $key p:immunity ?i }')
     resistances = S.Ref(Resistance,
         'SELECT ?r { $key p:resistance ?r }')
+    vulnerabilities = S.Ref(Vulnerability,
+        'SELECT ?r { $key p:vulnerabilities ?r }')
 
 
 

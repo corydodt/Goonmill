@@ -173,6 +173,7 @@ class Result(athena.LiveElement):
         fill('fort', get('fort'))
         fill('ref', get('ref'))
         fill('will', get('will'))
+        ## vulnerabilities - see renderer
 
         # attack block
         fill('speed', get('speed'))
@@ -299,6 +300,22 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(speedFeats)
+
+    def vulnerabilities(self, req, tag):
+        vulns = self.statblock.get('vulnerabilities')
+        if not vulns:
+            return ''
+
+        content = []
+        pg = tag.patternGenerator('vulnerability')
+        for n, vuln in enumerate(vulns):
+            if n < len(vulns) - 1:
+                vuln = vuln + ', '
+            content.append(pg().fillSlots('attackEffect', vuln))
+
+        return tag[content]
+
+    page.renderer(vulnerabilities)
 
     def meleeAttacks(self, req, tag):
         options = self.statblock.get('attackOptions')['melee']

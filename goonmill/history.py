@@ -75,6 +75,7 @@ class Statblock(object):
                 'senses': self.senses,
                 'immunities': self.immunities,
                 'resistances': self.resistances,
+                'vulnerabilities': self.vulnerabilities,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -249,6 +250,24 @@ class Statblock(object):
         if len(ret) > 0:
             return ', '.join(sorted(ret.values()))
         return '-'
+
+    def vulnerabilities(self):
+        """Return the creature's notable vulnerabilities"""
+        # use a dict; we're going to load vulnerabilities from the family first
+        # and then override them from the monster's specialqualities stat
+        ret = {}
+
+        for f in self.families:
+            for s in f.vulnerabilities:
+                ret[s.label] = s.label
+
+        for q in self._parsedSpecialQualities:
+            if q.type == 'vulnerability':
+                ret[q.what.title()] = q.what
+
+        if len(ret) > 0:
+            return sorted(ret.values())
+        return []
 
     def senses(self):
         """Return the creature's notable senses"""

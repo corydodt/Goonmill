@@ -293,7 +293,7 @@
 :cold
     a c:Family;
     p:immunity c:cold;
-    p:vulnerabilities c:fire;
+    p:vulnerability c:fire;
 .
 
 :demon
