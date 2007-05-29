@@ -47,6 +47,7 @@ class Statblock(object):
         self._label = ''
         self.skills = self.parseSkills()
         self.feats = self.parseFeats()
+
         parsedFullAbilities = self.parseFullAbilities()
         self.overrides = { # when .get() is called, these will be looked up
                            # first and possibly called
@@ -59,8 +60,8 @@ class Statblock(object):
                 'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
-                'listen': 'Listen +0', # may be set again, down below
-                'spot': 'Spot +0', # may be set again, down below
+                'listen': '+0', # may be set again, down below
+                'spot': '+0', # may be set again, down below
                 'alignment': self.formatAlignment(),
                 'attackOptions': self.attackOptions,
                 'fullAbilities': parsedFullAbilities[0],
@@ -71,6 +72,7 @@ class Statblock(object):
                 'fastHealing': self.fastHealing,
                 'regeneration': self.regeneration,
                 'damageReduction': self.damageReduction,
+                'senses': self.senses,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -81,10 +83,10 @@ class Statblock(object):
         ## self.fullAbilities = self.parseFullAbilities()
 
         listen = self.skills.get('Listen', None)
-        if listen is not None: self.overrides['listen'] = listen
+        if listen is not None: self.overrides['listen'] = listen[7:]
 
         spot = self.skills.get('Spot', None)
-        if spot is not None: self.overrides['spot'] = spot
+        if spot is not None: self.overrides['spot'] = spot[5:]
 
         self._handler = None
         self._parsedHitDice = None
@@ -223,6 +225,30 @@ class Statblock(object):
                 ret.add(l.label)
 
         return ', '.join(sorted(ret)) or '-'
+
+    def senses(self):
+        """Return the creature's notable senses"""
+        # use a dict; we're going to load senses from the family first
+        # and then override them from the monster's specialqualities stat
+        ret = {}
+
+        for f in self.families:
+            for s in f.senses:
+                if s.range:
+                    ret[s.label] = "%s %s" % (s.label, s.range)
+                else:
+                    ret[s.label] = s.label
+
+        for q in self._parsedSpecialQualities:
+            if q.type == 'sense':
+                if q.range:
+                    ret[q.name.title()] = "%s %s" % (q.name, q.range)
+                else:
+                    ret[q.name.title()] = q.name
+
+        if len(ret) > 0:
+            return ', '.join(sorted(ret.values()))
+        return '-'
 
     def spellResistance(self):
         """Return the creature's spell resistance, if any"""

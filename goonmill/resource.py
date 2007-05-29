@@ -153,9 +153,10 @@ class Result(athena.LiveElement):
         fill('creatureType', get('type'))
         fill('subtype', get('descriptor'))
         fill('initiative', get('initiative'))
+        fill('senses', get('senses'))
+        fill('listen', get('listen'))
+        fill('spot', get('spot'))
         fill('aura', get('aura'))
-        fill('listen', '%s' % (get('listen'),))
-        fill('spot', '%s' % (get('spot'),))
         fill('languages', (get('languages'),))
 
         # defense block
@@ -211,6 +212,20 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(spellResistance)
+
+    def listen(self, req, tag):
+        if self.statblock.get('listen'):
+            return tag
+        return ''
+
+    page.renderer(listen)
+
+    def spot(self, req, tag):
+        if self.statblock.get('spot'):
+            return tag
+        return ''
+
+    page.renderer(spot)
 
     def fastHealing(self, req, tag):
         if self.statblock.get('fastHealing'):

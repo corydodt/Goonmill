@@ -125,7 +125,7 @@ class SparqAttribute(object):
     def solve(self, db, key):
         """Return the value or values of this attribute."""
         data = self.retrieveData(db, key)
-        if len(data) == 0:
+        if data is None or len(data) == 0:
             return None
         assert len(data) == 1
         return data[0]

@@ -13,6 +13,7 @@ prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
 class Sense(S.SparqItem):
     """A notable sense possessed by monsters, such as darkvision"""
+    range = S.Literal('SELECT ?r { $key p:range ?r }')
 
 
 class Language(S.SparqItem):
@@ -136,4 +137,7 @@ if __name__ == '__main__': # {{{
 
     formatFamily(fam.devil)
     formatFamily(fam.ooze)
+    formatFamily(fam.undead)
+    formatFamily(fam.construct)
+    formatFamily(fam.fey)
 # }}}

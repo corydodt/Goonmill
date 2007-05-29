@@ -23,9 +23,11 @@
       <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
     </p>
     <p><strong>Init</strong>&#xA0;<n:slot name=
-    "initiative"/>; <span class="TODO"><strong>Senses</strong> [special
-        senses;]</span> <n:slot name="listen" />, <n:slot
-    name="spot" /></p>
+        "initiative"/>; <span><strong>Senses</strong> <n:slot name=
+        "senses" /></span>; <span n:render=
+        "listen"><strong>Listen</strong> <n:slot name="listen" /></span>, 
+        <span n:render="spot"><strong>Spot</strong> <n:slot name="spot"
+        /></span></p>
     <p n:render="aura"><strong>Aura</strong>&#xA0;<n:slot name="aura" /></p>
     <p><strong>Languages</strong>&#xA0;<n:slot name="languages"/></p>
   </div>

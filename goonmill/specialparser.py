@@ -56,10 +56,14 @@ resistanceAmount := n
 resistanceName := (?-'resistance', qWord, ws)+
 >resistance< := resistanceName, c'resistance', ws, resistanceAmount
 
-rangedQualityName := c'darkvision'/c'blindsense'/c'blindsight'/c'telepathy'/c'tremorsense' 
->rangedQuality< := rangedQualityName, !, range
+rangedSenseName := c'darkvision'/c'blindsense'/c'blindsight'/c'telepathy'/c'tremorsense' 
+>rangedSense< := rangedSenseName, !, range
 
-noArgumentQuality := c'low-light vision'/c'all-around vision'/c'see in darkness'/c'scent'/c'keen senses'/c'alternate form'/c'water breathing'/c'icewalking'/c'cloudwalking'
+noArgumentSense := c'low-light vision'/c'all-around vision'/c'see in darkness'/c'scent'/c'keen senses'
+
+>sense< := rangedSense/noArgumentSense
+
+noArgumentQuality := c'alternate form'/c'water breathing'/c'icewalking'/c'cloudwalking'
 
 spellsLevel := n, l*
 >spells< := c'spells (caster level ', !, spellsLevel, ')'
@@ -75,7 +79,7 @@ illegalAnd := 'and', ws, !, 'DIE'
 
 unknownQuality := (qualityChar/parenExpression)*
 
->quality< := illegalAnd/noArgumentQuality/rangedQuality/empathy/aura/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
+>quality< := illegalAnd/noArgumentQuality/sense/empathy/aura/damageReduction/regeneration/fastHealing/spells/family/immunity/vulnerability/resistance/unknownQuality
 
 empty := '-'
 
@@ -185,11 +189,15 @@ class Processor(disp.DispatchProcessor):
         disp.dispatchList(self, sub, buffer)
         return self.specialQualities
 
-    def rangedQualityName(self, (t,s1,s2,sub), buffer):
+    def rangedSenseName(self, (t,s1,s2,sub), buffer):
         name = buffer[s1:s2]
-        q = Quality(t, name)
+        q = Quality('sense', name)
         self.specialQualities.append(q)
         disp.dispatchList(self, sub, buffer)
+
+    def noArgumentSense(self, (t,s1,s2,sub), buffer):
+        q = Quality('sense', buffer[s1:s2])
+        self.specialQualities.append(q)
 
     def noArgumentQuality(self, (t,s1,s2,sub), buffer):
         q = Quality(t, buffer[s1:s2])
