@@ -50,10 +50,9 @@
     <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>
         <n:slot name="ref" />, <strong>Will</strong> <n:slot name="will" /> <span
         class="TODO">[; save modifiers]</span></p>
-    <p><strong>Weakness</strong>
-        <span n:render="vulnerabilities" ><span n:pattern=
-            "vulnerability">vulnerability to <n:slot name=
-            "attackEffect" /> </span></span>
+    <p n:render="vulnerabilities"><strong>Weakness</strong>
+        <span n:pattern="vulnerability">vulnerability to <n:slot name=
+            "attackEffect" /> </span>
     </p>
   </div>
 

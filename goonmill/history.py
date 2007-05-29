@@ -249,7 +249,7 @@ class Statblock(object):
 
         if len(ret) > 0:
             return ', '.join(sorted(ret.values()))
-        return '-'
+        return None
 
     def vulnerabilities(self):
         """Return the creature's notable vulnerabilities"""
