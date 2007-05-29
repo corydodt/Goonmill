@@ -12,13 +12,18 @@
 
 <> rdfs:title "Families of Monster" .
 
+:standardDarkvision a c:Darkvision;
+    rdfs:label "Darkvision";
+    p:range "60 ft.";
+.
+
 :aberration
     a c:Family;
     p:hitDiceType die:d8;
     pcclass:babTable pcclass:cleric!pcclass:babTable;
     p:goodSaves c:will;
     p:skillPoints "(int+2)*hitDiceType";
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:proficiency c:naturalWeapons, c:armorAsDescribed;
 .
 
@@ -29,7 +34,7 @@
     p:goodSaves c:fort, c:ref;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:int; p:maximum 2 ];
-    p:sense [ a c:LowLightVision ];
+    p:sense c:lowLightVision;
     p:alignment c:neutral;
     p:treasure rdf:nil;
     p:proficiency c:naturalWeapons, c:armorNone;
@@ -43,7 +48,7 @@
     p:goodSaves rdf:nil;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
-    p:sense c:lowLightVision, [ a c:Darkvision; p:range "60ft." ];
+    p:sense c:lowLightVision, :standardDarkvision;
     p:immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
                 c:disease, c:deathEffects, c:necromancy;
     p:miscTrait c:noAbilityDamage, c:noAbilityDrain, c:noEnergyDrain, 
@@ -64,7 +69,7 @@
     pcclass:babTable pcclass:fighter!pcclass:babTable;
     p:goodSaves c:fort, c:ref, c:will;
     p:skillPoints "(int+6)*hitDiceType";
-    p:sense [ a c:Darkvision; p:range "60ft." ], c:lowLightVision;
+    p:sense :standardDarkvision, c:lowLightVision;
     p:immunities c:sleep, c:paralysis;
     p:proficiency c:naturalWeapons, c:weaponsAsDescribed, c:armorNone;
 .
@@ -78,7 +83,7 @@
     p:hitDiceType die:d8;
     pcclass:babTable pcclass:cleric!pcclass:babTable;
     p:skillPoints "(int+2)*hitDiceType";
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:immunities c:poison, c:sleep, c:paralysis, c:stunning;
     p:miscTrait c:noCriticalHits, c:noFlanking, c:quasiSoulless;
     p:proficiency c:naturalWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
@@ -131,7 +136,7 @@
     pcclass:babTable pcclass:fighter!pcclass:babTable;
     p:goodSaves c:fort, c:ref;
     p:skillPoints "(int+2)*hitDiceType";
-    p:sense c:lowLightVision, [ a c:Darkvision; p:range "60ft." ];
+    p:sense c:lowLightVision, :standardDarkvision;
     p:proficiency c:naturalWeapons, c:armorNone;
 .
 
@@ -142,7 +147,7 @@
     pcclass:babTable pcclass:fighter!pcclass:babTable;
     p:goodSaves c:ref, c:will;
     p:skillPoints "(int+2)*hitDiceType";
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:proficiency c:simpleWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
 .
 
@@ -170,7 +175,7 @@
     pcclass:babTable pcclass:fighter!pcclass:babTable;
     p:goodSaves c:fort, c:ref, c:will;
     p:skillPoints "(int+8)*hitDiceType";
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:miscTrait c:quasiSoulless;
     p:proficiency c:simpleWeapons, c:martialWeapons, c:weaponsAsDescribed, 
             c:armorAsDescribed;
@@ -208,7 +213,7 @@
     p:goodSaves c:will;
     p:skillPoints "(int+4)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
             c:disease, c:deathEffects;
     p:miscTrait c:noCriticalHits, c:noNonLethalDamage, c:noAbilityDrain, 
@@ -232,7 +237,7 @@
     p:goodSaves c:fort;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:int; p:maximum 0 ];
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:proficiency c:naturalWeapons, c:armorNone;
     p:immunities c:mindAffecting;
 .
@@ -244,7 +249,7 @@
 
 :angel
     a c:Family;
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:immunities c:acid, c:cold, c:petrification;
     p:resistance [ c:electricity 10 ], [ c:fire 10 ];
     p:saveBonuses [ c:poison +4 ];
@@ -269,7 +274,7 @@
 
 :archon
     a c:Family;
-    p:sense [ a c:Darkvision; p:range "60ft." ];
+    p:sense :standardDarkvision;
     p:miscTrait c:auraOfMenace;
     p:immunities c:electricity, c:petrification;
     p:saveBonuses [ c:poison +4 ];
