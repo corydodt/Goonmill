@@ -101,3 +101,7 @@
 :minimum a rdfs:Property;
     rdfs:comment "Numeric Constraint: May be no less than";
 .
+:immunity a rdfs:Property;
+.
+:resistance a rdfs:Property;
+.

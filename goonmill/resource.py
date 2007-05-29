@@ -167,6 +167,8 @@ class Result(athena.LiveElement):
         fill('fastHealing', get('fastHealing'))
         fill('regeneration', get('regeneration'))
         fill('damageReduction', get('damageReduction'))
+        fill('immunities', get('immunities'))
+        fill('resistances', get('resistances'))
         fill('spellResistance', get('spellResistance'))
         fill('fort', get('fort'))
         fill('ref', get('ref'))
@@ -205,6 +207,20 @@ class Result(athena.LiveElement):
 
     def updateHandler(self, attribute, newValue):
         self.guises[attribute].push(newValue)
+
+    def immunities(self, req, tag):
+        if self.statblock.get('immunities'):
+            return tag
+        return ''
+
+    page.renderer(immunities)
+
+    def resistances(self, req, tag):
+        if self.statblock.get('resistances'):
+            return tag
+        return ''
+
+    page.renderer(resistances)
 
     def spellResistance(self, req, tag):
         if self.statblock.get('spellResistance'):
@@ -283,10 +299,6 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(speedFeats)
-
-    def meleeAttack(self, pattern, option, tag):
-        pattern.fillSlots('value', option)
-        return 
 
     def meleeAttacks(self, req, tag):
         options = self.statblock.get('attackOptions')['melee']

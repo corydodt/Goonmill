@@ -49,7 +49,7 @@
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
     p:sense c:lowLightVision, :standardDarkvision;
-    p:immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
+    p:immunity c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
                 c:disease, c:deathEffects, c:necromancy;
     p:miscTrait c:noAbilityDamage, c:noAbilityDrain, c:noEnergyDrain, 
             c:noNonLethalDamage, c:noCriticalHits, c:noTiring, 
@@ -70,7 +70,7 @@
     p:goodSaves c:fort, c:ref, c:will;
     p:skillPoints "(int+6)*hitDiceType";
     p:sense :standardDarkvision, c:lowLightVision;
-    p:immunities c:sleep, c:paralysis;
+    p:immunity c:sleep, c:paralysis;
     p:proficiency c:naturalWeapons, c:weaponsAsDescribed, c:armorNone;
 .
 # "In human form, proficient with simple weapons."
@@ -84,7 +84,7 @@
     pcclass:babTable pcclass:cleric!pcclass:babTable;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense :standardDarkvision;
-    p:immunities c:poison, c:sleep, c:paralysis, c:stunning;
+    p:immunity c:poison, c:sleep, c:paralysis, c:stunning;
     p:miscTrait c:noCriticalHits, c:noFlanking, c:quasiSoulless;
     p:proficiency c:naturalWeapons, c:weaponsAsDescribed, c:armorAsDescribed;
     p:vitality c:noEat, c:noSleep, c:noBreathe;
@@ -159,7 +159,7 @@
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:blind, c:blindsight;
     p:abilityConstraint [ p:ability c:int; p:maximum 0 ];
-    p:immunities c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning, 
+    p:immunity c:poison, c:sleep, c:paralysis, c:polymorph, c:stunning, 
             c:mindAffecting;
     p:miscTrait c:noCriticalHits, c:noFlanking;
     p:proficiency c:naturalWeapons, c:armorNone;
@@ -199,7 +199,7 @@
     p:goodSaves c:fort;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:lowLightVision;
-    p:immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:polymorph, 
+    p:immunity c:mindAffecting, c:poison, c:sleep, c:paralysis, c:polymorph, 
             c:stunning;
     p:miscTrait c:noCriticalHits;
     p:proficiency c:naturalWeapons, c:armorNone;
@@ -214,7 +214,7 @@
     p:skillPoints "(int+4)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
     p:sense :standardDarkvision;
-    p:immunities c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
+    p:immunity c:mindAffecting, c:poison, c:sleep, c:paralysis, c:stunning, 
             c:disease, c:deathEffects;
     p:miscTrait c:noCriticalHits, c:noNonLethalDamage, c:noAbilityDrain, 
             c:noAbilityDamage, c:noEnergyDrain, c:noTiring, 
@@ -239,7 +239,7 @@
     p:abilityConstraint [ p:ability c:int; p:maximum 0 ];
     p:sense :standardDarkvision;
     p:proficiency c:naturalWeapons, c:armorNone;
-    p:immunities c:mindAffecting;
+    p:immunity c:mindAffecting;
 .
 
 :air
@@ -250,7 +250,7 @@
 :angel
     a c:Family;
     p:sense :standardDarkvision;
-    p:immunities c:acid, c:cold, c:petrification;
+    p:immunity c:acid, c:cold, c:petrification;
     p:resistance [ c:electricity 10 ], [ c:fire 10 ];
     p:saveBonuses [ c:poison +4 ];
     p:miscTrait c:protectiveAura;
@@ -276,7 +276,7 @@
     a c:Family;
     p:sense :standardDarkvision;
     p:miscTrait c:auraOfMenace;
-    p:immunities c:electricity, c:petrification;
+    p:immunity c:electricity, c:petrification;
     p:saveBonuses [ c:poison +4 ];
     p:miscTrait c:magicCircleAgainstEvil, c:teleport, c:tongues;
 .
@@ -292,13 +292,13 @@
 
 :cold
     a c:Family;
-    p:immunities c:cold;
+    p:immunity c:cold;
     p:vulnerabilities c:fire;
 .
 
 :demon
     a c:Family;
-    p:immunities c:electricity, c:poison;
+    p:immunity c:electricity, c:poison;
     p:resistance [ c:acid 10 ], [ c:cold 10 ], [ c:fire 10 ];
     p:miscTrait c:summon, c:telepathy;
     p:language c:abyssal, c:celestial, c:draconic;
@@ -306,7 +306,7 @@
 
 :devil
     a c:Family;
-    p:immunities c:fire, c:poison;
+    p:immunity c:fire, c:poison;
     p:resistance [ c:acid 10 ], [ c:cold 10 ];
     p:sense c:seeInDarkness;
     p:miscTrait c:summon, c:telepathy;
@@ -344,7 +344,7 @@
 
 :incorporeal
     a c:Family;
-    p:immunities c:nonMagical;
+    p:immunity c:nonMagical;
     p:abilityConstraint [ p:ability c:str; p:maximum 0 ];
     p:sense c:incorporealSenses;
     p:miscTrait c:weaponFinesseAlways, c:incorporealDefense, c:charismaDeflection, 

@@ -11,6 +11,14 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
+class Resistance(S.SparqItem):
+    """A resistance possessed by monsters"""
+
+
+class Immunity(S.SparqItem):
+    """An immunity possessed by monsters"""
+
+
 class Sense(S.SparqItem):
     """A notable sense possessed by monsters, such as darkvision"""
     range = S.Literal('SELECT ?r { $key p:range ?r }')
@@ -44,6 +52,10 @@ class Family(S.SparqItem):
         'SELECT ?spec { ?spec a c:CombatMechanic . $key p:miscTrait ?spec }')
     languages = S.Ref(Language,
         'SELECT ?lng { $key p:language ?lng }')
+    immunities = S.Ref(Immunity,
+        'SELECT ?i { $key p:immunity ?i }')
+    resistances = S.Ref(Resistance,
+        'SELECT ?r { $key p:resistance ?r }')
 
 
 

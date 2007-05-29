@@ -73,6 +73,8 @@ class Statblock(object):
                 'regeneration': self.regeneration,
                 'damageReduction': self.damageReduction,
                 'senses': self.senses,
+                'immunities': self.immunities,
+                'resistances': self.resistances,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -225,6 +227,28 @@ class Statblock(object):
                 ret.add(l.label)
 
         return ', '.join(sorted(ret)) or '-'
+
+    def resistances(self):
+        """Return the creature's notable resistances"""
+        return "RESISTANCES TODO"
+
+    def immunities(self):
+        """Return the creature's notable immunities"""
+        # use a dict; we're going to load immunities from the family first
+        # and then override them from the monster's specialqualities stat
+        ret = {}
+
+        for f in self.families:
+            for s in f.immunities:
+                ret[s.label] = s.label
+
+        for q in self._parsedSpecialQualities:
+            if q.type == 'immunity':
+                ret[q.what.title()] = q.what
+
+        if len(ret) > 0:
+            return ', '.join(sorted(ret.values()))
+        return '-'
 
     def senses(self):
         """Return the creature's notable senses"""

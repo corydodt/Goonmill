@@ -41,8 +41,10 @@
       <span n:render="regeneration">; regeneration <n:slot name="regeneration" /></span>
       <span n:render="damageReduction"><strong>DR</strong> <n:slot
           name="damageReduction" /></span></p>
-    <p class="TODO">[<strong>Immune</strong>&#xA0;immunities]</p>
-    <p><span class="TODO">[<strong>Resist</strong>&#xA0;resistances;
+    <p n:render="immunities"><strong>Immune</strong>&#xA0;<n:slot name=
+        "immunities" /></p>
+    <p class="TODO"><span n:render="resistances"><strong>Resist</strong>&#xA0;<n:slot name=
+        "resistances" />
         </span><span n:render="spellResistance"><strong>SR</strong> <n:slot
         name="spellResistance" /></span></p>
     <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>

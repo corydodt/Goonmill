@@ -56,21 +56,29 @@
 
 :AttackEffect rdfs:subClassOf :Characteristic .
 
-:mindAffecting a :AttackEffect .
+:mindAffecting a :AttackEffect;
+    rdfs:label "Mind-Affecting Attacks"
+.
 :poison a :AttackEffect .
 :sleep a :AttackEffect .
 :paralysis a :AttackEffect .
 :polymorph a :AttackEffect .
 :stunning a :AttackEffect .
 :disease a :AttackEffect .
-:deathEffects a :AttackEffect .
+:deathEffects a :AttackEffect;
+    rdfs:label "Death Effects";
+.
 :necromancy a :AttackEffect .
 :electricity a :AttackEffect .
 :petrification a :AttackEffect .
-:nonMagical a :AttackEffect .
+:nonMagical a :AttackEffect;
+    rdfs:label "Non-Magical Attacks";
+.
 :piercing a :AttackEffect .
 :slashing a :AttackEffect .
-:areaEffect a :AttackEffect .
+:areaEffect a :AttackEffect;
+    rdfs:label "Area-Effect Attacks";
+.
 
 
 :SpecialAbility rdfs:subClassOf :MiscTrait .
