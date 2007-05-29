@@ -213,20 +213,6 @@ class Result(athena.LiveElement):
 
     page.renderer(spellResistance)
 
-    def listen(self, req, tag):
-        if self.statblock.get('listen'):
-            return tag
-        return ''
-
-    page.renderer(listen)
-
-    def spot(self, req, tag):
-        if self.statblock.get('spot'):
-            return tag
-        return ''
-
-    page.renderer(spot)
-
     def fastHealing(self, req, tag):
         if self.statblock.get('fastHealing'):
             return tag
