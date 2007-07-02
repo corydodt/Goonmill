@@ -3,6 +3,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#>.
 
+<> rdfs:title "Properties of Characters" .
+<> rdfs:comment "The verbs used to describe a Character" .
 
 # features
 :hitDiceType a rdfs:Property;

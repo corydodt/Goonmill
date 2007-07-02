@@ -1,6 +1,9 @@
 @prefix :     <http://thesoftworld.com/2007/characteristic.n3#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
+<> rdfs:title "Character Characteristics" .
+<> rdfs:comment "Characteristics of creatures both PC and NPC" .
+
 
 :Characteristic a rdfs:Class .
 

@@ -2,7 +2,9 @@
 @prefix c: <http://thesoftworld.com/2007/characteristic.n3#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-# define the family ontology.
+<> rdfs:title "Parts of a Family" .
+<> rdfs:comment "Defines the family ontology." .
+
 :family a sp:SparqItem;
     sp:att [ a sp:SparqAttribute;
              rdfs:label "Sense";
