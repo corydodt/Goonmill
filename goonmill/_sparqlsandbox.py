@@ -11,7 +11,7 @@ from nevow import athena, loaders, tags as T, flat
 
 from goonmill.rdfquery import (fam, char, dice, pcclass, prop, db, prefixes,
         Family, Sense, Language, CombatMechanic, SpecialAbility,
-        SpecialQuality, Resistance, AttackEffect)
+        SpecialQuality, Resistance)
 from goonmill.util import RESOURCE
 
 def getSandbox(select):
