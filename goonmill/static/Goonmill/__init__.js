@@ -2,6 +2,31 @@
 // import DeanEdwards
 // import Divmod.Defer
 
+Goonmill.SparqlSandbox = Nevow.Athena.Widget.subclass('Goonmill.SparqlSandbox');
+Goonmill.SparqlSandbox.methods( // {{{
+    function __init__(self, node) { // {{{
+        Goonmill.SparqlSandbox.upcall(self, '__init__', node);
+
+        self.queryForm = self.firstNodeByClass("queryForm");
+        self.results = self.firstNodeByClass("results");
+
+        DeanEdwards.addEvent(self.queryForm, 'submit', 
+            function onQuerySubmit(event) { return self.onQuerySubmit(event) 
+        });
+        self.queryForm.query.select();
+    }, // }}}
+
+    function onQuerySubmit(self, event) { // {{{
+        event.stopPropagation();
+        event.preventDefault();
+
+        var d = self.callRemote("onQuerySubmit", self.queryForm.query.value);
+        d.addCallback(function gotResult(result) {
+            self.results.innerHTML = result;
+        });
+     } // }}}
+); // }}}
+
 Goonmill.Result = Nevow.Athena.Widget.subclass('Goonmill.Result');
 Goonmill.Result.methods( // {{{
     function __init__(self, node) { // {{{

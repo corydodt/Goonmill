@@ -2,6 +2,11 @@
     background-color: yellow;
 }
 
+textarea.query {
+    width: 35em;
+    height: 12em;
+}
+
 input[name=search_terms] {
     width: 25em;
 }
