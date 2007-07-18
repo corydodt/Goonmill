@@ -57,7 +57,14 @@ class SparqlSandbox(athena.LiveElement):
     athena.renderer(showPrefixes)
 
     def onQuerySubmit(self, query):
-        rows = [T.tr[i] for i in list(db.query(query))]
+        rows = []
+        for n, row in enumerate(list(db.query(query))):
+            if n%2 == 0:
+                rowStyle = 'even'
+            else:
+                rowStyle = 'odd'
+            rows.append(T.tr(_class=rowStyle)[ [T.td[c] for c in row] ])
+
         table = flat.flatten([T.table[rows]])
         return unicode(table)
 
