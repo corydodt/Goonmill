@@ -28,7 +28,7 @@ while true; do
   python -m compileall . >/dev/null 2>&1
   # Redirect stdin from our tty. If you don't do this, interactive pdb
   # doesn't work.
-  twistd -n --pidfile goonmill.pid goonmill < `tty` &
+  twistd -n --pidfile goonmill.pid goonmill --dev < `tty` &
   # and dnotify blocks waiting for anything to change...
   dnotify --once --queue=1 -M $(./sourceFiles) -e echo MODIFIED: "{}"
 done

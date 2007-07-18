@@ -21,6 +21,8 @@ class Options(usage.Options):
                      ## ['certificate', 'k', DEFAULT_PEM, 
                      ##     'Certificate file for starting the SSL server'],
                      ]
+    optFlags = [['dev', None, 'Enable development features such as /sandbox']]
+
 
 class GoonmillServerMaker(object):
     """
@@ -39,7 +41,7 @@ class GoonmillServerMaker(object):
         """
         Construct the test daemon.
         """
-        resource = VhostFakeRoot(Root())
+        resource = VhostFakeRoot(Root(dev=options['dev']))
         factory = appserver.NevowSite(resource)
         port = 'tcp:%s' % (options['port'],)
         ## port = 'ssl:%s:privateKey=%s:certKey=%s' % (options['port'],
