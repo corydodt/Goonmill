@@ -11,8 +11,18 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
+class AttackEffect(S.SparqItem):
+    """Some type of damage such as cold or non-magical"""
+
+
 class Resistance(S.SparqItem):
     """A resistance possessed by monsters"""
+    attackEffect = S.Ref(AttackEffect,
+            "SELECT ?ae { $key ?ae [] }")
+    amount = S.Literal("SELECT ?a { ?ae a c:AttackEffect . $key ?ae ?a }")
+
+    def __repr__(self):
+        return '<%s to %s>' % (self.__class__.__name__, self.attackEffect[0].label)
 
 
 class Vulnerability(S.SparqItem):

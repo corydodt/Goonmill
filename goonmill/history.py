@@ -231,7 +231,26 @@ class Statblock(object):
 
     def resistances(self):
         """Return the creature's notable resistances"""
-        return "RESISTANCES TODO"
+        # use a dict; we're going to load resistances from the family first
+        # and then override them from the monster's specialqualities stat
+        ret = {}
+
+        for f in self.families:
+            for s in f.resistances:
+                label = s.attackEffect[0].label
+                amt = s.amount
+                ret[label] = "%s %s" % (label, amt)
+
+        for q in self._parsedSpecialQualities:
+            if q.type == 'resistance':
+                ret[q.what.title()] = "%s %s" % (q.what, q.amount)
+
+        # spell resistance is covered elsewhere.
+        if 'Spell' in ret: del ret['Spell']
+
+        if len(ret) > 0:
+            return ', '.join(sorted(ret.values()))
+        return None
 
     def immunities(self):
         """Return the creature's notable immunities"""

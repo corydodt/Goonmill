@@ -134,6 +134,8 @@ class SparqAttribute(object):
         """Do my query against a db and return its result list.
         If no result list and default is set, return default.
         """
+        assert not key.startswith('_:'), "BNodes are not allowed"
+
         # rdflib.URIRef could be passed as key; handle that case
         if hasattr(key, 'n3'):
             key = key.n3()
@@ -170,7 +172,7 @@ class Ref(SparqAttribute):
         cls = self.itemClass
 
         for i in data:
-            assert isinstance(i, rdflib.URIRef), (
+            assert isinstance(i, rdflib.URIRef) or isinstance(i, rdflib.BNode), (
                     "This query returned literals, not URIs!\n-- %s" % (i,))
             # pull the uri string from each data item
             att = cls(db=db, key=i.n3())
@@ -253,6 +255,13 @@ class SparqItem(object):
         if isinstance(real, SparqAttribute):
             return real.solve(db=self.db, key=self.key)
         return real
+
+    def __repr__(self):
+        try:
+            l = self.label
+        except:
+            l = ''
+        return '<%s %s>' % (self.__class__.__name__, l)
 
 
 class TriplesDatabase(object):
