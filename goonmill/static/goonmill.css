@@ -2,6 +2,12 @@
     background-color: yellow;
 }
 
+.error {
+    font-family: sans-serif;
+    font-weight: bold;
+    color: red;
+}
+
 textarea.query {
     width: 35em;
     height: 12em;

@@ -31,6 +31,7 @@ pprint.pprint(sorted(locals().keys()))
 print "NAMESPACE PREFIXES: "
 pprint.pprint(prefixes)
 
+
 class SandboxPage(athena.LivePage):
     # FIXME - for now, just use the goonmill page
     docFactory = loaders.xmlfile(RESOURCE('templates/goonmillpage.xhtml'))
@@ -41,6 +42,7 @@ class SandboxPage(athena.LivePage):
         s.setFragmentParent(self)
 
         return ctx.tag[s, ]
+
 
 class SparqlSandbox(athena.LiveElement):
     """A playground for running SPARQL queries."""
@@ -58,7 +60,13 @@ class SparqlSandbox(athena.LiveElement):
 
     def onQuerySubmit(self, query):
         rows = []
-        for n, row in enumerate(list(db.query(query))):
+        try:
+            res = list(db.query(query))
+        except SyntaxError, e: # ugh, why couldn't they define their own?
+            err = T.span(_class="error")[str(e)]
+            return unicode(flat.flatten(err))
+
+        for n, row in enumerate(res):
             if n%2 == 0:
                 rowStyle = 'even'
             else:
