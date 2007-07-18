@@ -11,7 +11,7 @@ EOF
 export errorStatus=""
 
 function testPython()
-# Use: testPython "Fix this thingie" < <(command)
+# Use: testPython "Fix this thingie" <<<$(command)
 #  If "command" has no output, we pass.
 # 
 #  If there is any output, the last line is considered an error message, and we
