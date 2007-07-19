@@ -134,8 +134,6 @@ class SparqAttribute(object):
         """Do my query against a db and return its result list.
         If no result list and default is set, return default.
         """
-        assert not key.startswith('_:'), "BNodes are not allowed"
-
         # rdflib.URIRef could be passed as key; handle that case
         if hasattr(key, 'n3'):
             key = key.n3()

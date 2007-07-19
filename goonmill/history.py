@@ -243,7 +243,7 @@ class Statblock(object):
 
         for q in self._parsedSpecialQualities:
             if q.type == 'resistance':
-                ret[q.what.title()] = "%s %s" % (q.what, q.amount)
+                ret[q.what.title()] = "%s %s" % (q.what.title(), q.amount)
 
         # spell resistance is covered elsewhere.
         if 'Spell' in ret: del ret['Spell']
