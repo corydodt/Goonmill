@@ -4,8 +4,8 @@
 <p n:render="showPrefixes" />
 <h1>Type a SPARQL query</h1>
 <form class="queryForm">
-    <textarea class="query" name="query">SELECT ?f { ?f a c:Family }</textarea>
-  <input type="submit" value="Query" />
+  <textarea class="query" name="query">SELECT ?f { ?f a c:Family }</textarea>
+  <div><input type="submit" value="Query" /></div>
 </form>
 <div class="results">
 </div>
