@@ -8,23 +8,21 @@
 
 :PCClass rdfs:subClassOf c:Characteristic .
 
-:babTable a c:Feature.
-
 
 
 :barbarian a :PCClass;
     :goodSaves c:fort;
-    :babTable :fighter!:babTable;
+    p:babTable :fighter!p:babTable;
 .
 
 :bard a :PCClass;
     :goodSaves c:ref, c:will;
-    :babTable :cleric!:babTable;
+    p:babTable :cleric!p:babTable;
 .
 
 :cleric a :PCClass;
     :goodSaves c:fort, c:will;
-    :babTable ("+0" "+1" "+2" "+3" "+3" "+4" "+5" "+6/+1" "+6/+1" "+7/+2" "+8/+3" 
+    p:babTable ("+0" "+1" "+2" "+3" "+3" "+4" "+5" "+6/+1" "+6/+1" "+7/+2" "+8/+3" 
                "+9/+4" "+9/+4" "+10/+5" "+11/+6/+1" "+12/+7/+2" "+12/+7/+2" 
                "+13/+8/+3" "+14/+9/+4" "+15/+10/+5");
 .
@@ -32,12 +30,12 @@
 
 :druid a :PCClass;
     :goodSaves c:fort, c:will;
-    :babTable :cleric!:babTable;
+    p:babTable :cleric!p:babTable;
 .
 
 :fighter a :PCClass;
     :goodSaves c:fort;
-    :babTable ("+1" "+2" "+3" "+4" "+5" "+6/+1" "+7/+2" "+8/+3" "+9/+4" "+10/+5"
+    p:babTable ("+1" "+2" "+3" "+4" "+5" "+6/+1" "+7/+2" "+8/+3" "+9/+4" "+10/+5"
               "+11/+6/+1" "+12/+7/+2" "+13/+8/+3" "+14/+9/+4" "+15/+10/+5"
               "+16/+11/+6/+1" "+17/+12/+7/+2" "+18/+13/+8/+3" "+19/+14/+9/+4"
               "+20/+15/+10/+5");
@@ -46,32 +44,32 @@
 
 :monk a :PCClass;
     :goodSaves c:fort, c:ref, c:will;
-    :babTable :cleric!:babTable;
+    p:babTable :cleric!p:babTable;
 .
 
 :paladin a :PCClass;
     :goodSaves c:fort;
-    :babTable :fighter!:babTable;
+    p:babTable :fighter!p:babTable;
 .
 
 :ranger a :PCClass;
     :goodSaves c:fort, c:ref;
-    :babTable :fighter!:babTable;
+    p:babTable :fighter!p:babTable;
 .
 
 :rogue a :PCClass;
     :goodSaves c:ref;
-    :babTable :cleric!:babTable;
+    p:babTable :cleric!p:babTable;
 .
 
 :sorcerer a :PCClass;
     :goodSaves c:will;
-    :babTable :wizard!:babTable;
+    p:babTable :wizard!p:babTable;
 .
 
 :wizard a :PCClass;
     :goodSaves c:will;
-    :babTable ("+0" "+1" "+1" "+2" "+2" "+3" "+3" "+4" "+4" "+5" "+5" "+6/+1"
+    p:babTable ("+0" "+1" "+1" "+2" "+2" "+3" "+3" "+4" "+4" "+5" "+5" "+6/+1"
                "+6/+1" "+7/+2" "+7/+2" "+8/+3" "+8/+3" "+9/+4" "+9/+4" 
                "+10/+5");
 .

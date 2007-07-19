@@ -18,6 +18,10 @@
 .
 # objects of this are Features
 
+:babTable a rdfs:Property;
+    rdfs:comment "The base attack bonus table.";
+.
+
 :skillPoints a rdfs:Property;
     rdfs:comment "Expression to determine how many skill points will be gained for each level or hit die.";
 .
@@ -63,7 +67,7 @@
 
 :movement a rdfs:Property;
     rdfs:comment "What type of movement this creature is capable of.";
-    owl:allValuesFrom c:Movement;
+    owl:allValuesFrom c:MoveMechanic;
 .
 
 :size a rdfs:Property;
@@ -81,6 +85,7 @@
 
 :flight a rdfs:Property;
     rdfs:comment "How much skill a creature has at flying.";
+    owl:allValuesFrom c:Fly;
 .
 
 :existentialStatus a rdfs:Property;

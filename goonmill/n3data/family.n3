@@ -20,7 +20,7 @@
 :aberration
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:will;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense :standardDarkvision;
@@ -30,7 +30,7 @@
 :animal
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:fort, c:ref;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:int; p:maximum 2 ];
@@ -44,7 +44,7 @@
 :construct
     a c:Family;
     p:hitDiceType die:d10;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves rdf:nil;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
@@ -66,7 +66,7 @@
 :dragon
     a c:Family;
     p:hitDiceType die:d10;
-    pcclass:babTable pcclass:fighter!pcclass:babTable;
+    p:babTable pcclass:fighter!p:babTable;
     p:goodSaves c:fort, c:ref, c:will;
     p:skillPoints "(int+6)*hitDiceType";
     p:sense :standardDarkvision, c:lowLightVision;
@@ -81,7 +81,7 @@
 :elemental
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense :standardDarkvision;
     p:immunity c:poison, c:sleep, c:paralysis, c:stunning;
@@ -101,7 +101,7 @@
 :fey
     a c:Family;
     p:hitDiceType die:d6;
-    pcclass:babTable pcclass:wizard!pcclass:babTable;
+    p:babTable pcclass:wizard!p:babTable;
     p:goodSaves c:ref, c:will;
     p:skillPoints "(int+6)*hitDiceType";
     p:sense c:lowLightVision;
@@ -111,7 +111,7 @@
 :giant
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:fort;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:lowLightVision;
@@ -122,7 +122,7 @@
 :humanoid
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:ref;
     p:skillPoints "(int+2)*hitDiceType";
     p:proficiency c:simpleWeapons, c:armorAsDescribed;
@@ -133,7 +133,7 @@
     a c:Family;
     rdfs:label "Magical Beast";
     p:hitDiceType die:d10;
-    pcclass:babTable pcclass:fighter!pcclass:babTable;
+    p:babTable pcclass:fighter!p:babTable;
     p:goodSaves c:fort, c:ref;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:lowLightVision, :standardDarkvision;
@@ -144,7 +144,7 @@
     a c:Family;
     rdfs:label "Monstrous Humanoid";
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:fighter!pcclass:babTable;
+    p:babTable pcclass:fighter!p:babTable;
     p:goodSaves c:ref, c:will;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense :standardDarkvision;
@@ -154,7 +154,7 @@
 :ooze
     a c:Family;
     p:hitDiceType die:d10;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves rdf:nil; 
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:blind, c:blindsight;
@@ -172,7 +172,7 @@
 :outsider
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:fighter!pcclass:babTable;
+    p:babTable pcclass:fighter!p:babTable;
     p:goodSaves c:fort, c:ref, c:will;
     p:skillPoints "(int+8)*hitDiceType";
     p:sense :standardDarkvision;
@@ -195,7 +195,7 @@
 :plant
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:fort;
     p:skillPoints "(int+2)*hitDiceType";
     p:sense c:lowLightVision;
@@ -209,7 +209,7 @@
 :undead
     a c:Family;
     p:hitDiceType die:d12;
-    pcclass:babTable pcclass:wizard!pcclass:babTable;
+    p:babTable pcclass:wizard!p:babTable;
     p:goodSaves c:will;
     p:skillPoints "(int+4)*hitDiceType";
     p:abilityConstraint [ p:ability c:con; p:maximum 0 ];
@@ -233,7 +233,7 @@
 :vermin
     a c:Family;
     p:hitDiceType die:d8;
-    pcclass:babTable pcclass:cleric!pcclass:babTable;
+    p:babTable pcclass:cleric!p:babTable;
     p:goodSaves c:fort;
     p:skillPoints "(int+2)*hitDiceType";
     p:abilityConstraint [ p:ability c:int; p:maximum 0 ];
