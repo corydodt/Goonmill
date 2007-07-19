@@ -1,13 +1,18 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class=
     "sandbox">
-<h3>Namespace Prefixes:</h3>
-<p n:render="showPrefixes" />
-<h1>Type a SPARQL query</h1>
-<form class="queryForm">
-  <textarea class="query" name="query">SELECT ?f { ?f a c:Family }</textarea>
-  <div><input type="submit" value="Query" /></div>
-</form>
-<div class="results">
+<div class="sandboxLeft">
+    <h4>Namespace Prefixes:</h4>
+    <p n:render="showPrefixes" />
+    <h2>Type a SPARQL query</h2>
+    <h4>Ctrl+Enter to submit</h4>
+    <form class="queryForm">
+      <textarea class="query" name="query">SELECT ?f { ?f a c:Family }</textarea>
+      <!-- <div><input type="submit" value="Query" /></div> -->
+    </form>
+</div>
+<div class="sandboxRight">
+    <div class="results">
+    </div>
 </div>
 <!-- vi:ft=html
 -->

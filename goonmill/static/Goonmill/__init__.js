@@ -9,11 +9,24 @@ Goonmill.SparqlSandbox.methods( // {{{
 
         self.queryForm = self.firstNodeByClass("queryForm");
         self.results = self.firstNodeByClass("results");
+        self.queryArea = self.queryForm.query;
 
+        DeanEdwards.addEvent(self.queryArea, 'keyup', 
+            function onQueryAreaKeyup(event) { 
+                return self.onQueryAreaKeyup(event);
+        });
         DeanEdwards.addEvent(self.queryForm, 'submit', 
             function onQuerySubmit(event) { return self.onQuerySubmit(event) 
         });
-        self.queryForm.query.select();
+        self.queryArea.select();
+    }, // }}}
+
+    function onQueryAreaKeyup(self, event) { // {{{
+        // Ctrl+Enter submits.
+        if (!(event.keyCode == 13 && event.ctrlKey))
+            return true;
+
+        self.onQuerySubmit(event);
     }, // }}}
 
     function onQuerySubmit(self, event) { // {{{

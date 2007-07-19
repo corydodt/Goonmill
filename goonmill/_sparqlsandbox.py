@@ -54,7 +54,11 @@ class SparqlSandbox(athena.LiveElement):
         self.historyView = historyView
 
     def showPrefixes(self, req, tag):
-        return tag[prefixes]
+        t = T.table(_class="prefixes")
+        for pfx, iri in prefixes.items():
+            t[T.tr[T.td[repr(pfx), ':'], T.td['<', str(iri), '>']]]
+
+        return tag[t]
 
     athena.renderer(showPrefixes)
 

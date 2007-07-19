@@ -1,6 +1,6 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
 <n:invisible n:render="slots">
-<h4><a href='' style="display: none" class="plus">[+]</a>
+<h4 class="monsterTitle"><a href='' style="display: none" class="plus">[+]</a>
     <a href='' class="minus">[-]</a>
 &#xA0;<n:slot name="name"/>&#xA0;<n:slot name="count"/>
 &#xA0;<em><n:slot name="label"/></em>
