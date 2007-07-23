@@ -102,6 +102,7 @@ class Quality(object):
         self.type = type
         self.name = name
         if type == 'unknown':
+            name = name.lower()
             uq = Quality.unknowns.get(name)
             if uq is None:
                 self.unknowns[name] = 1
