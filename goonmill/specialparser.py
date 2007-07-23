@@ -119,6 +119,17 @@ class Quality(object):
 
 
 spellLikes = { # {{{
+'rainbow pattern': 1,
+'true seeing': 1,
+'hypnotic pattern': 1,
+'astral project': 1,
+'shield other': 1,
+'reverse gravity': 1,
+'make whole': 1,
+'discern location': 1,
+'dire winter': 1,
+'command plants': 1,
+'freedom of movement': 1,
 'move earth': 1,
 'control water': 1,
 'speak with animals': 1,
