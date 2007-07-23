@@ -48,8 +48,7 @@
         </span><span n:render="spellResistance"><strong>SR</strong> <n:slot name=
             "spellResistance" /></span></p>
     <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>
-        <n:slot name="ref" />, <strong>Will</strong> <n:slot name="will" /> <span
-        class="TODO">[; save modifiers]</span></p>
+        <n:slot name="ref" />, <strong>Will</strong> <n:slot name="will" /> </p>
     <p n:render="vulnerabilities"><strong>Weakness</strong>
         <span n:pattern="vulnerability">vulnerability to <n:slot name=
             "attackEffect" /> </span>
