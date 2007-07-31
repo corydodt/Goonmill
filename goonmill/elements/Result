@@ -33,7 +33,8 @@
 
   <!-- defense block -->
   <div class="statblock">
-      <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO">[; defenses]</span>
+      <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO"
+          title="mods to AC, see e.g. cyclonic ravager deflecting winds">[; defenses]</span>
       <span n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
       <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (<n:slot name="hitDice"
       /> HD)
@@ -79,15 +80,16 @@
         "baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name=
         "grapple" /></p>
 
-    <p><span class="TODO"><strong>Atk Options</strong> !!options</span>
+    <p><span class="TODO" title="offensive action or modifies a standard attack"><strong>Atk Options</strong> !!options</span>
         <span n:render="attackOptionFeats">;&#xA0;<n:slot name=
             "attackOptionFeats" />
             <!-- TODO metamagic feats (if the creature casts spontaneously)--> 
         </span>
     </p>
 
-    <p class="TODO"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
-    <p class="TODO"><strong>Combat Gear</strong> gear</p>
+    <p class="TODO" title="something it can do besides attack"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
+    <p class="TODO" title=
+    "gear that can be used as a combat action (not weapons)"><strong>Combat Gear</strong> gear</p>
     <p class="TODO"><strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>
     <p n:render="spellLikeAbilities" />
   </div>
