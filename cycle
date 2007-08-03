@@ -18,6 +18,11 @@ killTwistd() {
 # this trap will clean up when someone presses ^C
 trap killTwistd EXIT
 
+[ -e ./options.local ] && source ./options.local
+twistdOptions=${twistdOptions:--n --pidfile goonmill.pid}
+goonmillOptions=${goonmillOptions:---dev}
+dnotifyOptions=${dnotifyOptions:--M $(./sourceFiles)}
+
 while true; do
   killTwistd
   # Python automatically compiles source files; if we let it do that,
@@ -28,8 +33,8 @@ while true; do
   python -m compileall . >/dev/null 2>&1
   # Redirect stdin from our tty. If you don't do this, interactive pdb
   # doesn't work.
-  twistd -n --pidfile goonmill.pid goonmill --dev < `tty` &
+  twistd ${twistdOptions} goonmill ${goonmillOptions} < `tty` &
   # and dnotify blocks waiting for anything to change...
-  dnotify --once --queue=1 -M $(./sourceFiles) -e echo MODIFIED: "{}"
+  dnotify --once --queue=1 ${dnotifyOptions} -e echo MODIFIED: "{}"
 done
 
