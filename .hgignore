@@ -4,3 +4,4 @@
 (/|\\)srd35.db$
 (/|\\|^).*\.pid$
 ^goonmill/html/.*$
+^options.local$
