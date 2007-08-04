@@ -6,11 +6,22 @@ from mercurial.node import bin
 
 import os
 
-def commitRestart(ui, repo, **kw):
-    """Restart the goonmill server on every commit"""
-    node = bin(kw['node'])
-    os.chdir(repo.path + '/..')
-    os.system("make goonmill-stop")
-    os.system("make goonmill-start")
+class HookDRunner(object):
+    """Run everything in hook.d"""
+    extension = None
 
-changegroupRestart = commitRestart
+    def __call__(self, ui, repo, **kw):
+        ## node = bin(kw['node'])
+        os.chdir(repo.path + '/..')
+        s = "for f in hook.d/*.%s; do bash $f %s; done" % (
+                self.__class__.extension, kw['node'],)
+        os.system(s)
+
+class ChangegroupRestart(HookDRunner):
+    extension = 'changegroup'
+
+class CommitRestart(HookDRunner):
+    extension = 'commit'
+
+changegroupRestart = ChangegroupRestart()
+commitRestart = CommitRestart()
