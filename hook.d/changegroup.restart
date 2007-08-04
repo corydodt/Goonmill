@@ -5,3 +5,4 @@ make goonmill-stop
 make goonmill-start
 
 echo ${HG_NODE} # hg log -v ${HG_NODE}
+hg log -v ${HG_NODE}
