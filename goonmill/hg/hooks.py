@@ -7,8 +7,8 @@ from mercurial.node import bin
 import os
 
 def changegroupRestart(ui, repo, **kw):
-    import pdb; pdb.set_trace()
     node = bin(kw['node'])
+    os.chdir(repo.path + '/..')
     os.system("make goonmill-stop")
     os.system("make goonmill-start")
 

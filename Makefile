@@ -6,8 +6,10 @@ stop:
 	kill `cat hgserve.pid`
 
 goonmill-start:
+	echo Starting goonmill
 	twistd --pid goonmill.pid goonmill --dev
 
 goonmill-stop:
+	echo Stopping goonmill
 	kill `cat goonmill.pid`
 
