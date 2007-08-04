@@ -17,11 +17,11 @@ class HookDRunner(object):
                 self.__class__.extension, kw['node'],)
         os.system(s)
 
-class ChangegroupRestart(HookDRunner):
+class ChangegroupRunner(HookDRunner):
     extension = 'changegroup'
 
-class CommitRestart(HookDRunner):
+class CommitRunner(HookDRunner):
     extension = 'commit'
 
-changegroupRestart = ChangegroupRestart()
-commitRestart = CommitRestart()
+changegroupRunner = ChangegroupRunner()
+commitRunner = CommitRunner()
