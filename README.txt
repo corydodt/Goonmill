@@ -10,3 +10,9 @@ It will allow you to quickly create a bunch of printable statblocks suitable
 for your next D&D session.
 
 
+
+============
+Architecture
+============
+
+...
