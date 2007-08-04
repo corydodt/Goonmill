@@ -1,8 +1,0 @@
-#!/bin/bash
-
-cd /usr/local/Goonmill
-make goonmill-stop
-make goonmill-start
-
-changed=$(hg log --template '{files}\n' -r ${HG_NODE}:tip | sort -u)
-echo $changed
