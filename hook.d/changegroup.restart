@@ -4,4 +4,4 @@ cd /usr/local/Goonmill
 make goonmill-stop
 make goonmill-start
 
-hg log -v ${HG_NODE}
+hg log -v ${HG_NODE} >> HG_NODE.txt
