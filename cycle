@@ -23,6 +23,14 @@ twistdOptions=${twistdOptions:--n --pidfile goonmill.pid}
 goonmillOptions=${goonmillOptions:---dev}
 dnotifyOptions=${dnotifyOptions:--M $(./sourceFiles)}
 
+safeTty() {
+    tty="`tty`"
+    if [ "$tty" == "not a tty" ]; then
+        tty=/dev/null
+    fi
+    echo "$tty"
+}
+
 while true; do
   killTwistd
   # Python automatically compiles source files; if we let it do that,
@@ -34,7 +42,7 @@ while true; do
   # Redirect stdin from our tty. If you don't do this, interactive pdb
   # doesn't work.
   echo RUNNING
-  twistd ${twistdOptions} goonmill ${goonmillOptions} < `tty` &
+  twistd ${twistdOptions} goonmill ${goonmillOptions} <"`safeTty`" &
   # and dnotify blocks waiting for anything to change...
   dnotify --once --queue=1 ${dnotifyOptions} -e echo MODIFIED: "{}"
 done
