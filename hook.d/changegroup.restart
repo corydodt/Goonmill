@@ -4,3 +4,4 @@ cd /usr/local/Goonmill
 make goonmill-stop
 make goonmill-start
 # TODO - copy n3 files
+echo ${!HG*}
