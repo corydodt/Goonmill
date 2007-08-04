@@ -6,8 +6,8 @@ To use, add
 goonmillext = /.../goonmill/hg/hooks.py
 
 [hooks]
-changegroup = hg up
-changegroup = goonmillext.changegroupRestart
+changegroup._0update = hg up
+changegroup._1restart = goonmillext.changegroupRestart
 commit = goonmillext.commitRestart
 
 """
