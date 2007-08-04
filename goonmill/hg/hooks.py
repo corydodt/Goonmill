@@ -13,5 +13,6 @@ def commitRestart(ui, repo, **kw):
     os.system("make goonmill-start")
 
 def changegroupRestart(ui, repo, **kw):
+    1/0
     node = bin(kw['node'])
     import pdb; pdb.set_trace()
