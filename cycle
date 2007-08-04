@@ -10,7 +10,7 @@ killTwistd() {
         PID=`cat goonmill.pid`
         kill $PID
         echo WAITING ON $PID
-        wait $PID
+        wait $PID >/dev/null 2>&1
         echo TWISTD DONE.
     fi
 }
@@ -33,6 +33,7 @@ while true; do
   python -m compileall . >/dev/null 2>&1
   # Redirect stdin from our tty. If you don't do this, interactive pdb
   # doesn't work.
+  echo RUNNING
   twistd ${twistdOptions} goonmill ${goonmillOptions} < `tty` &
   # and dnotify blocks waiting for anything to change...
   dnotify --once --queue=1 ${dnotifyOptions} -e echo MODIFIED: "{}"
