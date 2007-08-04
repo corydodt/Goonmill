@@ -12,4 +12,5 @@ def changegroupRestart(ui, repo, **kw):
     os.system("make goonmill-stop")
     os.system("make goonmill-start")
 
+# commit hook uses the same code as changegroup hook
 commitRestart = changegroupRestart
