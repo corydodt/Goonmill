@@ -10,13 +10,13 @@
 :hitDiceType a rdfs:Property;
     rdfs:comment "What size die is used to calculate this creature's hit points for each level.";
 .
-# members of this are Features
+# members of this class are Features
 
 :goodSaves a rdfs:Property;
     rdfs:comment "Of fort, ref, and will, which saves are computed using the \"good\" saves table.";
     owl:allValuesFrom c:Save;
 .
-# objects of this are Features
+# objects of this verb are Features
 
 :babTable a rdfs:Property;
     rdfs:comment "The base attack bonus table.";
@@ -25,7 +25,7 @@
 :skillPoints a rdfs:Property;
     rdfs:comment "Expression to determine how many skill points will be gained for each level or hit die.";
 .
-# objects of this are Features
+# objects of this class are Features
 
 
 :miscTrait a rdfs:Property;
