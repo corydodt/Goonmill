@@ -33,6 +33,11 @@
     owl:allValuesFrom c:MiscTrait;
 .
 
+:specialAction a rdfs:Property;
+    rdfs:comment "Something the creature can do on its turn other than cast, attack, or invoke a spell-like ability.";
+    owl:allValuesFrom c:SpecialAction;
+.
+
 :sense a rdfs:Property;
     rdfs:comment "A sense possessed by the creature.";
     owl:allValuesFrom c:Sense;
