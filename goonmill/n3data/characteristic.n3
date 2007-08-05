@@ -309,3 +309,5 @@
 
 
 :SpecialAction rdfs:subClassOf :Characteristic .
+
+:SpecialArmorClass rdfs:subClassOf :Characteristic .
