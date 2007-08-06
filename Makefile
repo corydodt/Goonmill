@@ -12,7 +12,7 @@ goonmill-start:
 	twistd --pid goonmill.pid goonmill --dev
 	nohup $(DNOTIFY) goonmill/n3data -e ./copyn3.sh  \
 		>dnotify.log 2>&1 & \
-		echo $! > dnotify.pid
+		echo $$! > dnotify.pid
 
 goonmill-stop:
 	echo Stopping goonmill
