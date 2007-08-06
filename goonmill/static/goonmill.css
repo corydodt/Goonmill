@@ -137,6 +137,10 @@ form.guise, form.readOnlyGuise { display: inline; }
     width:300px;
 }
 
+.monsterTitle_1 a {
+    font-family: monospace;
+}
+
 .monsterTitle_2 {
     float:left;
     width:100px;
