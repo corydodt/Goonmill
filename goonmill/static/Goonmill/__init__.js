@@ -2,13 +2,20 @@
 // import DeanEdwards
 // import Divmod.Defer
 
+/* convenience func to find class'd nodes underneath a node, such as
+ * widget.node
+ */
+var $CN = function (className, node) {
+    return document.getElementsByClassName(className, node)[0];
+}
+
 Goonmill.SparqlSandbox = Nevow.Athena.Widget.subclass('Goonmill.SparqlSandbox');
 Goonmill.SparqlSandbox.methods( // {{{
     function __init__(self, node) { // {{{
         Goonmill.SparqlSandbox.upcall(self, '__init__', node);
 
-        self.queryForm = self.firstNodeByClass("queryForm");
-        self.results = self.firstNodeByClass("results");
+        self.queryForm = $CN("queryForm", self.node);
+        self.results = $CN("results", self.node);
         self.queryArea = self.queryForm.query;
 
         DeanEdwards.addEvent(self.queryArea, 'keyup', 
@@ -45,9 +52,9 @@ Goonmill.Result.methods( // {{{
     function __init__(self, node) { // {{{
         Goonmill.Result.upcall(self, '__init__', node);
 
-        self.foldable = self.firstNodeByClass("foldable");
-        self.plus = self.firstNodeByClass('plus');
-        self.minus = self.firstNodeByClass('minus');
+        self.foldable = $CN("foldable", self.node);
+        self.plus = $CN("plus", self.node);
+        self.minus = $CN("minus", self.node);
         DeanEdwards.addEvent(self.plus, 'click', 
             function onPlusClick(event) { return self.onPlusClick(event)
         });
@@ -79,7 +86,7 @@ Goonmill.Search.methods( // {{{
     function __init__(self, node) { // {{{
         Goonmill.Search.upcall(self, '__init__', node);
 
-        self.searchForm = self.firstNodeByClass("searchForm");
+        self.searchForm = $CN("searchForm", self.node);
         DeanEdwards.addEvent(self.searchForm, 'submit', 
             function onSearchSubmit(event) { return self.onSearchSubmit(event) 
         });
@@ -94,7 +101,7 @@ Goonmill.Search.methods( // {{{
         var args = {'search_terms': self.searchForm.search_terms.value};
         var d = self.callRemote("onSearchSubmit", args);
         d.addCallback(function gotHits(hits) {
-            hitsNode = self.firstNodeByClass('hits');
+            hitsNode = $CN("hits", self.node);
 
             self.clearHits();
 
@@ -126,7 +133,7 @@ Goonmill.Search.methods( // {{{
     }, // }}}
 
     function clearHits(self) { // {{{
-        self.firstNodeByClass('hits').innerHTML = '';
+        $CN("hits", self.node).innerHTML = '';
     } // }}}
 ); // }}}
 
@@ -137,8 +144,12 @@ Goonmill.HistoryView.methods( // {{{
         for (var i=0; i<result.length; i++) {
             var d = self.addChildWidgetFromWidgetInfo(result[i]);
             d.addCallback(function addedWidget(w) {
-                var par = document.getElementsByClassName('boxRight', self.node)[0];
+                var par = $CN('boxRight', self.node);
                 par.appendChild(w.node);
+
+                w.node.scrollIntoView(false);
+
+                new Effect.Highlight($CN("monsterTitle", w.node));
 
                 return null;
             });
