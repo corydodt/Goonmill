@@ -137,7 +137,8 @@ Goonmill.HistoryView.methods( // {{{
         for (var i=0; i<result.length; i++) {
             var d = self.addChildWidgetFromWidgetInfo(result[i]);
             d.addCallback(function addedWidget(w) {
-                self.node.appendChild(w.node);
+                var par = document.getElementsByClassName('boxRight', self.node)[0];
+                par.appendChild(w.node);
 
                 return null;
             });

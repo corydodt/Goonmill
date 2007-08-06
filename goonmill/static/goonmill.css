@@ -1,3 +1,8 @@
+body { 
+    padding-top: 2em;
+    padding-left: 5em; 
+}
+
 .prefixes {
     font-family: sans-serif;
     font-size: 8pt;
@@ -52,9 +57,9 @@ input[name=search_terms] {
 }
 
 .monster_entry {
+    width: 679px;
     float: left;
     clear: left;
-    width: 550px;
 }
 
 .monster_entry p { 
@@ -68,9 +73,6 @@ h1, h2, h3, h4, h5, h6 { font-family: sans-serif; }
 .statblock { border-bottom: thin solid black; }
 
 h4.monsterTitle { 
-    float: left;
-    width: 550px;
-    clear: both;
     background-color: red; 
     color: white;
     border: 2px outset black;
@@ -106,3 +108,25 @@ form.guise, form.readOnlyGuise { display: inline; }
     float: left;
 }
 
+
+.boxLeft {
+    clear: left;
+    padding: 10pt 2pt 10pt 2pt;
+    float: left;
+    width: 1.5em;
+    font-size: 48pt;
+    color: blue;
+}
+
+.boxRight {
+    float: left;
+}
+
+.hits {
+    float: left;
+}
+
+.monster_entry .foldable, .monsterTitle, .hits
+{
+    width: 550px;
+}

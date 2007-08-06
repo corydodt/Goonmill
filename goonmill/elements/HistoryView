@@ -1,3 +1,10 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1"
    n:render="liveElement" class="historyview">
+
+<div class="boxLeft">③</div>
+
+<div class="boxRight">
+    <h1>Creatures Display Here</h1>
+</div>
+
 </div>
