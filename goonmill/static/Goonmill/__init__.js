@@ -78,6 +78,13 @@ Goonmill.Result.methods( // {{{
         }
     }, // }}}
 
+    function hi(self) { // {{{
+        new Effect.Highlight($CN('monsterTitle', self.node), 
+            {delay: 0.3, 
+             beforeStart: function(){self.node.scrollIntoView()} 
+             });
+    }, // }}}
+
     function collapse(self) { // {{{
         if (self.foldable.visible()) { 
             new Effect.SlideUp(self.foldable, {duration:0.3});
@@ -164,7 +171,7 @@ Goonmill.HistoryView.methods( // {{{
                 w.foldable.hide();
                 par.appendChild(w.node);
                 w.expand();
-
+                w.hi();
                 return null;
             });
             ll.push(d);
