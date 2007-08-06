@@ -79,9 +79,12 @@ Goonmill.Result.methods( // {{{
     }, // }}}
 
     function hi(self) { // {{{
-        new Effect.Highlight($CN('monsterTitle', self.node), 
+        var title = $CN('monsterTitle', self.node);
+        var bg = title.style['background-color'];
+        new Effect.Highlight(title,
             {delay: 0.3, 
-             beforeStart: function(){self.node.scrollIntoView()} 
+             beforeStart: function(){self.node.scrollIntoView()} ,
+             endcolor: bg
              });
     }, // }}}
 
