@@ -76,6 +76,7 @@ h4.monsterTitle {
     background-color: red; 
     color: white;
     border: 2px outset black;
+    height: 1.2em;
 }
 
 form.guise, form.readOnlyGuise { display: inline; }
@@ -129,4 +130,25 @@ form.guise, form.readOnlyGuise { display: inline; }
 .monster_entry .foldable, .monsterTitle, .hits
 {
     width: 550px;
+}
+
+.monsterTitle_1 {
+    float:left;
+    width:300px;
+}
+
+.monsterTitle_2 {
+    float:left;
+    width:100px;
+    text-align: right;
+}
+
+.monsterTitle_3 {
+    float:left;
+    text-align:right;
+    width:150px;
+}
+
+.monsterTitle_3 a {
+    color: white;
 }
