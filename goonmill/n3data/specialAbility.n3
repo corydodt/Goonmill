@@ -14,3 +14,9 @@
     rdfs:label "Ink Cloud";
     rdfs:comment "The creature can emit a cloud of jet-black ink 10 feet high by 10 feet wide by 10 feet long once per minute as a free action. The cloud provides total concealment, which the creature normally uses to escape a losing fight. All vision within the cloud is obscured.";
 .
+
+:deflectingForce
+    a c:SpecialArmorClass;
+    rdfs:label "Deflecting Force";
+    rdfs:comment "A force dragon is protected by a shield of force that provides a deflection bonus to its AC. The deflection bonus is equal to the dragon’s Charisma bonus.";
+.
