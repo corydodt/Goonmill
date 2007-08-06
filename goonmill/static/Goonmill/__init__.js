@@ -67,17 +67,29 @@ Goonmill.Result.methods( // {{{
     function onPlusClick(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();
-        self.foldable.style['display'] = 'block';
-        self.plus.style['display'] = 'none';
-        self.minus.style['display'] = 'inline';
+        self.expand();
+    }, // }}}
+
+    function expand(self) { // {{{
+        if (!self.foldable.visible()) { 
+            new Effect.SlideDown(self.foldable, {duration:0.3});
+            self.plus.hide();
+            self.minus.show();
+        }
+    }, // }}}
+
+    function collapse(self) { // {{{
+        if (self.foldable.visible()) { 
+            new Effect.SlideUp(self.foldable, {duration:0.3});
+            self.plus.show();
+            self.minus.hide();
+        };
     }, // }}}
 
     function onMinusClick(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();
-        self.foldable.style['display'] = 'none';
-        self.minus.style['display'] = 'none';
-        self.plus.style['display'] = 'inline';
+        self.collapse();
     } // }}}
 ); // }}}
 
@@ -142,14 +154,16 @@ Goonmill.HistoryView.methods( // {{{
     function postResult(self, result) { // {{{
         var ll = [];
         for (var i=0; i<result.length; i++) {
+            $A(self.childWidgets).each(function (w) {
+                w.collapse();
+            });
+
             var d = self.addChildWidgetFromWidgetInfo(result[i]);
             d.addCallback(function addedWidget(w) {
                 var par = $CN('boxRight', self.node);
+                w.foldable.hide();
                 par.appendChild(w.node);
-
-                w.node.scrollIntoView(false);
-
-                new Effect.Highlight($CN("monsterTitle", w.node));
+                w.expand();
 
                 return null;
             });
@@ -201,7 +215,7 @@ Goonmill.Guise.methods( // {{{
     /* put guise into editing mode */
     function editGuise(self, event) { // {{{
         event.stopPropagation();
-        event.preventDefault()
+        event.preventDefault();
         self.staticNode.style['display'] = 'none';
         self.inputNode.style['display'] = 'inline';
         self.inputNode.select();
@@ -210,7 +224,7 @@ Goonmill.Guise.methods( // {{{
 
     function onSubmit(self, event) { // {{{
         event.stopPropagation();
-        event.preventDefault()
+        event.preventDefault();
         self.inputNode.style['display'] = 'none';
         var v = self.inputNode.value;
         if (v) {
