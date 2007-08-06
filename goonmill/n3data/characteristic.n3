@@ -311,3 +311,16 @@
 :SpecialAction rdfs:subClassOf :Characteristic .
 
 :SpecialArmorClass rdfs:subClassOf :Characteristic .
+
+:SpellLikeAbility 
+    rdfs:subClassOf :Characteristic;
+    rdfs:comment "Spell-like ability; mostly used to denote creature abilities labeled \"(Sp)\" which are not, in fact, real spells; such as Safekeeping and Freezing Fog."
+.
+
+:Aura
+    rdfs:subClassOf :Characteristic;
+    rdfs:comment "Permanent effect that extends some distance around the body of the creature.";
+.
+:auraOfMenace a :Aura .
+:protectiveAura a :Aura .
+
