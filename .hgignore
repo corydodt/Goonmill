@@ -1,6 +1,7 @@
 (/|\\|^).*\.pyc$
 (/|\\|)dropin.cache$
 (/|\\|^)twistd.log$
+(/|\\|^)dnotify.log$
 (/|\\)srd35.db$
 (/|\\|^).*\.pid$
 ^goonmill/html/.*$
