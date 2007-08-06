@@ -62,7 +62,7 @@ class Statblock(object):
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
                 'listen': '+0', # may be set again, down below
                 'spot': '+0', # may be set again, down below
-                'alignment': self.formatAlignment(),
+                'alignment': self.formatAlignment,
                 'attackOptions': self.attackOptions,
                 'fullAbilities': parsedFullAbilities[0],
                 'spellLikeAbilities': parsedFullAbilities[1],
@@ -76,13 +76,12 @@ class Statblock(object):
                 'immunities': self.immunities,
                 'resistances': self.resistances,
                 'vulnerabilities': self.vulnerabilities,
+                'skills': self.formatSkills,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
             self.overrides[k] = str(savesDict[k])
 
-        ## self.feats = self.parseFeats()
-        ## self.skills = self.parseSkills()
         ## self.fullAbilities = self.parseFullAbilities()
 
         listen = self.skills.get('Listen', None)
@@ -164,6 +163,11 @@ class Statblock(object):
 
     def parseSkills(self):
         return parseSkills(self.monster.skills)
+
+    def formatSkills(self):
+        if self.skills == {}:
+            return '-'
+        return ', '.join(sorted(self.skills.values()))
 
     def parseSaves(self):
         return parseSaves(self.monster.saves)
@@ -391,14 +395,16 @@ class Statblock(object):
 
     def get(self, attribute):
         """
-        Retrieve an attribute, first by looking it up in my own property list
-        (which might have been modified from the server) and second by looking
-        it up in the monster's ORM object.
+        Retrieve an attribute as a string or int, first by looking it up in my
+        own property list (which might have been modified from the server) and
+        second by looking it up in the monster's ORM object.
         """
         if attribute in self.overrides:
             att = self.overrides[attribute]
             if callable(att):
                 return att()
+            assert isinstance(att, 
+                    (unicode, str, int)), "%r ain't int or string" % (att,)
             return att
         return getattr(self.monster, attribute)
 
@@ -468,8 +474,17 @@ def parseAttackOptions(attackStat):
     return attackparser.parseAttacks(attackStat)[0]
 
 def parseFullAbilities(fullTextStat):
-    """All full ability markup as a list of strings"""
-    return fullabilityparser.parseFullAbilities(fullTextStat)
+    """All full ability markup as a 2-tuple of strings"""
+    specs, spellLikes = fullabilityparser.parseFullAbilities(fullTextStat)
+    if specs is None:
+        specs = ''
+    else:
+        specs = ''.join(specs)
+
+    if spellLikes is None:
+        spellLikes = ''
+
+    return (specs, spellLikes)
 
 def parseSpecialQualities(specialQualitiesStats):
     """All full ability markup as a list of strings"""
