@@ -3,7 +3,7 @@
 <div class="boxLeft">①</div>
 
 <div class="boxRight">
-  <h1>Search for a Creature</h1>
+  <a name="search" /><h1>Search for a Creature</h1>
   <form class="searchForm">
     <input name="search_terms" value="Type here to search for a monster"/>
     <input type="submit" value="Search"/>
