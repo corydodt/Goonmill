@@ -11,6 +11,12 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
+class Aura(S.SparqItem):
+    """Permanent effect that extends some distance around the body of the 
+    creature.
+    """
+
+
 class SpecialAction(S.SparqItem):
     """Something a creature can do besides attack"""
 
@@ -93,6 +99,9 @@ def allFamilies():
 def allSpecialActions():
     return db.allSpecialActions()
 
+def allAuras():
+    return db.allAuras()
+
 
 class SRDTriplesDatabase(S.TriplesDatabase):
     def allFamilies(self):
@@ -104,6 +113,15 @@ class SRDTriplesDatabase(S.TriplesDatabase):
 
         return ret
                 
+    def allAuras(self):
+        ret = {}
+        for _a in db.query("SELECT ?a { ?a a c:Aura }"):
+            a = _a[0]
+            aura = Aura(db=db, key=a)
+            ret[aura.label.lower()] = aura
+
+        return ret
+
     def allSpecialActions(self):
         ret = {}
         for _sa in db.query("SELECT ?sa { ?sa a c:SpecialAction }"):

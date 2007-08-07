@@ -40,8 +40,11 @@ CR
   <!-- defense block -->
   <div class="statblock">
       <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span class="TODO"
-          title="mods to AC, see e.g. cyclonic ravager deflecting winds">[; defenses]</span>
-      <span n:render="acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
+          title=
+          "mods to AC, see e.g. cyclonic ravager deflecting winds">[; 
+          defenses]</span><span n:render=
+          "acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
+
       <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (<n:slot name="hitDice"
       /> HD)
       <span n:render="fastHealing">; fast healing <n:slot name="fastHealing" /></span>

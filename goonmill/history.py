@@ -358,10 +358,17 @@ class Statblock(object):
 
     def aura(self):
         """Return the creature's aura, if any"""
+        all = rdfquery.allAuras()
+
         ret = []
         for q in self._parsedSpecialQualities:
             if q.type == 'aura':
                 ret.append(q.what)
+
+        for q in self._parsedSpecialQualities:
+            qname = (q.name.lower() if q.name else '')
+            if qname in all:
+                ret.append(all[qname].label)
 
         return ', '.join(sorted(ret)) or None
 
