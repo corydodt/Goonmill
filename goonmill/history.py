@@ -54,6 +54,7 @@ class Statblock(object):
                 'hitDice': self.hitDice,
                 'count': self._count,
                 'label': self._label,
+                'specialAC': self.specialAC,
                 'acFeats': lambda: self.formatFeats(self.acFeats),
                 'speedFeats': lambda: self.formatFeats(self.speedFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
@@ -95,6 +96,20 @@ class Statblock(object):
         self._parsedSpecialQualities = self.parseSpecialQualities()
 
         self.determineFamilies()
+
+    def specialAC(self):
+        specArmors = rdfquery.allSpecialAC()
+
+        extraArmors = []
+        for q in self._parsedSpecialQualities:
+            qname = (q.name.lower() if q.name is not None else '')
+            if qname in specArmors:
+                extraArmors.append(specArmors[qname].label)
+            
+        extraArmors = ", ".join(extraArmors)
+
+        return extraArmors
+
 
     def determineFamilies(self):
         """From several of the monster's attributes, compute its families."""

@@ -172,6 +172,7 @@ class Result(athena.LiveElement):
 
         # defense block
         fill('ac', get('armor_class'))
+        fill('specialAC', get('specialAC'))
         fill('acFeats', get('acFeats'))
         fill('hp', guise('hp', readOnly=True, value=get('hitPoints')))
         fill('hitDice', get('hitDice'))
@@ -227,6 +228,13 @@ class Result(athena.LiveElement):
         return ''
 
     page.renderer(immunities)
+
+    def specialAC(self, req, tag):
+        if self.statblock.get('specialAC'):
+            return tag
+        return ''
+
+    page.renderer(specialAC)
 
     def specialActions(self, req, tag):
         if self.statblock.get('specialActions'):

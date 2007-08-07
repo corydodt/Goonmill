@@ -11,6 +11,10 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
+class SpecialArmorClass(S.SparqItem):
+    """Permanent, racial modifier to armor class"""
+
+
 class Aura(S.SparqItem):
     """Permanent effect that extends some distance around the body of the 
     creature.
@@ -96,6 +100,9 @@ prefixes = {'': fam, 'c': char, 'p': prop}
 def allFamilies():
     return db.allFamilies()
 
+def allSpecialAC():
+    return db.allSpecialAC()
+
 def allSpecialActions():
     return db.allSpecialActions()
 
@@ -119,6 +126,15 @@ class SRDTriplesDatabase(S.TriplesDatabase):
             a = _a[0]
             aura = Aura(db=db, key=a)
             ret[aura.label.lower()] = aura
+
+        return ret
+
+    def allSpecialAC(self):
+        ret = {}
+        for _ac in db.query("SELECT ?ac { ?ac a c:SpecialArmorClass }"):
+            ac = _ac[0]
+            armor = SpecialArmorClass(db=db, key=ac)
+            ret[armor.label.lower()] = armor
 
         return ret
 
