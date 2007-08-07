@@ -93,7 +93,10 @@ CR
         </span>
     </p>
 
-    <p class="TODO" title="something it can do besides attack"><strong>Special Actions</strong> special actions; <a title="Snatch Arrows">special action feats</a></p>
+    <p title=
+        "something it can do besides attack"><strong>Special Actions</strong> 
+        <n:slot name="specialActions" /></p>
+
     <p class="TODO" title=
     "gear that can be used as a combat action (not weapons)"><strong>Combat Gear</strong> gear</p>
     <p class="TODO"><strong>Spells</strong> (CL XX, +XX melee touch, +XX ranged touch)]</p>

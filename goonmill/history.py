@@ -34,7 +34,6 @@ class History(object):
 
 hpParser = re.compile(r'(\S+)\s[^(]*\(([\d,]+) hp\)')
 
-
 class Statblock(object):
     """
     A representation of one statblock; a configured monster that has had
@@ -57,7 +56,6 @@ class Statblock(object):
                 'label': self._label,
                 'acFeats': lambda: self.formatFeats(self.acFeats),
                 'speedFeats': lambda: self.formatFeats(self.speedFeats),
-                'specialActionFeats': lambda: self.formatFeats(self.specialActionFeats),
                 'attackOptionFeats': lambda: self.formatFeats(self.attackOptionFeats),
                 'rangedAttackFeats': lambda: self.formatFeats(self.rangedAttackFeats),
                 'listen': '+0', # may be set again, down below
@@ -77,6 +75,7 @@ class Statblock(object):
                 'resistances': self.resistances,
                 'vulnerabilities': self.vulnerabilities,
                 'skills': self.formatSkills,
+                'specialActions': self.specialActions,
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -187,6 +186,23 @@ class Statblock(object):
     def specialActionFeats(self):
         """List of feats that can appear next to special actions"""
         return [f for f in self.feats if f.dbFeat.is_special_action_feat]
+
+    def specialActions(self):
+        """All special actions as a string"""
+        specActions = rdfquery.allSpecialActions()
+
+        extraActions = []
+        for q in self._parsedSpecialQualities:
+            qname = (q.name.lower() if q.name is not None else '')
+            if qname in specActions:
+                extraActions.append(specActions[qname].label)
+            
+        feats = self.formatFeats(self.specialActionFeats)
+        extraActions = ", ".join(extraActions)
+
+        feats = (feats + ", " if feats and extraActions else '')
+
+        return feats + extraActions
 
     def attackOptionFeats(self):
         """List of feats that can appear next to attack options"""

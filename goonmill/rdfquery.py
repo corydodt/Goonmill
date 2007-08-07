@@ -11,6 +11,10 @@ dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
 prop = NS('http://thesoftworld.com/2007/properties.n3#')
 
+class SpecialAction(S.SparqItem):
+    """Something a creature can do besides attack"""
+
+
 class AttackEffect(S.SparqItem):
     """Some type of damage such as cold or non-magical"""
 
@@ -86,6 +90,9 @@ prefixes = {'': fam, 'c': char, 'p': prop}
 def allFamilies():
     return db.allFamilies()
 
+def allSpecialActions():
+    return db.allSpecialActions()
+
 
 class SRDTriplesDatabase(S.TriplesDatabase):
     def allFamilies(self):
@@ -97,6 +104,14 @@ class SRDTriplesDatabase(S.TriplesDatabase):
 
         return ret
                 
+    def allSpecialActions(self):
+        ret = {}
+        for _sa in db.query("SELECT ?sa { ?sa a c:SpecialAction }"):
+            sa = _sa[0]
+            action = SpecialAction(db=db, key=sa)
+            ret[action.label.lower()] = action
+
+        return ret
 
 
 db = SRDTriplesDatabase(
@@ -104,6 +119,7 @@ db = SRDTriplesDatabase(
         prefixes=prefixes,
         datasets=[filenameAsUri(RESOURCE('n3data/family.n3')),
                   filenameAsUri(RESOURCE('n3data/characteristic.n3')),
+                  filenameAsUri(RESOURCE('n3data/specialAbility.n3')),
                   ],
         )
 

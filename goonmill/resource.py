@@ -197,7 +197,7 @@ class Result(athena.LiveElement):
         fill('baseAttack', get('base_attack'))
         fill('grapple', get('grapple'))
         fill('attackOptionFeats', get('attackOptionFeats'))
-        ## fill('specialActionFeats', get('specialActionFeats'))  ## TODO
+        fill('specialActions', get('specialActions'))
         ## gear TODO
         ## spells TODO
         ## spellLikeAbilities
@@ -492,4 +492,5 @@ if __name__ == '__main__': # {{{
             file(RESOURCE('html/%s.html' % (id,)), 'w').write(r)
 
         renderLivePage(wrapper).addCallback(_gotResult)
+
 # }}}
