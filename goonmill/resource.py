@@ -200,7 +200,7 @@ class Result(athena.LiveElement):
         fill('specialActions', get('specialActions'))
         ## gear TODO
         ## spells TODO
-        ## spellLikeAbilities
+        ## spellLikeAbilities - see renderer
 
         # skills, abilities, feats block
         fill('abilities', get('abilities'))
@@ -209,7 +209,7 @@ class Result(athena.LiveElement):
         fill('skills', get('skills'))
 
         # ability detail drilldown block
-        ## fullAbilities
+        ## fullAbilities - see renderer
 
         s.updateHandler(self.updateHandler)
 
