@@ -1,6 +1,4 @@
 body { 
-    padding-top: 2em;
-    padding-left: 5em; 
 }
 
 .prefixes {
@@ -57,7 +55,6 @@ input[name=search_terms] {
 }
 
 .monster_entry {
-    width: 679px;
     float: left;
     clear: left;
 }
@@ -114,7 +111,7 @@ form.guise, form.readOnlyGuise { display: inline; }
     clear: left;
     padding: 10pt 2pt 10pt 2pt;
     float: left;
-    width: 1.5em;
+    width: 1.2em;
     font-size: 48pt;
     color: blue;
 }
@@ -129,7 +126,7 @@ form.guise, form.readOnlyGuise { display: inline; }
 
 .monster_entry .foldable, .monsterTitle, .hits
 {
-    width: 550px;
+    width: 478px;
 }
 
 .monsterTitle_1 {
