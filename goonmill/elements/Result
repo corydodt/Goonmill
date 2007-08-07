@@ -93,7 +93,7 @@ CR
         </span>
     </p>
 
-    <p title=
+    <p n:render="specialActions" title=
         "something it can do besides attack"><strong>Special Actions</strong> 
         <n:slot name="specialActions" /></p>
 

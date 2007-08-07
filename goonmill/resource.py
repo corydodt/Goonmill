@@ -227,6 +227,13 @@ class Result(athena.LiveElement):
 
     page.renderer(immunities)
 
+    def specialActions(self, req, tag):
+        if self.statblock.get('specialActions'):
+            return tag
+        return ''
+
+    page.renderer(specialActions)
+
     def resistances(self, req, tag):
         if self.statblock.get('resistances'):
             return tag
