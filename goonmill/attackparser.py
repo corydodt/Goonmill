@@ -51,11 +51,11 @@ anyAttackForm := cwb, ws, !, subAttackForm1/subAttackForm2, ws, rangeSlot?
 
 <attackFormSep> := ','/'and'
 
-attackOption := anyAttackForm, (attackFormSep, ws, anyAttackForm)*
+attackGroup := anyAttackForm, (attackFormSep, ws, anyAttackForm)*
 
 empty := '-'
 
-attackStat := empty/(attackOption, (';'?, ws, 'or', ws, attackOption)*)
+attackStat := empty/(attackGroup, (';'?, ws, 'or', ws, attackGroup)*)
 
 attackStatRoot := attackStat
 ''') # }}}
@@ -65,13 +65,13 @@ attackParser = parser.Parser(grammar, root='attackStatRoot', prebuilts = [
 ])
 
 
-class AttackOption(object):
+class AttackGroup(object):
     """A group of AttackForms which all may be used simultaneously"""
     def __init__(self):
         self.attackForms = []
 
     def __repr__(self):
-        return '<AttackOption with %s forms>' % (len(self.attackForms),)
+        return '<AttackGroup with %s forms>' % (len(self.attackForms),)
 
 
 class AttackForm(object):
@@ -130,9 +130,9 @@ class AttackForm(object):
 
 class Processor(disp.DispatchProcessor):
     def attackStat(self, (t,s1,s2,sub), buffer):
-        self.attackOptions = []
+        self.attackGroups = []
         disp.dispatchList(self, sub, buffer)
-        return self.attackOptions
+        return self.attackGroups
 
     def empty(self, (t,s1,s2,sub), buffer):
         pass
@@ -199,9 +199,9 @@ class Processor(disp.DispatchProcessor):
     def attackForm2(self, (t,s1,s2,sub), buffer):
         return disp.dispatchList(self, sub, buffer)
 
-    def attackOption(self, (t,s1,s2,sub), buffer):
-        self.option = AttackOption()
-        self.attackOptions.append(self.option)
+    def attackGroup(self, (t,s1,s2,sub), buffer):
+        self.option = AttackGroup()
+        self.attackGroups.append(self.option)
         return disp.dispatchList(self, sub, buffer)
 
     def attackTypeAndTouch(self, (t,s1,s2,sub), buffer):

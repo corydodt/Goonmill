@@ -197,6 +197,7 @@ class Result(athena.LiveElement):
         fill('baseAttack', get('base_attack'))
         fill('grapple', get('grapple'))
         fill('attackOptionFeats', get('attackOptionFeats'))
+        fill('attackOptions', get('special_attacks'))
         fill('specialActions', get('specialActions'))
         ## gear TODO
         ## spells TODO
@@ -336,7 +337,7 @@ class Result(athena.LiveElement):
     page.renderer(vulnerabilities)
 
     def meleeAttacks(self, req, tag):
-        options = self.statblock.get('attackOptions')['melee']
+        options = self.statblock.get('attackGroups')['melee']
         content = []
         pg = tag.patternGenerator('meleeAttack')
         for option in options:
@@ -347,7 +348,7 @@ class Result(athena.LiveElement):
     page.renderer(meleeAttacks)
 
     def rangedAttacks(self, req, tag):
-        options = self.statblock.get('attackOptions')['ranged']
+        options = self.statblock.get('attackGroups')['ranged']
         content = []
         pg = tag.patternGenerator('rangedAttack')
         for option in options:

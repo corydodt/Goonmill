@@ -61,7 +61,7 @@ class Statblock(object):
                 'listen': '+0', # may be set again, down below
                 'spot': '+0', # may be set again, down below
                 'alignment': self.formatAlignment,
-                'attackOptions': self.attackOptions,
+                'attackGroups': self.attackGroups,
                 'fullAbilities': parsedFullAbilities[0],
                 'spellLikeAbilities': parsedFullAbilities[1],
                 'spellResistance': self.spellResistance,
@@ -365,18 +365,18 @@ class Statblock(object):
 
         return ', '.join(sorted(ret)) or None
 
-    def attackOptions(self):
+    def attackGroups(self):
         """
-        @return: A dict:list of attack options, formatted.  The keys in the
+        @return: A dict:list of attack groups, formatted.  The keys in the
         dict will be 'melee' and 'ranged' and the values will be a list of
         attack options for one of those two keys.
         """
         ret = {'melee':[], 'ranged':[]}
 
-        if getattr(self, '_parsedAttackOptions', None) is None:
-            options = self._parsedAttackOptions = self.parseAttackOptions()
+        if getattr(self, '_parsedAttackGroups', None) is None:
+            options = self._parsedAttackGroups = self.parseAttackGroups()
         else:
-            options = self._parsedAttackOptions
+            options = self._parsedAttackGroups
 
         for option in options:
             forms = option.attackForms
@@ -405,9 +405,9 @@ class Statblock(object):
         """Roll hit points for one monster of this type"""
         return parseHitPoints(self.monster.hit_dice)
 
-    def parseAttackOptions(self):
+    def parseAttackGroups(self):
         """Get the attack options dict"""
-        return parseAttackOptions(self.monster.full_attack)
+        return parseAttackGroups(self.monster.full_attack)
 
     def get(self, attribute):
         """
@@ -485,7 +485,7 @@ def parseSaves(saveStat):
     """Fort, Ref and Will saves as dict of StatblockSave objects"""
     return saveparser.parseSaves(saveStat)[0]
 
-def parseAttackOptions(attackStat):
+def parseAttackGroups(attackStat):
     """All grouped attack options as strings"""
     return attackparser.parseAttacks(attackStat)[0]
 

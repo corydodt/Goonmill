@@ -86,8 +86,10 @@ CR
         "baseAttack"/>; <strong>Grp</strong>&#xA0;<n:slot name=
         "grapple" /></p>
 
-    <p><span class="TODO" title="offensive action or modifies a standard attack"><strong>Atk Options</strong> !!options</span>
-        <span n:render="attackOptionFeats">;&#xA0;<n:slot name=
+    <p><span title=
+        "offensive action or modifies a standard attack"><strong>Atk Options</strong> <n:slot name=
+        "attackOptions" /></span><span n:render=
+        "attackOptionFeats">;&#xA0;<n:slot name=
             "attackOptionFeats" />
             <!-- TODO metamagic feats (if the creature casts spontaneously)--> 
         </span>
