@@ -6,7 +6,7 @@ Twisted 2.5 or later is required to use this.
 
 from zope.interface import implements
 
-from twisted.python import usage, util
+from twisted.python import usage, util, log
 from twisted.plugin import IPlugin
 from twisted.application.service import IServiceMaker
 from twisted.application import strports
@@ -22,6 +22,27 @@ class Options(usage.Options):
                      ##     'Certificate file for starting the SSL server'],
                      ]
     optFlags = [['dev', None, 'Enable development features such as /sandbox']]
+
+
+class STFUSite(appserver.NevowSite):
+    """Website with <80 column logging"""
+    def log(self, request):
+        uri = request.uri
+
+        if 'jsmodule' in uri:
+            uris = uri.split('/')
+            n = uris.index('jsmodule')
+            uris[n-1] = uris[n-1][:3] + '...'
+            uri = '/'.join(uris)
+
+        if len(uri) > 38:
+            uri = '...' + uri[-35:]
+
+        code = request.code
+        if code != 200:
+            code = '!%s!' % (code, )
+
+        log.msg('%s %s' % (code, uri), system='HTTP', )
 
 
 class GoonmillServerMaker(object):
@@ -42,7 +63,7 @@ class GoonmillServerMaker(object):
         Construct the test daemon.
         """
         resource = VhostFakeRoot(Root(dev=options['dev']))
-        factory = appserver.NevowSite(resource)
+        factory = STFUSite(resource)
         port = 'tcp:%s' % (options['port'],)
         ## port = 'ssl:%s:privateKey=%s:certKey=%s' % (options['port'],
         ##         options['privkey'], options['certificate'])
