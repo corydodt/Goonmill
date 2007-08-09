@@ -122,8 +122,8 @@
     "gear that can be used as a combat action (not weapons)"><strong>Combat Gear</strong> gear</p>
 
     <p n:render="spells"><strong>Spells</strong> (CL <n:slot name=
-      "casterLevel" />) <span class="TODO"><n:slot name=
-      "spells" /></span></p>
+      "casterLevel" />) <n:slot name=
+      "spells" /></p>
 
     <p n:render="spellLikeAbilities" />
   </div>
@@ -140,7 +140,8 @@
 
     <p class="TODO"><strong>Possessions</strong> item, item, item, item, XX gp</p>
 
-    <p class="TODO"><strong>Spellbook</strong> All spells prepared plus XX</p>
+    <p n:render="spells"><strong>Spellbook</strong>&#xA0;<n:slot name=
+      "spellbook" /></p>
   </div>
   
   <!-- ability detail drilldown block -->

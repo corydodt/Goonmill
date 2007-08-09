@@ -200,10 +200,12 @@ class Result(athena.LiveElement):
         fill('attackOptionFeats', get('attackOptionFeats'))
         fill('attackOptions', get('special_attacks'))
         fill('specialActions', get('specialActions'))
-        fill('spells', get('spells'))
         ## gear TODO
         fill('casterLevel', get('casterLevel'))
-        ## spells TODO
+        fill('spells', guise('spells', 
+            readOnly=False, value='',
+            tooltip='Click to edit spells',
+            editHandler=s.setSpells))
         ## spellLikeAbilities - see renderer
 
         # skills, abilities, feats block
@@ -211,6 +213,11 @@ class Result(athena.LiveElement):
         fill('specialQualities', get('special_qualities'))
         fill('feats', get('feats') or '-')
         fill('skills', get('skills'))
+        ## possessions TODO
+        fill('spellbook', guise('spellbook', 
+            readOnly=False, value='',
+            tooltip='Click to edit spellbook',
+            editHandler=s.setSpellbook))
 
         # ability detail drilldown block
         ## fullAbilities - see renderer
@@ -232,7 +239,7 @@ class Result(athena.LiveElement):
     page.renderer(immunities)
 
     def spells(self, req, tag):
-        if self.statblock.get('spells'):
+        if self.statblock.get('casterLevel'):
             return tag
         return ''
 

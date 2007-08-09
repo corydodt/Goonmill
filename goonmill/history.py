@@ -65,7 +65,6 @@ class Statblock(object):
                 'attackGroups': self.attackGroups,
                 'fullAbilities': parsedFullAbilities[0],
                 'casterLevel': self.casterLevel,
-                'spells': self.spells,
                 'spellLikeAbilities': parsedFullAbilities[1],
                 'spellResistance': self.spellResistance,
                 'languages': self.languages,
@@ -111,9 +110,6 @@ class Statblock(object):
         extraArmors = ", ".join(extraArmors)
 
         return extraArmors
-
-    def spells(self):
-        return "spells..."
 
     def casterLevel(self):
         for q in self._parsedSpecialQualities:
@@ -469,6 +465,12 @@ class Statblock(object):
 
     def setAlignment(self, alignment):
         self.overrides['alignment'] = alignment
+
+    def setSpells(self, spells):
+        self.overrides['spells'] = spells
+
+    def setSpellbook(self, spellbook):
+        self.overrides['spellbook'] = spellbook
 
 
 def parseFeats(featStat):
