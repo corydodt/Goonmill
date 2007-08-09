@@ -39,27 +39,34 @@ CR
 
   <!-- defense block -->
   <div class="statblock">
-      <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span n:render=
-          "specialAC"
-          title=
-          "mods to AC, see e.g. cyclonic ravager deflecting winds">; <n:slot
-          name="specialAC" /></span><span n:render=
-          "acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
+    <p><strong>AC</strong>&#xA0;<n:slot name="ac" /><span n:render=
+        "specialAC"
+        title=
+        "mods to AC, see e.g. cyclonic ravager deflecting winds">; <n:slot
+        name="specialAC" /></span><span n:render=
+        "acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
 
-      <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> (<n:slot name="hitDice"
-      /> HD)
-      <span n:render="fastHealing">; fast healing <n:slot name="fastHealing" /></span>
-      <span n:render="regeneration">; regeneration <n:slot name="regeneration" /></span>
-      <span n:render="damageReduction"><strong>DR</strong> <n:slot
-          name="damageReduction" /></span></p>
+    <p><strong>hp</strong>&#xA0;<n:slot name="hp"/> 
+      (<n:slot name="hitDice" /> HD)
+      <span n:render="fastHealing">; fast healing 
+        <n:slot name="fastHealing" /></span>
+      <span n:render="regeneration">; regeneration 
+        <n:slot name="regeneration" /></span>
+      <span n:render="damageReduction"><strong>DR</strong> 
+        <n:slot name="damageReduction" /></span></p>
+
     <p n:render="immunities"><strong>Immune</strong>&#xA0;<n:slot name=
         "immunities" /></p>
+
     <p><span n:render=
         "resistances"><strong>Resist</strong>&#xA0;<n:slot name="resistances" />
         </span><span n:render="spellResistance"><strong>SR</strong> <n:slot name=
             "spellResistance" /></span></p>
-    <p><strong>Fort</strong> <n:slot name="fort" />, <strong>Ref</strong>
-        <n:slot name="ref" />, <strong>Will</strong> <n:slot name="will" /> </p>
+
+    <p><strong>Fort</strong> <n:slot name="fort" />, 
+      <strong>Ref</strong> <n:slot name="ref" />, 
+      <strong>Will</strong> <n:slot name="will" /> </p>
+
     <p n:render="vulnerabilities"><strong>Weakness</strong>
         <span n:pattern="vulnerability">vulnerability to <n:slot name=
             "attackEffect" /> </span>
