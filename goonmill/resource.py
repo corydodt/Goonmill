@@ -345,22 +345,22 @@ class Result(athena.LiveElement):
     page.renderer(vulnerabilities)
 
     def meleeAttacks(self, req, tag):
-        options = self.statblock.get('attackGroups')['melee']
+        groups = self.statblock.get('attackGroups')['melee']
         content = []
         pg = tag.patternGenerator('meleeAttack')
-        for option in options:
-            content.append(pg().fillSlots('value', option))
+        for group in groups:
+            content.append(pg().fillSlots('value', groups))
 
         return tag[content]
 
     page.renderer(meleeAttacks)
 
     def rangedAttacks(self, req, tag):
-        options = self.statblock.get('attackGroups')['ranged']
+        groups = self.statblock.get('attackGroups')['ranged']
         content = []
         pg = tag.patternGenerator('rangedAttack')
-        for option in options:
-            content.append(pg().fillSlots('value', option.capitalize()))
+        for group in groups:
+            content.append(pg().fillSlots('value', group.capitalize()))
 
         return tag[content]
 
