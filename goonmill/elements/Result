@@ -1,16 +1,18 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
-<n:invisible n:render="slots">
-<h4 class="monsterTitle">
-<div class="monsterTitle_1"><a href='' style="display: none" class="plus">[+]</a>
-    <a href='' class="minus">[-]</a>
-&#xA0;<n:slot name="name"/>&#xA0;<n:slot name="count"/>
-&#xA0;<em><n:slot name="label"/></em>
-</div>
-<div class="monsterTitle_2">
-CR
-<n:slot name="challengeRating"/></div>
-<div class="monsterTitle_3" ><a href="#search">&#x21E7;</a>&#xA0;</div>
-</h4>
+  <n:invisible n:render="slots">
+  <h4 class="monsterTitle">
+    <div class=
+      "monsterTitle_1"><a href='' style="display: none" class="plus">[+]</a>
+      <a href='' class="minus">[-]</a> &#xA0;<n:slot name=
+      "name"/>&#xA0;<n:slot name=
+      "count"/>&#xA0;<em><n:slot name=
+        "label"/></em>
+    </div>
+
+    <div class="monsterTitle_2">CR <n:slot name="challengeRating"/></div>
+
+    <div class="monsterTitle_3" ><a href="#search">&#x21E7;</a>&#xA0;</div>
+  </h4>
 <div class="foldable">
   <div style="clear:both" />
 
@@ -28,12 +30,15 @@ CR
       <n:slot name="creatureType"/>
       <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
     </p>
+
     <p><strong>Init</strong>&#xA0;<n:slot name=
         "initiative"/>; <span><strong>Senses</strong> <n:slot name=
             "senses" /></span>; 
         <strong>Listen</strong> <n:slot name="listen" />,
         <strong>Spot</strong> <n:slot name="spot" /></p>
+
     <p n:render="aura"><strong>Aura</strong>&#xA0;<n:slot name="aura" /></p>
+
     <p><strong>Languages</strong>&#xA0;<n:slot name="languages"/></p>
   </div>
 
@@ -119,15 +124,16 @@ CR
 
   <!-- skills, abilities and feats block -->
   <div class="statblock">
-    <p>
-      <strong>Abilities</strong>&#xA0;<n:slot name="abilities"/>
-    </p>
-    <p>
-      <strong>SQ</strong>&#xA0;<n:slot name="specialQualities"/>
-    </p>
+    <p><strong>Abilities</strong>&#xA0;<n:slot name="abilities"/></p>
+
+    <p><strong>SQ</strong>&#xA0;<n:slot name="specialQualities"/></p>
+
     <p><strong>Feats</strong>&#xA0;<n:slot name="feats" /></p>
+
     <p><strong>Skills</strong>&#xA0;<n:slot name="skills" /></p>
-    <p class="TODO"><strong>Possessions</strong> item, item, item, item, item, XX gp</p>
+
+    <p class="TODO"><strong>Possessions</strong> item, item, item, item, XX gp</p>
+
     <p class="TODO"><strong>Spellbook</strong> All spells prepared plus XX</p>
   </div>
   
