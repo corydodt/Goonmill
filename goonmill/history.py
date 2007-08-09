@@ -64,6 +64,8 @@ class Statblock(object):
                 'alignment': self.formatAlignment,
                 'attackGroups': self.attackGroups,
                 'fullAbilities': parsedFullAbilities[0],
+                'casterLevel': self.casterLevel,
+                'spells': self.spells,
                 'spellLikeAbilities': parsedFullAbilities[1],
                 'spellResistance': self.spellResistance,
                 'languages': self.languages,
@@ -110,6 +112,15 @@ class Statblock(object):
 
         return extraArmors
 
+    def spells(self):
+        return "spells..."
+
+    def casterLevel(self):
+        for q in self._parsedSpecialQualities:
+            if q.level:
+                return q.level
+
+        return None
 
     def determineFamilies(self):
         """From several of the monster's attributes, compute its families."""
