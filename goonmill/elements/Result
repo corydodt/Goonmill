@@ -1,5 +1,6 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class="monster_entry">
-  <n:invisible n:render="slots">
+
+<n:invisible n:render="slots">
   <h4 class="monsterTitle">
     <div class=
       "monsterTitle_1"><a href='' style="display: none" class="plus">[+]</a>
@@ -13,6 +14,7 @@
 
     <div class="monsterTitle_3" ><a href="#search">&#x21E7;</a>&#xA0;</div>
   </h4>
+
 <div class="foldable">
   <div style="clear:both" />
 
