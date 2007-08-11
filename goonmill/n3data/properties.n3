@@ -117,3 +117,41 @@
 .
 :resistance a rdfs:Property;
 .
+
+:cr a rdfs:Property;
+    rdfs:label "CR";
+    rdfs:comment "Challenge Rating";
+.
+
+:initiative a rdfs:Property;
+.
+
+:armorClass a rdfs:Property;
+    rdfs:label "AC";
+    rdfs:comment "Armor Class";
+.
+:spellResistance a rdfs:Property;
+    rdfs:label "Spell Resistance";
+.
+:speed a rdfs:Property;
+.
+:damageReduction a rdfs:Property;
+    rdfs:label "Damage Reduction";
+.
+:bab a rdfs:Property;
+    rdfs:label "BAB";
+    rdfs:comment "Base Attack Bonus";
+.
+:grapple a rdfs:Property .
+
+:space a rdfs:Property;
+    rdfs:comment "Amount of space a creature takes up";
+.
+
+:reach a rdfs:Property .
+
+:casterLevel a rdfs:Property;
+    rdfs:label "CL";
+    rdfs:comment "Effective caster level of this creature.  When present, this supersedes any other casting class levels a creature may have.";
+.
+:save a rdfs:Property .

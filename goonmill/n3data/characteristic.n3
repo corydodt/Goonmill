@@ -39,8 +39,16 @@
     rdfs:comment "Cannot see, but has immunity to gaze attacks, visual effects, illusions, and other attack forms that rely on sight.";
 .
 :blindsight a :Sense .
+:keenSenses 
+    a :Sense;
+    rdfs:label "Keen Senses";
+    rdfs:comment "Sees four times as well as a human in shadowy illumination and twice as well in normal light. It also has darkvision out to 120 feet.";
+.
+{ ?m :sense :keenSenses } => { ?m :sense [ a :Darkvision; p:range "120 ft."; ] } .
 
 :Darkvision rdfs:subClassOf :Sense .
+
+:Blindsense rdfs:subClassOf :Sense .
 
 
 
@@ -88,6 +96,9 @@
 :slashing a :AttackEffect .
 :areaEffect a :AttackEffect;
     rdfs:label "Area-Effect Attacks";
+.
+:magic a :AttackEffect;
+    rdfs:comment "Damage from magical attacks";
 .
 
 
@@ -265,12 +276,16 @@
     rdfs:label "Movement as an incorporeal creature";
     rdfs:comment "This creature can enter or pass through solid objects, but must remain adjacent to the object’s exterior, and so cannot pass entirely through an object whose space is larger than its own. It can sense the presence of creatures or objects within a square adjacent to its current location, but enemies have total concealment (50% miss chance) from an incorporeal creature that is inside an object. In order to see farther from the object it is in and attack normally, the incorporeal creature must emerge. An incorporeal creature inside an object has total cover, but when it attacks a creature outside the object it only has cover, so a creature outside with a readied action could strike at it as it attacks. An incorporeal creature cannot pass through a force effect.";
 .
+:ground a :MoveMechanic;
+    rdfs:comment "The creature's movement on the ground.";
+.
 
 :Fly rdfs:subClassOf :MoveMechanic .
 :perfectFlight a :Fly;
     rdfs:label "Perfect Flight";
 .
-
+:flight a :Fly
+.
 
 :AbilityScore rdfs:subClassOf :Characteristic .
 :str a :AbilityScore .
@@ -324,3 +339,15 @@
 :auraOfMenace a :Aura .
 :protectiveAura a :Aura .
 
+:AttackGroup
+    rdfs:subClassOf :Characteristic;
+    rdfs:comment "A group of attacks which may all be executed in the same round.";
+.
+:PhysicalAttack rdfs:subClassOf :Characteristic .
+:MeleeAttack rdfs:subClassOf :PhysicalAttack .
+:bite a :MeleeAttack .
+:claw a :MeleeAttack .
+:wing a :MeleeAttack .
+:tail a :MeleeAttack .
+
+:RangedAttack rdfs:subClassOf :PhysicalAttack .
