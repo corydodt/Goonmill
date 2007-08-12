@@ -30,12 +30,15 @@ def indexMonster(writer, monster):
     name_.setBoost(2.0)
     full_text = Field("full_text", full,
                   Field.Store.YES, Field.Index.TOKENIZED)
+    id = Field("id", str(monster.id),
+                  Field.Store.YES, Field.Index.UN_TOKENIZED)
     doc.add(name_)
-    print '.',
-    sys.stdout.flush()
     doc.add(full_text)
+    doc.add(id)
 
     writer.addDocument(doc)
+    print '.',
+    sys.stdout.flush()
 
 
 def textFromHtml(htmlText):
@@ -50,27 +53,43 @@ identity = lambda x: x
 
 ALWAYS_SKIP = object()
 
+def fuzzyQuoteTerm(t):
+    """Return a string term, quoted if a phrase, and with the fuzzy operator"""
+    if ' ' in t:
+        return '"%s"~' % (t,)
+    return '%s~' % (t,)
 
-class Query(usage.Options):
-    def parseArgs(self, *terms):
-        self['terms'] = terms
 
-    def postOptions(self):
-        searcher = IndexSearcher(RESOURCE('lucene-data'))
-        qp = MultiFieldQueryParser(['name', 'full_text'], StandardAnalyzer())
-        qp.setDefaultOperator(MultiFieldQueryParser.Operator.AND)
-        fuzzy = ['%s~' % (t,) for t in self['terms']]
-        terms = ' '.join(fuzzy)
-        query = qp.parse(terms, )
-        hits = searcher.search(query)
+class Hit(object):
+    """One monster search result
+    Essentially an adapter for Lucene's hits
+    """
+    def __init__(self, doc, hits, index):
+        self.name = doc['name_']
+        self.id = doc['id']
+        self.score = hits.score(index)
 
-        for i, doc in hits:
-            print doc.name.stringValue(), '(%s)' % (hits.score(i),)
-            if i == 10:
-                break
+    def __repr__(self):
+        return "<Hit name=%s %s%%>" % (self.name, int(self.score*100))
 
-        if len(hits)>10:
-            print ". . . and %s more." % (len(hits) - 10,)
+
+def find(terms):
+    """Use the Lucene index to find monsters"""
+    searcher = IndexSearcher(RESOURCE('lucene-data'))
+    qp = MultiFieldQueryParser(['name', 'full_text'], StandardAnalyzer())
+    qp.setDefaultOperator(MultiFieldQueryParser.Operator.AND)
+    fuzzy = [fuzzyQuoteTerm(t) for t in terms]
+    terms = ' '.join(fuzzy)
+    query = qp.parse(terms)
+    hits = searcher.search(query)
+
+    ret = []
+    for i, doc in hits:
+        ret.append(Hit(doc, hits, i))
+        if i == 10:
+            break
+
+    return ret
 
 
 def buildIndex(monsters):
@@ -81,10 +100,22 @@ def buildIndex(monsters):
     for monster in monsters:
         indexMonster(writer, monster)
 
+
+class Options(usage.Options):
+    def parseArgs(self, *terms):
+        self['terms'] = terms
+
+    def postOptions(self):
+        for hit in find(self['terms']):
+            print hit.name, hit.score
+
+
+
+
 def run(argv=None):
     if argv is None:
         argv = sys.argv
-    o = Query()
+    o = Options()
     try:
         o.parseOptions(argv[1:])
     except usage.UsageError, e:
@@ -95,3 +126,4 @@ def run(argv=None):
     return 0
 
 if __name__ == '__main__': sys.exit(run())
+

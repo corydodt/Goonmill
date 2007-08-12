@@ -13,7 +13,7 @@ from nevow.testutil import renderLivePage, FragmentWrapper
 
 from goonmill.util import RESOURCE, resourceData
 from goonmill.history import History, Statblock
-from goonmill import query
+from goonmill import search
 
 class Root(rend.Page):
     """
@@ -75,8 +75,8 @@ class Search(athena.LiveElement):
         # FIXME - shlex.split does something horribly broken here if you don't
         # call .encode on the unicode object
         terms = shlex.split(kwargs['search_terms'].encode('utf8'))
-        hits = query.find(terms)
-        return [(h.id, h.name) for h in hits]
+        hits = search.find(terms)
+        return [(h.id, h.name, h.score) for h in hits]
 
     athena.expose(onSearchSubmit)
 
@@ -507,6 +507,7 @@ class StyledFragmentWrapper(FragmentWrapper):
 
 if __name__ == '__main__': # {{{
     # render each and every monster
+    from goonmill import query
     ids = query._allIds()
     
     docFactory = loaders.stan(
@@ -524,5 +525,4 @@ if __name__ == '__main__': # {{{
             file(RESOURCE('html/%s.html' % (id,)), 'w').write(r)
 
         renderLivePage(wrapper).addCallback(_gotResult)
-
 # }}}

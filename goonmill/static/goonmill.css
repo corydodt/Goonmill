@@ -153,3 +153,8 @@ form.guise, form.readOnlyGuise { display: inline; }
 .monsterTitle_3 a {
     color: white;
 }
+
+.score {
+    color: #aaa;
+    font-size: 50%;
+}

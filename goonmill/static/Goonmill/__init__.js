@@ -130,7 +130,10 @@ Goonmill.Search.methods( // {{{
             for (var i=0; i<hits.length; i++) {
                 var id = hits[i][0];
                 var name = hits[i][1];
+                var score = hits[i][2];
                 var anchor = document.createElement('a');
+                var scoreEl = document.createElement('span');
+                scoreEl.addClassName('score');
                 DeanEdwards.addEvent(anchor, 'click', function (id) {
                       return function chosen(event) {
                         event.stopPropagation();
@@ -139,9 +142,11 @@ Goonmill.Search.methods( // {{{
                       }}(id)
                 );
                 anchor.setAttribute('href', id); // ignored
-                anchor.innerHTML = name;
+                anchor.innerHTML = name + ' ';
+                anchor.appendChild(scoreEl);
+                scoreEl.innerHTML = '(' + Math.round(score*100) + '%)';
+                anchor.appendChild(document.createElement('br'));
                 hitsNode.appendChild(anchor);
-                hitsNode.appendChild(document.createTextNode(', '));
             }
             return hits;
         });
