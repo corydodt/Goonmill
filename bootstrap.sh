@@ -46,8 +46,6 @@ testPython "Install Twisted 2.5" <<<$(p "$t")
 testPython "Install Divmod Nevow" <<<$(p 'import nevow')
 testPython "Install simpleparse" <<<$(p 'import simpleparse')
 testPython "Install PyLucene" <<<$(p 'from PyLucene import *')
-
-testPython "Install python-magic" <<<$(p 'import magic')
 testPython "Python 2.5 is required for xml.etree" <<<$(p 'import xml.etree')
 
 if [ "$errorStatus" == "error" ]; then
