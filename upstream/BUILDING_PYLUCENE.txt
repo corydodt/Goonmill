@@ -1,0 +1,4 @@
+- Uncomment the RHEL5 section
+- sudo apt-get install gcj ant sun-java6-jdk g++
+- make
+- sudo make install

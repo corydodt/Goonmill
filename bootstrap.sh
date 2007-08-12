@@ -40,10 +40,14 @@ function p()
 
 testPython "Install SQLAlchemy" <<<$(p 'import sqlalchemy')
 testPython "Install zope.interface" <<<$(p 'import zope.interface')
-t="from twisted import __version__ as v; assert v>='2.5.0', 'Twisted ver. is %s' % (v,)"
+t="from twisted import __version__ as v
+assert v>='2.5.0', 'Twisted ver. is %s' % (v,)"
 testPython "Install Twisted 2.5" <<<$(p "$t")
 testPython "Install Divmod Nevow" <<<$(p 'import nevow')
 testPython "Install simpleparse" <<<$(p 'import simpleparse')
+testPython "Install PyLucene" <<<$(p 'from PyLucene import *')
+
+testPython "Install python-magic" <<<$(p 'import magic')
 testPython "Python 2.5 is required for xml.etree" <<<$(p 'import xml.etree')
 
 if [ "$errorStatus" == "error" ]; then
