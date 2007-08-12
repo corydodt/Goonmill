@@ -13,13 +13,11 @@ from twisted.application import strports
 
 from nevow import appserver
 from goonmill.resource import Root, VhostFakeRoot
+from goonmill import search
+from goonmill.query import db
 
 class Options(usage.Options):
     optParameters = [['port', 'p', '6680', 'Port to run on'],
-                     ## ['privkey', 'k', DEFAULT_PEM, 
-                     ##     'Private key file for starting the SSL server'],
-                     ## ['certificate', 'k', DEFAULT_PEM, 
-                     ##     'Certificate file for starting the SSL server'],
                      ]
     optFlags = [['dev', None, 'Enable development features such as /sandbox']]
 
@@ -62,11 +60,13 @@ class GoonmillServerMaker(object):
         """
         Construct the test daemon.
         """
+        # build the search index.  block on this, it has to happen before app
+        # startup.
+        search.buildIndex(db.allMonsters())
+
         resource = VhostFakeRoot(Root(dev=options['dev']))
         factory = STFUSite(resource)
         port = 'tcp:%s' % (options['port'],)
-        ## port = 'ssl:%s:privateKey=%s:certKey=%s' % (options['port'],
-        ##         options['privkey'], options['certificate'])
         return strports.service(port, factory)
 
 # Now construct an object which *provides* the relevant interfaces
