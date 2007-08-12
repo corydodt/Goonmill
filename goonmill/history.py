@@ -595,7 +595,7 @@ def test_saves():
             raise
 
 def test_statblock():
-    monsters = query._allMonsters()
+    monsters = query.allMonsters()
     for monster in monsters:
         try:
             Statblock(monster.id)

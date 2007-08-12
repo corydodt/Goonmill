@@ -122,7 +122,7 @@ class SRDDatabase(object):
         ss = S.create_session(self.engine)
         return [m.saves for m in ss.query(Monster)]
 
-    def _allMonsters(self):
+    def allMonsters(self):
         ss = S.create_session(self.engine)
         return ss.query(Monster)
 
@@ -172,8 +172,8 @@ def _allSQStats():
     """Return the special_qualities attribute for every monster"""
     return db._allSQStats()
 
-def _allMonsters():
-    return db._allMonsters()
+def allMonsters():
+    return db.allMonsters()
 
 def _allIds():
     return db._allIds()
