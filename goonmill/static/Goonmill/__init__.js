@@ -9,6 +9,44 @@ var $CN = function (className, node) {
     return document.getElementsByClassName(className, node)[0];
 }
 
+Goonmill.DiceSandbox = Nevow.Athena.Widget.subclass('Goonmill.DiceSandbox');
+Goonmill.DiceSandbox.methods( // {{{
+    function __init__(self, node) { // {{{
+        Goonmill.DiceSandbox.upcall(self, '__init__', node);
+
+        self.queryForm = $CN("queryForm", self.node);
+        self.results = $CN("results", self.node);
+        self.queryArea = self.queryForm.query;
+
+        DeanEdwards.addEvent(self.queryArea, 'keyup', 
+            function onQueryAreaKeyup(event) { 
+                return self.onQueryAreaKeyup(event);
+        });
+        DeanEdwards.addEvent(self.queryForm, 'submit', 
+            function onQuerySubmit(event) { return self.onQuerySubmit(event) 
+        });
+        self.queryArea.select();
+    }, // }}}
+
+    function onQueryAreaKeyup(self, event) { // {{{
+        // Ctrl+Enter submits.
+        if (!(event.keyCode == 13 && event.ctrlKey))
+            return true;
+
+        self.onQuerySubmit(event);
+    }, // }}}
+
+    function onQuerySubmit(self, event) { // {{{
+        event.stopPropagation();
+        event.preventDefault();
+
+        var d = self.callRemote("onQuerySubmit", self.queryForm.query.value);
+        d.addCallback(function gotResult(result) {
+            self.results.innerHTML = result;
+        });
+     } // }}}
+); // }}}
+
 Goonmill.SparqlSandbox = Nevow.Athena.Widget.subclass('Goonmill.SparqlSandbox');
 Goonmill.SparqlSandbox.methods( // {{{
     function __init__(self, node) { // {{{

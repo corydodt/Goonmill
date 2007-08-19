@@ -1,0 +1,17 @@
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement" class=
+    "sandbox">
+<div class="sandboxLeft">
+    <h2>Type in dice to roll</h2>
+    <h4>Ctrl+Enter to submit</h4>
+    <form class="queryForm">
+      <input class="query" name="query"></input>
+    </form>
+</div>
+<div class="sandboxRight">
+    <div class="results">
+    </div>
+</div>
+<!-- vi:ft=html
+-->
+</div>
+

@@ -27,6 +27,11 @@ class Root(rend.Page):
 
         if self.dev:
             self.child_sandbox = self._child_sandbox
+            self.child_dicebox = self._child_dicebox
+
+    def _child_dicebox(self, ctx):
+        from goonmill._dicesandbox import *
+        return DiceSandboxPage()
 
     def _child_sandbox(self, ctx):
         from goonmill._sparqlsandbox import *
