@@ -1,3 +1,5 @@
+from twisted.python import log
+
 from nevow import athena, loaders, tags as T, flat
 
 from goonmill.util import RESOURCE
@@ -25,12 +27,16 @@ class DiceSandbox(athena.LiveElement):
         ret = []
         if len(list(rolled)) >= 1:
             sRolled = map(str, rolled)
-            ret.append(T.div[T.strong["Unsorted"], " ", ", ".join(sRolled)])
+            _s = ", ".join(sRolled)
+            ret.append(T.div[T.strong["Unsorted"], " ", _s])
+            log.msg("    *Unsorted %s* " % (query,), _s, system="*")
 
             ret.append(T.hr)
 
             sRolled = reversed(sorted(sRolled, key=int))
-            ret.append(T.div[T.strong["Sorted"], " ", ", ".join(sRolled)])
+            _s = ", ".join(sRolled)
+            log.msg("    *Sorted* ", _s, system="*")
+            ret.append(T.div[T.strong["Sorted"], " ", _s])
 
         ret = unicode(flat.flatten(ret))
         return ret
