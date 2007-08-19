@@ -24,11 +24,14 @@ class DiceSandbox(athena.LiveElement):
         rolled = [r.sum() for r in dice.parse(query)]
         ret = []
         if len(list(rolled)) >= 1:
-            rolled = map(str, rolled)
-            ret.append(T.div["Unsorted: " + ", ".join(rolled)])
-            rolled.sort()
-            rolled.reverse()
-            ret.append(T.div["Sorted: " + ", ".join(rolled)])
+            sRolled = map(str, rolled)
+            ret.append(T.div[T.strong["Unsorted"], " ", ", ".join(sRolled)])
+
+            ret.append(T.hr)
+
+            sRolled = reversed(sorted(sRolled, key=int))
+            ret.append(T.div[T.strong["Sorted"], " ", ", ".join(sRolled)])
+
         ret = unicode(flat.flatten(ret))
         return ret
 
