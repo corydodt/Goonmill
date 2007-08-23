@@ -1,7 +1,7 @@
 import os
 
-from goonmill.util import RESOURCE
-from goonmill import sparqly as S
+from playtools import sparqly as S
+from playtools.util import RESOURCE
 
 from rdflib.Namespace import Namespace as NS
 
@@ -151,9 +151,9 @@ class SRDTriplesDatabase(S.TriplesDatabase):
 db = SRDTriplesDatabase(
         str(fam),
         prefixes=prefixes,
-        datasets=[filenameAsUri(RESOURCE('n3data/family.n3')),
-                  filenameAsUri(RESOURCE('n3data/characteristic.n3')),
-                  filenameAsUri(RESOURCE('n3data/specialAbility.n3')),
+        datasets=[filenameAsUri(RESOURCE('data/family.n3')),
+                  filenameAsUri(RESOURCE('data/characteristic.n3')),
+                  filenameAsUri(RESOURCE('data/specialAbility.n3')),
                   ],
         )
 

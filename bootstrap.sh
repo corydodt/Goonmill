@@ -38,6 +38,8 @@ function p()
     python -c "$@" 2>&1
 }
 
+testPython "Install Playtools" <<<$(p 'import playtools')
+testPython "Install RDFlib" <<<$(p 'import rdflib')
 testPython "Install SQLAlchemy" <<<$(p 'import sqlalchemy')
 testPython "Install zope.interface" <<<$(p 'import zope.interface')
 t="from twisted import __version__ as v
@@ -51,19 +53,6 @@ testPython "Python 2.5 is required for xml.etree" <<<$(p 'import xml.etree')
 if [ "$errorStatus" == "error" ]; then
     echo "** Errors occurred.  Please fix the above errors, then re-run this script."
     exit 1
-fi
-
-db=goonmill/srd35.db.gz
-if [ ! -r goonmill/srd35.db ]; then
-    echo ":: Uncompressing database $db"
-    gzip -dc $db > ${db/.gz/}
-else
-    echo "** ${db/.gz/} already exists, not willing to overwrite it!"
-    echo ::
-    echo :: If you have already run bootstrap.sh once, this is not an error.
-    echo ::
-    echo ":: To restore it, type: gzip -dc $db > ${db/.gz/}"
-    echo :: Caution: This will DESTROY any changes you made to the database.
 fi
 
 echo "Done."
