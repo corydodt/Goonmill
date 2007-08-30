@@ -9,7 +9,7 @@ fam = NS('http://thesoftworld.com/2007/family.n3#')
 char = NS('http://thesoftworld.com/2007/characteristic.n3#')
 dice = NS('http://thesoftworld.com/2007/dice.n3#')
 pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
-prop = NS('http://thesoftworld.com/2007/properties.n3#')
+prop = NS('http://thesoftworld.com/2007/property.n3#')
 
 class SpecialArmorClass(S.SparqItem):
     """Permanent, racial modifier to armor class"""
