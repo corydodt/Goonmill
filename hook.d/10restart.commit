@@ -1,1 +1,1 @@
-10restart.changegroup
+bash `hg root`/hook.d/10restart.changegroup

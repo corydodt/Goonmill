@@ -1,5 +1,6 @@
 """
 Mercurial hooks for this repo
+See help("goonmill.hg") package for use
 """
 
 from mercurial.node import bin
