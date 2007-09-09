@@ -148,14 +148,31 @@ class SRDTriplesDatabase(S.TriplesDatabase):
         return ret
 
 
-db = SRDTriplesDatabase(
-        str(fam),
-        prefixes=prefixes,
-        datasets=[filenameAsUri(RESOURCE('data/family.n3')),
-                  filenameAsUri(RESOURCE('data/characteristic.n3')),
-                  filenameAsUri(RESOURCE('data/specialAbility.n3')),
-                  ],
-        )
+def loadDatabaseConfig():
+    """
+    This bootstraps the final SRDTriplesDatabase using a TriplesDatabase of
+    its own.
+    """
+    from goonmill.util import RESOURCE as R2
+    base=NS(filenameAsUri(R2('tripledb.n3')))
+    bootstrap = S.TriplesDatabase(
+            base=base,
+            prefixes={'':base},
+            datasets=[base],
+            )
+    
+    namespaces = list(bootstrap.graph.namespaces())
+    prefixes = {}
+    for prefix, uri in namespaces:
+        prefixes[prefix] = NS(uri)
+
+    # the config namespace itself will not be reloaded
+    del prefixes['config']
+        
+    return {'base': base, 'prefixes': prefixes, 'datasets': prefixes.values()}
+
+_conf = loadDatabaseConfig()
+db = SRDTriplesDatabase(**_conf)
 
 if __name__ == '__main__': # {{{
     import string

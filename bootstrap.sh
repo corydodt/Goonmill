@@ -47,4 +47,5 @@ if [ "$errorStatus" == "error" ]; then
     exit 1
 fi
 
+cp -v goonmill/tripledb.n3.sample goonmill/tripledb.n3 || exit 1
 echo "Done."

@@ -8,3 +8,4 @@
 ^goonmill/lucene-data/.*$
 ^options.local$
 ^hook.d/.*$
+^goonmill/tripledb.n3$
