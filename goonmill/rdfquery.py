@@ -154,11 +154,11 @@ def loadDatabaseConfig():
     its own.
     """
     from goonmill.util import RESOURCE as R2
-    base=NS(filenameAsUri(R2('tripledb.n3')))
+    config = NS(filenameAsUri(R2('tripledb.n3')))
     bootstrap = S.TriplesDatabase(
-            base=base,
-            prefixes={'':base},
-            datasets=[base],
+            base=config,
+            prefixes={'config':config},
+            datasets=[config],
             )
     
     namespaces = list(bootstrap.graph.namespaces())
@@ -168,8 +168,8 @@ def loadDatabaseConfig():
 
     # the config namespace itself will not be reloaded
     del prefixes['config']
-        
-    return {'base': base, 'prefixes': prefixes, 'datasets': prefixes.values()}
+
+    return {'base': prefixes[''], 'prefixes': prefixes, 'datasets': prefixes.values()}
 
 _conf = loadDatabaseConfig()
 db = SRDTriplesDatabase(**_conf)
