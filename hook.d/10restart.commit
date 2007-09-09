@@ -1,1 +1,2 @@
+echo "$@"
 bash ./10restart.changegroup
