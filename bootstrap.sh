@@ -47,5 +47,15 @@ if [ "$errorStatus" == "error" ]; then
     exit 1
 fi
 
-cp -v goonmill/tripledb.n3.sample goonmill/tripledb.n3 || exit 1
 echo "Done."
+
+config=goonmill/tripledb.n3
+if [ ! -r goonmill/tripledb.n3 ]; then
+    cp -v goonmill/tripledb.n3.sample goonmill/tripledb.n3 || exit 1
+else
+    echo "** ${config} already exists, not willing to overwrite it!"
+    echo ::
+    echo :: If you have already run bootstrap.sh once, this is not an error.
+    echo ::
+fi
+
