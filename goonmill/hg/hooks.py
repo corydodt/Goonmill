@@ -1,11 +1,6 @@
 """
 Mercurial hooks for this repo
-
-To use, add .hg/hgrc with these lines:
-
-[hooks]
-changegroup = python:goonmill.hg.hooks.changegroupRunner
-commit = python:goonmill.hg.hooks.commitRunner
+See help("goonmill.hg") package for use
 """
 
 from mercurial.node import bin
