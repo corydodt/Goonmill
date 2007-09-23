@@ -93,10 +93,6 @@ def filenameAsUri(fn):
     return 'file://' + os.path.abspath(fn)
 
 
-# create the root database for my triples-based SRD
-prefixes = {'': fam, 'c': char, 'p': prop}
-
-
 def allFamilies():
     return db.allFamilies()
 

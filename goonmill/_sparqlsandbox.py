@@ -9,7 +9,7 @@ from rdflib.Namespace import Namespace as NS
 
 from nevow import athena, loaders, tags as T, flat
 
-from goonmill.rdfquery import (fam, char, dice, pcclass, prop, db, prefixes,
+from goonmill.rdfquery import (fam, char, dice, pcclass, prop, db,
         Family, Sense, Language, CombatMechanic, SpecialAbility,
         SpecialQuality, Resistance)
 from goonmill.util import RESOURCE
@@ -29,7 +29,7 @@ def reload():
 
 pprint.pprint(sorted(locals().keys()))
 print "NAMESPACE PREFIXES: "
-pprint.pprint(prefixes)
+pprint.pprint(db.prefixes)
 
 
 class SandboxPage(athena.LivePage):
@@ -55,7 +55,7 @@ class SparqlSandbox(athena.LiveElement):
 
     def showPrefixes(self, req, tag):
         t = T.table(_class="prefixes")
-        for pfx, iri in prefixes.items():
+        for pfx, iri in db.prefixes.items():
             t[T.tr[T.td[repr(pfx), ':'], T.td['<', str(iri), '>']]]
 
         return tag[t]
