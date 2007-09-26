@@ -203,7 +203,7 @@ class Result(athena.LiveElement):
         fill('baseAttack', get('base_attack'))
         fill('grapple', get('grapple'))
         fill('attackOptionFeats', get('attackOptionFeats'))
-        fill('attackOptions', get('special_attacks'))
+        fill('attackOptions', get('special_attacks') or '-')
         fill('specialActions', get('specialActions'))
         ## gear TODO
         fill('casterLevel', get('casterLevel'))
