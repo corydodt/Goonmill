@@ -8,6 +8,8 @@ Parse saves in the form:
 """
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
+## appease pyflakes
+numbers, chartypes
 
 grammar = ( # {{{
 r'''# saving throw stats

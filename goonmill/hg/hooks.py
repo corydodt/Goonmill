@@ -2,10 +2,8 @@
 Mercurial hooks for this repo
 See help("goonmill.hg") package for use
 """
-
-from mercurial.node import bin
-
 import os
+
 
 class HookDRunner(object):
     """Run everything in hook.d"""

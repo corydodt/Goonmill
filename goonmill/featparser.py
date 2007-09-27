@@ -8,6 +8,8 @@ Parse feats in the form:
 """
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers
+## appease pyflakes
+numbers
 
 
 grammar = ( # {{{

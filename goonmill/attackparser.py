@@ -1,7 +1,9 @@
 from goonmill import diceparser, query
 
-from simpleparse import parser, dispatchprocessor as disp, error
+from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
+## appease pyflakes
+numbers, chartypes
 
 grammar = ( # {{{
 r'''# Attacks!

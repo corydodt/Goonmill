@@ -1,5 +1,7 @@
 from simpleparse import parser, dispatchprocessor as disp, objectgenerator
 from simpleparse.common import numbers
+## appease pyflakes
+numbers
 
 
 grammar = ( # {{{

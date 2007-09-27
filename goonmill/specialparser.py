@@ -8,6 +8,8 @@ I understand, and whack anything else into an Unknown object.
 """
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import chartypes, numbers
+## appease pyflakes
+chartypes, numbers
 
 from goonmill import query
 

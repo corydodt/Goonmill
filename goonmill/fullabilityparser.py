@@ -4,8 +4,6 @@ Parse the HTML of the full_text, extracting the description of the full abilitie
 
 from xml.etree import ElementTree
 
-from twisted.web import microdom
-
 from goonmill import query
 
 def unescape(s):

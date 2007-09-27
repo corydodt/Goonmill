@@ -6,7 +6,7 @@ Twisted 2.5 or later is required to use this.
 
 from zope.interface import implements
 
-from twisted.python import usage, util, log
+from twisted.python import usage, log
 from twisted.plugin import IPlugin
 from twisted.application.service import IServiceMaker
 from twisted.application import strports
