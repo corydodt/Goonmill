@@ -1,7 +1,4 @@
-import os
-
 from playtools import sparqly as S
-from playtools.util import RESOURCE
 
 from rdflib.Namespace import Namespace as NS
 
@@ -88,11 +85,6 @@ class Family(S.SparqItem):
         'SELECT ?r { $key p:vulnerabilities ?r }')
 
 
-
-def filenameAsUri(fn):
-    return 'file://' + os.path.abspath(fn)
-
-
 def allFamilies():
     return db.allFamilies()
 
@@ -144,31 +136,9 @@ class SRDTriplesDatabase(S.TriplesDatabase):
         return ret
 
 
-def loadDatabaseConfig():
-    """
-    This bootstraps the final SRDTriplesDatabase using a TriplesDatabase of
-    its own.
-    """
-    from goonmill.util import RESOURCE as R2
-    config = NS(filenameAsUri(R2('tripledb.n3')))
-    bootstrap = S.TriplesDatabase(
-            base=config,
-            prefixes={'config':config},
-            datasets=[config],
-            )
-    
-    namespaces = list(bootstrap.graph.namespaces())
-    prefixes = {}
-    for prefix, uri in namespaces:
-        prefixes[prefix] = NS(uri)
+from goonmill.util import RESOURCE as R2
+db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(R2('tripledb.n3')))
 
-    # the config namespace itself will not be reloaded
-    del prefixes['config']
-
-    return {'base': prefixes[''], 'prefixes': prefixes, 'datasets': prefixes.values()}
-
-_conf = loadDatabaseConfig()
-db = SRDTriplesDatabase(**_conf)
 
 if __name__ == '__main__': # {{{
     import string
