@@ -4,7 +4,7 @@ Parse the HTML of the full_text, extracting the description of the full abilitie
 
 from xml.etree import ElementTree
 
-from goonmill import query
+from goonmill import query2
 
 def unescape(s):
     return s.replace(r'\n', '\n').replace(r'\"', '"')
@@ -67,7 +67,7 @@ def parseFullAbilities(s):
     return (specAbs, spellLikes)
 
 if __name__ == '__main__': # {{{
-    tests = query._allFullTextStats()
+    tests = query2._allFullTextStats()
     for n, ft in tests:
         ft = prepFullText(ft)
         print n, ft[:70]

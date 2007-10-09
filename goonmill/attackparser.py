@@ -1,4 +1,4 @@
-from goonmill import diceparser, query
+from goonmill import diceparser, query2
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
@@ -224,7 +224,7 @@ def parseAttacks(s):
 
 
 if __name__ == '__main__': # {{{
-    tests = query._allAttackStats()
+    tests = query2._allAttackStats()
     for id, test in tests:
         print id, test
         suc, children, next = attackParser.parse(test, processor=Processor())

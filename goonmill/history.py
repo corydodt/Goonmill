@@ -2,7 +2,7 @@
 
 import re
 
-from goonmill import (query, dice, diceparser, skillparser, featparser,
+from goonmill import (query2, dice, diceparser, skillparser, featparser,
         saveparser, attackparser, fullabilityparser, specialparser, rdfquery)
 
 class History(object):
@@ -39,9 +39,23 @@ class Statblock(object):
     A representation of one statblock; a configured monster that has had
     its hit points generated and labels set up.
     """
-    def __init__(self, id):
-        self.id = id
-        self.monster = query.lookup(id)
+    @classmethod
+    def fromId(cls, id):
+        sb = Statblock()
+        sb.id = id
+        sb.monster = query2.lookup(id)
+        sb.initStats()
+        return sb
+
+    @classmethod
+    def fromMonster(cls, monster):
+        sb = Statblock()
+        sb.id = monster.id
+        sb.monster = monster
+        sb.initStats()
+        return sb
+
+    def initStats(self):
         self._count = 1
         self._label = ''
         self.skills = self.parseSkills()
@@ -483,7 +497,7 @@ def parseFeats(featStat):
     parsed = featparser.parseFeats(featStat)[0]
 
     for item in parsed:
-        item.dbFeat = query.lookupFeat(item.name)
+        item.dbFeat = query2.lookupFeat(item.name)
         ret.append(item)
 
     return ret
@@ -543,7 +557,7 @@ def parseSpecialQualities(specialQualitiesStats):
 
 # tests
 def test_statblockSkill():
-    skillStats = query._allSkillStats()
+    skillStats = query2._allSkillStats()
     for s in skillStats:
         if s is None:
             continue
@@ -556,7 +570,7 @@ def test_statblockSkill():
             raise
 
 def test_statblockFeat():
-    featStats = query._allFeatStats()
+    featStats = query2._allFeatStats()
     for f in featStats:
         if f is None:
             continue
@@ -569,7 +583,7 @@ def test_statblockFeat():
             raise
 
 def test_hitPoints():
-    hpStats = query._allHPStats()
+    hpStats = query2._allHPStats()
     for hp in hpStats:
         if hp is None:
             continue
@@ -582,7 +596,7 @@ def test_hitPoints():
             raise
 
 def test_saves():
-    saveStats = query._allSaveStats()
+    saveStats = query2._allSaveStats()
     for saves in saveStats:
         if saves is None:
             continue
@@ -595,10 +609,10 @@ def test_saves():
             raise
 
 def test_statblock():
-    monsters = query.allMonsters()
+    monsters = query2.allMonsters()
     for monster in monsters:
         try:
-            Statblock(monster.id)
+            Statblock.fromId(monster.id)
         except Exception, e:
             print monster
             print e

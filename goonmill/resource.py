@@ -89,7 +89,7 @@ class Search(athena.LiveElement):
         """
         Respond to the action of a user choosing a hit from the search results
         """
-        sb = Statblock(id)
+        sb = Statblock.fromId(id)
         self.history.addStatblock(sb)
         return None
 
@@ -512,8 +512,8 @@ class StyledFragmentWrapper(FragmentWrapper):
 
 if __name__ == '__main__': # {{{
     # render each and every monster
-    from goonmill import query
-    ids = query._allIds()
+    from goonmill import query2
+    ids = query2._allIds()
     
     docFactory = loaders.stan(
                     T.html[
@@ -522,7 +522,7 @@ if __name__ == '__main__': # {{{
     for id in ids:
         print id,
 
-        sb = Statblock(id)
+        sb = Statblock.fromId(id)
         result = Result(sb)
         wrapper = StyledFragmentWrapper(result)
 
