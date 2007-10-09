@@ -1,5 +1,5 @@
 """
-Query the XML database of monsters for matching monsters.
+Query the sqlite database of monsters for matching monsters.
 """
 
 from storm import locals as SL
