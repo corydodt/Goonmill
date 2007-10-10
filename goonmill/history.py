@@ -41,6 +41,7 @@ class Statblock(object):
     """
     @classmethod
     def fromId(cls, id):
+        assert isinstance(id, int)
         sb = Statblock()
         sb.id = id
         sb.monster = query2.lookup(id)

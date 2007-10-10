@@ -14,7 +14,7 @@ from twisted.application import strports
 from nevow import appserver
 from goonmill.resource import Root, VhostFakeRoot
 from goonmill import search
-from goonmill.query import db
+from goonmill.query2 import db
 
 class Options(usage.Options):
     optParameters = [['port', 'p', '6680', 'Port to run on'],

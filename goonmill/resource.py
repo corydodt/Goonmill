@@ -89,7 +89,7 @@ class Search(athena.LiveElement):
         """
         Respond to the action of a user choosing a hit from the search results
         """
-        sb = Statblock.fromId(id)
+        sb = Statblock.fromId(int(id))
         self.history.addStatblock(sb)
         return None
 
@@ -370,7 +370,7 @@ class Result(athena.LiveElement):
         content = []
         pg = tag.patternGenerator('meleeAttack')
         for group in groups:
-            content.append(pg().fillSlots('value', groups))
+            content.append(pg().fillSlots('value', group))
 
         return tag[content]
 
