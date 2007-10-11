@@ -6,6 +6,10 @@ from storm import locals as SL
 
 from goonmill.util import RESOURCE
 
+from playtools.plugins.feats import Feat
+from playtools.plugins.skills import Skill
+from playtools.plugins.monsters import Monster
+
 class Monster(object):
     """A Monster mapped from the db"""
     __storm_table__ = 'monster'
