@@ -9,11 +9,10 @@ from zope.interface import implements
 from twisted.python import usage, log
 from twisted.plugin import IPlugin
 from twisted.application.service import IServiceMaker
-from twisted.application import strports
+from twisted.application import internet
 
 from nevow import appserver
 from goonmill.resource import Root, VhostFakeRoot
-from goonmill import search
 from goonmill.query2 import db
 
 class Options(usage.Options):
@@ -43,6 +42,16 @@ class STFUSite(appserver.NevowSite):
         log.msg('%s %s' % (code, uri), system='HTTP', )
 
 
+class GoonmillService(internet.TCPServer):
+    def startService(self, *a, **kw):
+        # build the search index.  block on this, it has to happen before app
+        # startup.
+        from goonmill import search
+        search.buildIndex(db.allMonsters())
+
+        app.TCPServer.startService(self, *a, **kw)
+
+
 class GoonmillServerMaker(object):
     """
     Framework boilerplate class: This is used by twistd to get the service
@@ -60,14 +69,9 @@ class GoonmillServerMaker(object):
         """
         Construct the test daemon.
         """
-        # build the search index.  block on this, it has to happen before app
-        # startup.
-        search.buildIndex(db.allMonsters())
-
         resource = VhostFakeRoot(Root(dev=options['dev']))
         factory = STFUSite(resource)
-        port = 'tcp:%s' % (options['port'],)
-        return strports.service(port, factory)
+        return GoonmillService(int(options['port']), factory)
 
 # Now construct an object which *provides* the relevant interfaces
 

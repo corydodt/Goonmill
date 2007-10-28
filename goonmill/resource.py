@@ -13,7 +13,6 @@ from nevow.testutil import renderLivePage, FragmentWrapper
 
 from goonmill.util import RESOURCE, resourceData
 from goonmill.history import History, Statblock
-from goonmill import search
 
 class Root(rend.Page):
     """
@@ -77,6 +76,8 @@ class Search(athena.LiveElement):
         self.historyView = historyView
 
     def onSearchSubmit(self, kwargs):
+        # hidden import so twistd works when PyLucene isn't installed :(
+        from goonmill import search
         # FIXME - shlex.split does something horribly broken here if you don't
         # call .encode on the unicode object
         terms = shlex.split(kwargs['search_terms'].encode('utf8'))
