@@ -49,7 +49,7 @@ class GoonmillService(internet.TCPServer):
         from goonmill import search
         search.buildIndex(db.allMonsters())
 
-        app.TCPServer.startService(self, *a, **kw)
+        internet.TCPServer.startService(self, *a, **kw)
 
 
 class GoonmillServerMaker(object):
