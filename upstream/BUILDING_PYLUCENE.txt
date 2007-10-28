@@ -1,5 +1,8 @@
-- Uncomment the RHEL section
-- Edit PYTHON_VER to 2.5 in the RHEL section
-- sudo apt-get install gcj ant sun-java6-jdk g++
-- make
-- sudo make install
+- Descend to the jcc/jcc/ directory (yes two jcc/)
+    - sudo python setup.py there
+- Edit the Makefile in the jcc/ directory
+    - Uncomment the Ubuntu section
+    - Edit anything in that section reading "python2.4" to "python2.5"
+    - sudo apt-get install ant sun-java6-jdk g++
+    - make
+    - sudo make install
