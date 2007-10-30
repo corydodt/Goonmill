@@ -85,15 +85,29 @@ class Family(S.SparqItem):
         'SELECT ?r { $key p:vulnerabilities ?r }')
 
 
+def needDatabase(f):
+    """
+    If the database is not loaded yet, load it
+    """
+    def inner(*a, **kw):
+        if db is None:
+            bootstrapDatabase()
+        return f(*a, **kw)
+    return inner
+
+@needDatabase
 def allFamilies():
     return db.allFamilies()
 
+@needDatabase
 def allSpecialAC():
     return db.allSpecialAC()
 
+@needDatabase
 def allSpecialActions():
     return db.allSpecialActions()
 
+@needDatabase
 def allAuras():
     return db.allAuras()
 
@@ -136,8 +150,17 @@ class SRDTriplesDatabase(S.TriplesDatabase):
         return ret
 
 
-from goonmill.util import RESOURCE as R2
-db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(R2('tripledb.n3')))
+db = None
+
+def bootstrapDatabase():
+    """
+    Load the database. Has the side-effect of making the db available at the
+    module level.
+    """
+    from goonmill.util import RESOURCE as R2
+    global db
+    db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(R2('tripledb.n3')))
+    return db
 
 
 if __name__ == '__main__': # {{{

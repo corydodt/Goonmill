@@ -9,9 +9,11 @@ from rdflib.Namespace import Namespace as NS
 
 from nevow import athena, loaders, tags as T, flat
 
-from goonmill.rdfquery import (fam, char, dice, pcclass, prop, db,
+from goonmill.rdfquery import (fam, char, dice, pcclass, prop,
+        bootstrapDatabase,
         Family, Sense, Language, CombatMechanic, SpecialAbility,
         SpecialQuality, Resistance)
+db = bootstrapDatabase()
 ## appease pyflakes
 Graph, rdflib, RDFS, NS, char, prop, dice, pcclass, CombatMechanic, Language
 fam, SpecialQuality, SpecialAbility, Family, Resistance, Sense
