@@ -5,8 +5,12 @@ import sys, os
 
 import re
 
-from PyLucene import (IndexWriter, StandardAnalyzer, Document, Field,
-        MultiFieldQueryParser, IndexSearcher)
+try:
+    from PyLucene import (IndexWriter, StandardAnalyzer, Document, Field,
+            MultiFieldQueryParser, IndexSearcher)
+except ImportError:
+    from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
+            MultiFieldQueryParser, IndexSearcher)
 
 from twisted.web import microdom, domhelpers
 from twisted.python import usage
