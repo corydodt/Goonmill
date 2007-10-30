@@ -6,10 +6,11 @@ import sys, os
 import re
 
 try:
-    from PyLucene import (IndexWriter, StandardAnalyzer, Document, Field,
-            MultiFieldQueryParser, IndexSearcher)
-except ImportError:
     from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
+            MultiFieldQueryParser, IndexSearcher, initVM, CLASSPATH, Hit)
+    initVM(CLASSPATH)
+except ImportError:
+    from PyLucene import (IndexWriter, StandardAnalyzer, Document, Field,
             MultiFieldQueryParser, IndexSearcher)
 
 from twisted.web import microdom, domhelpers
@@ -64,7 +65,7 @@ def fuzzyQuoteTerm(t):
     return '%s~' % (t,)
 
 
-class Hit(object):
+class MyHit(object):
     """One monster search result
     Essentially an adapter for Lucene's hits
     """
@@ -74,7 +75,7 @@ class Hit(object):
         self.score = hits.score(index)
 
     def __repr__(self):
-        return "<Hit name=%s %s%%>" % (self.name, int(self.score*100))
+        return "<MyHit name=%s %s%%>" % (self.name, int(self.score*100))
 
 
 def find(terms):
@@ -84,12 +85,13 @@ def find(terms):
     qp.setDefaultOperator(MultiFieldQueryParser.Operator.AND)
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
     terms = ' '.join(fuzzy)
-    query = qp.parse(terms)
+    query = qp.parse(qp, terms) # wtf, qp.parse(qp...) ??
     hits = searcher.search(query)
 
     ret = []
-    for i, doc in hits:
-        ret.append(Hit(doc, hits, i))
+    for i, hit in enumerate(hits):
+        doc = Hit.cast_(hit).getDocument()
+        ret.append(MyHit(doc, hits, i))
         if i == 10:
             break
 
