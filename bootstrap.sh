@@ -39,7 +39,7 @@ t="from twisted import __version__ as v; assert v>='2.5.0', 'Have %s' % (v,)"
 testPython "Twisted 2.5" "$t"
 testPython "Divmod Nevow" 'import nevow'
 testPython "simpleparse" 'import simpleparse'
-testPython "PyLucene" 'from PyLucene import *'
+testPython "PyLucene" 'from lucene import *'
 testPython "Python 2.5" 'import xml.etree'
 
 if [ "$errorStatus" == "error" ]; then
