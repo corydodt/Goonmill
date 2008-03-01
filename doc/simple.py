@@ -3,10 +3,11 @@ from itertools import count
 
 from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
         MultiFieldQueryParser, IndexSearcher, initVM, CLASSPATH, Hit,
-        FSDirectory)
+        FSDirectory, QueryParser)
 initVM(CLASSPATH)
 
-DIRECTORY = FSDirectory.getDirectory('xxindex', True)
+DIRECTORY = 'xxindex'
+STORE = FSDirectory.getDirectory(DIRECTORY, True)
 
 def indexDoc(writer, d):
     doc = Document()
@@ -17,7 +18,6 @@ def indexDoc(writer, d):
                   Field.Store.YES, Field.Index.TOKENIZED)
     id = Field("id", str(d.id),
                   Field.Store.YES, Field.Index.UN_TOKENIZED)
-    print name_, full_text, id
     doc.add(name_)
     doc.add(full_text)
     doc.add(id)
@@ -40,11 +40,10 @@ class MyHit(object):
 
 def find(terms):
     """Use the Lucene index to find monsters"""
-    searcher = IndexSearcher(DIRECTORY)
-    qp = MultiFieldQueryParser(['name', 'full_text'], StandardAnalyzer())
-    qp.setDefaultOperator(MultiFieldQueryParser.Operator.AND)
+    searcher = IndexSearcher(STORE)
+    qp = QueryParser('full_text', StandardAnalyzer())
     terms = ' '.join(terms)
-    query = qp.parse(qp, terms)
+    query = qp.parse(terms)
     hits = searcher.search(query)
 
     ret = []
@@ -64,7 +63,7 @@ def buildIndex(docs):
         pass
 
     analyzer = StandardAnalyzer()
-    writer = IndexWriter(DIRECTORY, analyzer, True)
+    writer = IndexWriter(STORE, analyzer, True)
     for doc in docs:
         indexDoc(writer, doc)
     writer.optimize()
@@ -89,6 +88,6 @@ if __name__ == '__main__':
         'dragon test number 2',
         'skeleton ha ha ha ha',
         ]))
-    for hit in find(sys.argv[0]):
+    for hit in find(sys.argv[1:]):
         print hit.name, hit.score
 
