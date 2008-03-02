@@ -1,9 +1,9 @@
-import sys, os, shutil
+import sys, shutil
 from itertools import count
 
 from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
         MultiFieldQueryParser, IndexSearcher, initVM, CLASSPATH, Hit,
-        FSDirectory, QueryParser)
+        FSDirectory, BooleanClause)
 initVM(CLASSPATH)
 
 DIRECTORY = 'xxindex'
@@ -40,10 +40,13 @@ class MyHit(object):
 
 def find(terms):
     """Use the Lucene index to find monsters"""
-    searcher = IndexSearcher(STORE)
-    qp = QueryParser('full_text', StandardAnalyzer())
     terms = ' '.join(terms)
-    query = qp.parse(terms)
+    searcher = IndexSearcher(STORE)
+
+    SHOULD = BooleanClause.Occur.SHOULD
+
+    query = MultiFieldQueryParser.parse(terms, 
+            ['name_', 'full_text'], [SHOULD, SHOULD], StandardAnalyzer())
     hits = searcher.search(query)
 
     ret = []
