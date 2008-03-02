@@ -5,13 +5,10 @@ import sys, os
 
 import re
 
-try:
-    from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
-            MultiFieldQueryParser, IndexSearcher, initVM, CLASSPATH, Hit)
-    initVM(CLASSPATH)
-except ImportError:
-    from PyLucene import (IndexWriter, StandardAnalyzer, Document, Field,
-            MultiFieldQueryParser, IndexSearcher)
+from lucene import (IndexWriter, StandardAnalyzer, Document, Field,
+        MultiFieldQueryParser, IndexSearcher, initVM, CLASSPATH, Hit,
+        FSDirectory)
+initVM(CLASSPATH)
 
 from twisted.web import microdom, domhelpers
 from twisted.python import usage
@@ -80,7 +77,8 @@ class MyHit(object):
 
 def find(terms):
     """Use the Lucene index to find monsters"""
-    searcher = IndexSearcher(RESOURCE('lucene-data'))
+    dataDir = FSDirectory.getDirectory(RESOURCE('lucene-data'), False)
+    searcher = IndexSearcher(dataDir)
     qp = MultiFieldQueryParser(['name', 'full_text'], StandardAnalyzer())
     qp.setDefaultOperator(MultiFieldQueryParser.Operator.AND)
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
@@ -99,9 +97,10 @@ def find(terms):
 
 
 def buildIndex(monsters):
-    dataDir = RESOURCE('lucene-data')
-    if os.path.exists(dataDir):
+    _dataDir = RESOURCE('lucene-data')
+    if os.path.exists(_dataDir):
         return
+    dataDir = FSDirectory.getDirectory(_dataDir, False)
     writer = IndexWriter(dataDir, StandardAnalyzer(), True)
     for monster in monsters:
         indexMonster(writer, monster)
