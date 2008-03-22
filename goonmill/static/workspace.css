@@ -1,5 +1,6 @@
-.y1 { background-image: url(/static/y1.png); background-repeat: repeat;
+/* .y1 { background-image: url(/static/y1.png); background-repeat: repeat;
 }
+*/
 
 .y2 { background-image: url(/static/y2.png); background-repeat: repeat;
 }
@@ -12,6 +13,7 @@
 
 .x1-2 { background-image: url(/static/x1-2.png); background-repeat: repeat;
 }
+
 .x2 { background-image: url(/static/x2.png); background-repeat: repeat;
 }
 
@@ -20,6 +22,14 @@
 }
 
 .x2-2 { background-image: url(/static/x2-2.png); background-repeat: repeat;
+}
+
+/*
+.x2-2-1 { background-image: url(/static/x2-2-1.png); background-repeat: repeat;
+}
+*/
+
+.x2-2-2 { background-image: url(/static/x2-2-2.png); background-repeat: repeat;
 }
 /*
 */
@@ -92,15 +102,26 @@
     left: 0px;
 }
 
-/*
 .x2-2-1 {
+    float: left;
+    position: absolute;
+    top: 0px;
     height: 40pt;
+    right: 0px;
+    left: 0px;
     background-image: url(/static/field-header.png);
+    background-position: -200pt;
 }
 
 .x2-2-2 {
+    float: left;
+    clear: left;
+    position: absolute;
+    top: 40pt;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
 }
-*/
 
 .workspaceTitle {
 }
