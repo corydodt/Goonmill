@@ -12,7 +12,7 @@ from twisted.application.service import IServiceMaker
 from twisted.application import internet
 
 from nevow import appserver
-from goonmill.resource import Root, VhostFakeRoot
+from goonmill.resource import Root
 from goonmill.query2 import db
 
 class Options(usage.Options):
@@ -69,7 +69,7 @@ class GoonmillServerMaker(object):
         """
         Construct the test daemon.
         """
-        resource = VhostFakeRoot(Root(dev=options['dev']))
+        resource = Root()
         factory = STFUSite(resource)
         return GoonmillService(int(options['port']), factory)
 

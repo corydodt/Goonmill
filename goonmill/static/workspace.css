@@ -1,0 +1,96 @@
+.y1 { background-image: url(/static/y1.png); background-repeat: repeat;
+}
+
+.y2 { background-image: url(/static/y2.png); background-repeat: repeat;
+}
+
+.x1 { background-image: url(/static/x1.png); background-repeat: repeat;
+}
+
+.x2 { background-image: url(/static/x2.png); background-repeat: repeat;
+}
+
+
+.y1 {
+    /* background-image: url(/static/field-header.png);
+    background-repeat: no-repeat; */
+    height: 94px;
+    left: 0px;
+    right: 4px;
+}
+
+.y2 {
+    position: absolute;
+    top: 94px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+.x1 {
+    float: left;
+    width: 200pt;
+    height: 100%;
+}
+
+.x2 {
+    float: left;
+    width: 707px;
+    height: 100%;
+}
+
+/*
+.x1-1 {
+    border-bottom: 2px solid purple;
+    height: 400pt;
+    float: left; 
+    width: 200pt;
+}
+
+.x1-2 {
+    float: left;
+    width: 200pt;
+    bottom: 0pt;
+    height: 200pt;
+}
+
+.x2-1 {
+    border-bottom: 2px solid purple;
+    height: 24pt;
+}
+
+.x2-2 {
+}
+
+.x2-2-1 {
+    height: 40pt;
+    background-image: url(/static/field-header.png);
+}
+
+.x2-2-2 {
+}
+*/
+
+.workspaceTitle {
+}
+
+.sidebar {
+}
+
+.creatures {
+}
+
+.search {
+}
+
+.mainActions {
+}
+
+.itemView {
+}
+
+.itemHeader {
+}
+
+.itemMain {
+}
