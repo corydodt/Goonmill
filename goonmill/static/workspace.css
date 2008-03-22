@@ -1,6 +1,17 @@
+/* colors:
+ * a87675 purple border
+ * 916581 purple bright
+ * 5d8059 dark green
+ * b9cc8f light green
+ * 527476 bluegreen
+ * bgbb60 goldish tannish
+ * fffdc0 bright yellow
+ * fff white
+ * 000 black
+ */
+
 /* .y1 { background-image: url(/static/y1.png); background-repeat: repeat;
 }
-*/
 
 .y2 { background-image: url(/static/y2.png); background-repeat: repeat;
 }
@@ -17,21 +28,17 @@
 .x2 { background-image: url(/static/x2.png); background-repeat: repeat;
 }
 
-
 .x2-1 { background-image: url(/static/x2-1.png); background-repeat: repeat;
 }
 
 .x2-2 { background-image: url(/static/x2-2.png); background-repeat: repeat;
 }
 
-/*
 .x2-2-1 { background-image: url(/static/x2-2-1.png); background-repeat: repeat;
 }
-*/
 
 .x2-2-2 { background-image: url(/static/x2-2-2.png); background-repeat: repeat;
 }
-/*
 */
 
 
@@ -64,6 +71,7 @@
     right: 0px;
     left: 200pt;
     height: 100%;
+    border-left: 2px solid #a87675;
 }
 
 .x1-1 {
@@ -72,6 +80,7 @@
     top: 0px;
     bottom: 170pt;
     width: 200pt;
+    border-bottom: 2px solid #a87675;
 }
 
 .x1-2 {
@@ -93,6 +102,7 @@
 }
 
 .x2-2 {
+    border-top: 2px solid #a87675;
     float: left;
     clear: left;
     position: absolute;
