@@ -7,19 +7,27 @@
 .x1 { background-image: url(/static/x1.png); background-repeat: repeat;
 }
 
-.x2 { background-image: url(/static/x2.png); background-repeat: repeat;
-}
-
 .x1-1 { background-image: url(/static/x1-1.png); background-repeat: repeat;
 }
 
 .x1-2 { background-image: url(/static/x1-2.png); background-repeat: repeat;
 }
+.x2 { background-image: url(/static/x2.png); background-repeat: repeat;
+}
+
+
+.x2-1 { background-image: url(/static/x2-1.png); background-repeat: repeat;
+}
+
+.x2-2 { background-image: url(/static/x2-2.png); background-repeat: repeat;
+}
+/*
+*/
 
 
 .y1 {
-    /* background-image: url(/static/field-header.png);
-    background-repeat: no-repeat; */
+    background-image: url(/static/field-header.png);
+    background-repeat: repeat;
     height: 94px;
     left: 0px;
     right: 4px;
@@ -65,15 +73,26 @@
     bottom: 0px;
 }
 
-/*
 .x2-1 {
-    border-bottom: 2px solid purple;
+    float: left;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
     height: 24pt;
 }
 
 .x2-2 {
+    float: left;
+    clear: left;
+    position: absolute;
+    top: 24pt;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
 }
 
+/*
 .x2-2-1 {
     height: 40pt;
     background-image: url(/static/field-header.png);
