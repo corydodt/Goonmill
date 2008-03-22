@@ -50,17 +50,19 @@
 
 .x1-1 {
     float: left; 
-    height: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 170pt;
     width: 200pt;
 }
 
 .x1-2 {
     float: left;
     clear: left;
+    position: absolute;
     width: 200pt;
-    height: 200pt;
-    position: relative;
-    top: -200pt;
+    height: 170pt;
+    bottom: 0px;
 }
 
 /*
