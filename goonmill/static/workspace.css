@@ -56,6 +56,7 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
+    margin-top: 10px;
 }
 
 .x1 {
@@ -71,7 +72,16 @@
     right: 0px;
     left: 200pt;
     height: 100%;
+    margin-left: 10px;
     border-left: 2px solid #a87675;
+}
+
+.x2x {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 10px;
+    height: 100%;
 }
 
 .x1-1 {
@@ -98,7 +108,7 @@
     top: 0px;
     right: 0px;
     left: 0px;
-    height: 24pt;
+    height: 18pt;
 }
 
 .x2-2 {
@@ -106,21 +116,30 @@
     float: left;
     clear: left;
     position: absolute;
-    top: 24pt;
+    top: 18pt;
     bottom: 0px;
     right: 0px;
     left: 0px;
 }
 
+
 .x2-2-1 {
     float: left;
     position: absolute;
     top: 0px;
-    height: 40pt;
+    height: 55px;
     right: 0px;
     left: 0px;
+}
+
+.x2-2-1x {
     background-image: url(/static/field-header.png);
     background-position: -200pt;
+    position: absolute;
+    top: 10px;
+    height: 55px;
+    right: 0px;
+    left: 0px;
 }
 
 .x2-2-2 {
