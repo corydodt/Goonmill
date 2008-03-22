@@ -19,7 +19,7 @@ class DiceSandboxPage(athena.LivePage):
 
 class DiceSandbox(athena.LiveElement):
     """A playground for rolling dice"""
-    docFactory = loaders.xmlfile(RESOURCE("elements/DiceSandbox"))
+    docFactory = loaders.xmlfile(RESOURCE("templates/DiceSandbox"))
     jsClass = u'Goonmill.DiceSandbox'
 
     def onQuerySubmit(self, query):

@@ -9,3 +9,4 @@
 ^options.local$
 ^hook.d/.*$
 ^goonmill/tripledb.n3$
+^doc/goonmill-shots.graffle.*$

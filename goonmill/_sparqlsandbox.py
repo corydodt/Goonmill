@@ -52,7 +52,7 @@ class SandboxPage(athena.LivePage):
 
 class SparqlSandbox(athena.LiveElement):
     """A playground for running SPARQL queries."""
-    docFactory = loaders.xmlfile(RESOURCE("elements/SparqlSandbox"))
+    docFactory = loaders.xmlfile(RESOURCE("templates/SparqlSandbox"))
     jsClass = u'Goonmill.SparqlSandbox'
 
     def setView(self, historyView):

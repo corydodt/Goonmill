@@ -64,7 +64,7 @@ class GoonmillPage(athena.LivePage):
 
 class Search(athena.LiveElement):
     """The search widget"""
-    docFactory = loaders.xmlfile(RESOURCE("elements/Search"))
+    docFactory = loaders.xmlfile(RESOURCE("templates/Search"))
     jsClass = u'Goonmill.Search'
 
     def __init__(self, *a, **kw):
@@ -99,7 +99,7 @@ class Search(athena.LiveElement):
 
 class HistoryView(athena.LiveElement):
     """The results container widget"""
-    docFactory = loaders.xmlfile(RESOURCE("elements/HistoryView"))
+    docFactory = loaders.xmlfile(RESOURCE("templates/HistoryView"))
     jsClass = u'Goonmill.HistoryView'
 
     ## def forgetStatblock(self, statblock):
@@ -126,7 +126,7 @@ class HistoryView(athena.LiveElement):
 
 class Result(athena.LiveElement):
     """One result"""
-    docFactory = loaders.xmlfile(RESOURCE("elements/Result"))
+    docFactory = loaders.xmlfile(RESOURCE("templates/Result"))
     jsClass = u'Goonmill.Result'
     def __init__(self, statblock, *a, **kw):
         super(Result, self).__init__(*a, **kw)
@@ -152,7 +152,7 @@ class Result(athena.LiveElement):
         fill('count', guise('count',
             value=get('count'), 
             tooltip='Click to set the number of individuals', 
-            template=resourceData('guises/Count'),
+            template=resourceData('templates/Count'),
             editHandler=s.setCount))
         fill('label', guise('label', tooltip='Click to add a label', 
             editHandler=s.setLabel))
@@ -436,7 +436,7 @@ class Guise(athena.LiveElement):
     @param editHandler: A callable that takes the new value as an argument
                         when the user edits a Guise in the browser
     """
-    docFactory = loaders.xmlfile(RESOURCE('elements/Guise'))
+    docFactory = loaders.xmlfile(RESOURCE('templates/Guise'))
     jsClass = u"Goonmill.Guise"
 
     def __init__(self, value='', tooltip='Click to edit', editHandler=None,
@@ -475,7 +475,7 @@ class Guise(athena.LiveElement):
 
 
 class ReadOnlyGuise(Guise):
-    docFactory = loaders.xmlfile(RESOURCE('elements/ReadOnlyGuise'))
+    docFactory = loaders.xmlfile(RESOURCE('templates/ReadOnlyGuise'))
     jsClass = u'Goonmill.ReadOnlyGuise'
 
 
