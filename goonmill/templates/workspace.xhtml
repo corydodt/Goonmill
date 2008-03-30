@@ -1,4 +1,4 @@
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:n="http://nevow.com/ns/nevow/0.1">
   <!-- vi:ft=html
   -->
   <head>
@@ -6,9 +6,19 @@
     <title>Goonmill Workspace</title>
     <link rel="stylesheet" type="text/css" href="/static/workspace.css" />
     <link rel="stylesheet" type="text/css" href="/static/reset.css" />
+
+    <script type="text/javascript" language="javascript" src=
+      "/static/3p/prototype.js"></script>
+    <script type="text/javascript" language="javascript" src=
+      "/static/3p/scriptaculous.js"></script>
+
+    <n:invisible n:render="liveglue" />
   </head>
-  <body>
-    <div class="y1 workspaceTitle"></div>
+  <body n:render="workspace">
+    <div class="y1">
+      <!-- arguably this should be moved into a fragment. we'll see.  -->
+      <div class="workspaceTitle">Title</div>
+    </div>
     <div class="y2">
       <div class="x1 sidebar">
         <div class="x1-1 creatures" />
