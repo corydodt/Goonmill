@@ -18,13 +18,16 @@ class Root(rend.Page):
         return static.File(RESOURCE('static'))
 
     def child_app(self, ctx):
-        return WorkspacePage()
+        return Workspace()
 
     def renderHTTP(self, ctx):
         return url.root.child("app")
 
 
-class WorkspacePage(athena.LivePage):
+class Workspace(athena.LivePage):
     docFactory = loaders.xmlfile(RESOURCE('templates/workspace.xhtml'))
     addSlash = 1
+
+    def render_workspace(self, ctx, data):
+        return ctx.tag
 
