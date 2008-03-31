@@ -5,7 +5,6 @@ import hashlib
 
 from storm import locals
 
-from zope.interface import implements
 from twisted.cred.checkers import ICredentialsChecker
 from twisted.cred import error, checkers, credentials
 from twisted.cred.portal import Portal, IRealm
