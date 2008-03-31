@@ -5,7 +5,7 @@ API for building the goonmill page and its fragments.
 """
 import random
 
-from nevow import rend, url, loaders, athena, static, guard
+from nevow import rend, url, loaders, athena, static, guard, page
 
 from twisted.cred.portal import Portal
 from twisted.cred.credentials import IAnonymous
@@ -104,6 +104,22 @@ class WorkspacePage(athena.LivePage):
         athena.LivePage.__init__(self, *a, **kw)
 
     def render_workspace(self, ctx, data):
+        title = WorkspaceTitle(self.workspace)
+        title.setFragmentParent(self)
+        ctx.tag.fillSlots('titleEdit', title)
         return ctx.tag
 
 
+class WorkspaceTitle(athena.LiveElement):
+    docFactory = loaders.xmlfile(RESOURCE('templates/WorkspaceTitle'))
+    def __init__(self, workspace, *a, **kw):
+        self.workspace = workspace
+        athena.LiveElement.__init__(self, *a, **kw)
+
+    @page.renderer
+    def name(self, req, tag):
+        ws = self.workspace
+        if ws.name is None:
+           ws.name = u"Unnamed Workspace"
+        tag.fillSlots('nameValue', ws.name)
+        return tag

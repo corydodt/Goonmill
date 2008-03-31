@@ -153,6 +153,10 @@
 }
 
 .workspaceTitle {
+    font-size: 28pt;
+    color: white;
+    font-family: sans-serif;
+    padding: 10pt;
 }
 
 .sidebar {
