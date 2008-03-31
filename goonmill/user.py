@@ -10,7 +10,7 @@ from twisted.cred import error, checkers, credentials
 from twisted.cred.portal import Portal, IRealm
 from twisted.internet import defer
 
-from goonmill.util import RESOURCE
+from .util import RESOURCE
 
 
 class User(object):
@@ -80,9 +80,13 @@ Workspace.constituents = locals.ReferenceSet(
         Constituent.id)
 
 
-class UserDatabase(object):
-    """A user database"""
-    def __init__(self):
-        self.db = locals.create_database('sqlite:///' + RESOURCE('user.db'))
-        self.store = locals.Store(self.db)
+def userDatabase():
+    """Give a user database"""
+    import goonmill.user as this
+    if hasattr(this, 'store'):
+        raise RuntimeError("Already created a db store")
+    db = locals.create_database('sqlite:///' + RESOURCE('user.db'))
+    store = locals.Store(db)
+    this.theStore = store
+    return store
 

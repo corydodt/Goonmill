@@ -58,15 +58,15 @@ class GuardedRoot(rend.Page):
             # look up workspace. if it belongs to a user, make sure it belongs
             # to me.
             key = unicode(segs[1])
-            ws = self.userDatabase.store.find(Workspace, Workspace.url ==
+            ws = self.userDatabase.find(Workspace, Workspace.url ==
                     key).one()
 
             if self.user is None:
                 if not ws:
                     ws = Workspace()
                     ws.url = key
-                    self.userDatabase.store.add(ws)
-                    self.userDatabase.store.commit()
+                    self.userDatabase.add(ws)
+                    self.userDatabase.commit()
                 page = WorkspacePage(ws, None)
                 return (page, segs[2:])
 
@@ -120,6 +120,8 @@ class WorkspaceTitle(athena.LiveElement):
     def name(self, req, tag):
         ws = self.workspace
         if ws.name is None:
-           ws.name = u"Unnamed Workspace"
+            ws.name = u"Unnamed Workspace"
+            from .user import theStore
+            theStore.commit()
         tag.fillSlots('nameValue', ws.name)
         return tag
