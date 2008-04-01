@@ -34,7 +34,6 @@ class WebSite(appserver.NevowSite):
 
 class WebServer(internet.TCPServer):
     def startService(self, *a, **kw):
-        from nevow import appserver
         from .query2 import db
         from . import user, auth, search
 
