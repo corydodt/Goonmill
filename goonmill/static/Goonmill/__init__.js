@@ -162,7 +162,7 @@ Goonmill.WarmText.methods( // {{{
         return (value.length < 2000);
     }, // }}}
 
-    /* put guise into editing mode */
+    /* put warmtext into editing mode */
     function editWarmText(self, event) { // {{{
         event.stopPropagation();
         event.preventDefault();

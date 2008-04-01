@@ -76,25 +76,6 @@ h4.monsterTitle {
     height: 1.2em;
 }
 
-form.guise, form.readOnlyGuise { display: inline; }
-
-.guiseInput { display: none; }
-
-.guiseStatic {
-    margin: 1px;
-}
-
-.guise .guiseStatic {
-    border: 1px dotted black;
-}
-
-.guise span.guiseStatic:hover {
-    background-color: white;
-    color: black;
-    border: 2px inset black;
-    margin: 0px;
-}
-
 .sandboxLeft {
     width: 40em;
     float: left;

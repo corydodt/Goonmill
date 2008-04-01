@@ -1,5 +1,0 @@
-<form class="readOnlyGuise" xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement">
-  <span class="guiseStatic"></span><input name="guise" type="text" class="guiseInput"><n:attr name="value" n:render="preload" /></input>
-<!-- vi:ft=html
--->
-</form>
