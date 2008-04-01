@@ -153,7 +153,7 @@ Goonmill.WarmText.methods(
         if (v) {
             // todo - validate
             // notify the server
-            d = self.callRemote("editedValue", v);
+            d = self.callRemote("clientUpdated", v);
         }
         // self.display(); fixme
     } // }}}
