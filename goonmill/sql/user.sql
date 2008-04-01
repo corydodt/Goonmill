@@ -16,6 +16,9 @@ CREATE TABLE workspace (
 
 CREATE TABLE constituent (
     id INTEGER PRIMARY KEY,
+    name varchar(255),
+    kind varchar(100),
+    userId INTEGER,
     workspaceId INTEGER,
     data longtext
 );
