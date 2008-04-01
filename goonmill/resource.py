@@ -195,14 +195,19 @@ class WarmText(WarmControl):
     """
     A text edit control
     """
-    jsClass = 'Goonmill.WarmText'
-    docFactory = loaders.xmlfile(RESOURCE('templates/WarmText'))
+    jsClass = u'Goonmill.WarmText'
 
     def validate(self, value):
+        """
+        Simplest DOS-prevention.. limit length.  Adjust if necessary in
+        subclasses.
+        """
         return len(value) < 2000
 
 
 class WorkspaceTitle(WarmText):
+    docFactory = loaders.xmlfile(RESOURCE('templates/WorkspaceTitle'))
+
     def __init__(self, workspace, *a, **kw):
         athena.LiveElement.__init__(self, *a, **kw)
         self.workspace = workspace

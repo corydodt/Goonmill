@@ -155,8 +155,14 @@
 .workspaceTitle {
     font-size: 28pt;
     color: white;
-    font-family: sans-serif;
+    font-family: Arial Black;
     padding: 10pt;
+}
+
+a.warmText:hover {
+    color: #555;
+    background-color: white;
+    border: 2px inset black;
 }
 
 .sidebar {
