@@ -5,7 +5,7 @@ API for building the goonmill page and its fragments.
 """
 import random
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from nevow import rend, url, loaders, athena, static, guard, page
 
