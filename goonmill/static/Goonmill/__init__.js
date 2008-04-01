@@ -12,12 +12,13 @@ Goonmill.DiceSandbox.methods( // {{{
         self.results = self.node.select('.results')[0]
         self.queryArea = self.queryForm.query;
 
-        DeanEdwards.addEvent(self.queryArea, 'keyup', 
+        self.queryArea.observe('keyup', 
             function onQueryAreaKeyup(event) { 
                 return self.onQueryAreaKeyup(event);
         });
-        DeanEdwards.addEvent(self.queryForm, 'submit', 
-            function onQuerySubmit(event) { return self.onQuerySubmit(event) 
+        self.queryForm.observe('submit', 
+            function onQuerySubmit(event) { 
+                return self.onQuerySubmit(event) 
         });
         self.queryArea.select();
     }, // }}}
@@ -50,12 +51,13 @@ Goonmill.SparqlSandbox.methods( // {{{
         self.results = self.node.select('.results')[0];
         self.queryArea = self.queryForm.query;
 
-        DeanEdwards.addEvent(self.queryArea, 'keyup', 
+        self.queryArea.observe('keyup', 
             function onQueryAreaKeyup(event) { 
                 return self.onQueryAreaKeyup(event);
         });
-        DeanEdwards.addEvent(self.queryForm, 'submit', 
-            function onQuerySubmit(event) { return self.onQuerySubmit(event) 
+        self.queryForm.observe('submit', 
+            function onQuerySubmit(event) { 
+                return self.onQuerySubmit(event) 
         });
         self.queryArea.select();
     }, // }}}
@@ -200,7 +202,6 @@ Goonmill.WarmText.methods( // {{{
         self.anchor.show();
         return original;
     } // }}}
-
 ); // }}}
 
 
