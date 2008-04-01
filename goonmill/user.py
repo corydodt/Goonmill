@@ -67,6 +67,24 @@ class Constituent(object):
     # here we probably also need some other tidbits needed to
     # display it.  for monster group, a count?  for any, an image?
 
+    def isLibraryKind(self):
+        """
+        Is this the kind of constituent that can appear in the user's
+        permanent library?
+        """
+        return self.kind not in ['monsterGroup', 'encounter']
+
+    def briefDetail(self):
+        """
+        The text for brief details about the creature (i.e. count or NPC
+        stats)
+        """
+        if self.kind == 'monsterGroup':
+            return u'n'
+        elif self.kind == 'npc':
+            return u'clsN / clsM / ...'
+        return u''
+
 Workspace.constituents = locals.ReferenceSet(
         Workspace.id,
         Constituent.workspaceId,

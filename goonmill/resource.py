@@ -109,6 +109,7 @@ class WorkspacePage(athena.LivePage):
         title = WorkspaceTitle(self.workspace)
         title.setFragmentParent(self)
         ctx.tag.fillSlots('titleEdit', title)
+        ctx.tag.fillSlots('constituentList', ConstituentList(self.workspace))
         return ctx.tag
 
 
@@ -235,3 +236,28 @@ class WorkspaceTitle(WarmText):
         from .user import theStore
         theStore.commit()
         return original
+
+class ConstituentList(page.Element):
+    docFactory = loaders.xmlfile(RESOURCE('templates/ConstituentList'))
+
+    def __init__(self, workspace, *a, **kw):
+        page.Element.__init__(self, *a, **kw)
+        self.workspace = workspace
+
+    @page.renderer
+    def init(self, req, tag):
+        pg = tag.patternGenerator('constituent')
+        for c in self.workspace.constituents:
+            pat = pg()
+            pat.fillSlots('constituentKind', c.kind)
+            if c.isLibraryKind():
+                pat.fillSlots('closingXTitle', 
+                        'Remove from this workspace')
+            else:
+                pat.fillSlots('closingXTitle', 'Delete')
+            pat.fillSlots('constituentName', c.name)
+            pat.fillSlots('constituentDetail', c.briefDetail())
+            tag[pat]
+        return tag
+        
+
