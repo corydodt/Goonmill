@@ -156,8 +156,7 @@ Goonmill.WarmText.methods(
             d = self.callRemote("editedValue", v);
         }
         // self.display(); fixme
-    }, // }}}
-
+    } // }}}
 );
 
 
