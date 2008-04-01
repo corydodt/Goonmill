@@ -1,14 +1,7 @@
 """
 Users and user acquisition
 """
-import hashlib
-
 from storm import locals
-
-from twisted.cred.checkers import ICredentialsChecker
-from twisted.cred import error, checkers, credentials
-from twisted.cred.portal import Portal, IRealm
-from twisted.internet import defer
 
 from .util import RESOURCE
 
