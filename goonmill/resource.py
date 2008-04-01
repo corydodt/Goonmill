@@ -5,6 +5,8 @@ API for building the goonmill page and its fragments.
 """
 import random
 
+from zope.interface import Interface
+
 from nevow import rend, url, loaders, athena, static, guard, page
 
 from twisted.cred.portal import Portal
@@ -110,18 +112,115 @@ class WorkspacePage(athena.LivePage):
         return ctx.tag
 
 
-class WorkspaceTitle(athena.LiveElement):
-    docFactory = loaders.xmlfile(RESOURCE('templates/WorkspaceTitle'))
+class IWarmControl(Interface):
+    """
+    A WarmControl can be set from the server or the client.
+    """
+    def setLocally(value):
+        """
+        Set value, then return the old value
+        """
+
+    def serverUpdate(value):
+        """
+        Server code wants to change the value.  Change first, then notify
+        client of change.
+        """
+
+    def clientUpdated(value):
+        """
+        Client code has changed the value.  Validate, then set here, or report
+        an error to the client.
+        """
+
+    def rollback(reason, oldValue, newValue):
+        """
+        Called when serverUpdate fails at the client end.  oldValue and
+        newValue are the value the server had before anything was done, and
+        the value that was attempted to be set, respectively.  reason is
+        the exception (failure instance), which would most usefully contain
+        the fallback value the client attempted to make the field, assuming it
+        could not use newValue for some reason.  i.e. truncating the field and
+        returning ClientApproximationError("Foo bar baz ...")
+        """
+
+    def validate(value):
+        """
+        Verify that the value is useful
+        """
+
+    def init():
+        """
+        Initial renderer
+        """
+
+
+class WarmControl(athena.LiveElement):
+    implements(IWarmControl)
+
+    def init(self):
+        raise NotImplemented("Implement init in a subclass")
+
+    def rollback(self, reason, oldValue, newValue):
+        raise NotImplemented("Implement rollback in a subclass")
+
+    def setLocally(self, value):
+        raise NotImplemented("Implement setLocally in a subclass")
+
+    def validate(self, value):
+        return True
+
+    def serverUpdate(self, value):
+        if not self.validate(value):
+            raise InvalidValueError(value)
+
+        original = self.setLocally(value)
+
+        d = self.callRemote('serverUpdated', value)
+        d.addErrback(lambda failure: self.rollback(failure, original, value))
+
+        return d
+
+    @athena.expose
+    def clientUpdated(self, value):
+        if not self.validate(value):
+            raise InvalidValueError(value)
+
+        original = self.setLocally(value)
+
+        return value
+        
+
+class WarmText(WarmControl):
+    """
+    A text edit control
+    """
+    jsClass = 'Goonmill.WarmText'
+    docFactory = loaders.xmlfile(RESOURCE('templates/WarmText'))
+
+    def validate(self, value):
+        return len(value) < 2000
+
+
+class WorkspaceTitle(WarmText):
     def __init__(self, workspace, *a, **kw):
-        self.workspace = workspace
         athena.LiveElement.__init__(self, *a, **kw)
+        self.workspace = workspace
 
     @page.renderer
-    def name(self, req, tag):
+    def init(self, req, tag):
         ws = self.workspace
         if ws.name is None:
-            ws.name = u"Unnamed Workspace"
-            from .user import theStore
-            theStore.commit()
-        tag.fillSlots('nameValue', ws.name)
+            self.setLocally(u'Unnamed Workspace')
+        tag.fillSlots('value', ws.name)
         return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.workspace.name = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        self.workspace.name = value
+        from .user import theStore
+        theStore.commit()
