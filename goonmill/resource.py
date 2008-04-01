@@ -155,6 +155,10 @@ class IWarmControl(Interface):
         """
 
 
+class InvalidValueError(Exception):
+    pass
+
+
 class WarmControl(athena.LiveElement):
     implements(IWarmControl)
 
@@ -226,6 +230,8 @@ class WorkspaceTitle(WarmText):
         theStore.commit()
 
     def setLocally(self, value):
+        original = self.workspace.name
         self.workspace.name = value
         from .user import theStore
         theStore.commit()
+        return original

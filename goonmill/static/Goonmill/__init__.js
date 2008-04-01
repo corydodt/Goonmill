@@ -79,40 +79,53 @@ Goonmill.SparqlSandbox.methods( // {{{
      } // }}}
 ); // }}}
 
-/* a guise is a static-text region that can be clicked to become editable */
-Goonmill.Guise = Widget.subclass('Goonmill.Guise');
-Goonmill.Guise.methods( // {{{
-    /* display inputNode.value inside staticNode, using the formatting I was
-     * passed in self.template */
-    function display(self) { // {{{
-        var id = Goonmill.nextId();
-        if (self.inputNode.value) { 
-            var v = Goonmill.quoteSafeString(self.inputNode.value);
-            var hash = {quote_safe_value: v, id: id};
-        } else {
-            var hash = {quote_safe_value: '&#xA0;', id: id};
-        }
-        var markup = self.template.evaluate(hash);
-        self.staticNode.update(markup);
-        self.staticNode.style['display'] = 'inline';
+
+Goonmill.WarmControl = Widget.subclass('Goonmill.WarmControl');
+Goonmill.WarmControl.methods( // {{{
+    function rollback(self, reason, oldValue, newValue) { // {{{
+        alert('implement in a subclass')
     }, // }}}
 
-    function pushed(self, newValue) { // {{{
-        if (newValue) {
-            self.inputNode.value = newValue;
-        }
-        self.display();
-    } // }}}
-); // }}}
+    function setLocally(self, value) { // {{{
+        alert('implement in a subclass')
+    }, // }}}
 
-Goonmill.WarmText = Widget.subclass('Goonmill.WarmText')
-Goonmill.WarmText.methods(
+    function validate(self, value) { // {{{
+        return true;
+    }, // }}}
+
+    function serverUpdated(self, value) { // {{{
+        if (! self.validate(value))
+            throw "invalid value - client validation";
+
+        var original = self.setLocally(value);
+
+        return value;
+    }, // }}}
+
+    function clientUpdate(self, value) { // {{{
+        if (! self.validate(value))
+            throw "invalid value - client validation";
+
+        var original = self.setLocally(value);
+
+        var d = self.callRemote('clientUpdated', value);
+        d.addErrback(function (f) { self.rollback(f, original, value) });
+
+        return d
+    } // }}}
+
+); // }}}
+        
+
+Goonmill.WarmText = Goonmill.WarmControl.subclass('Goonmill.WarmText');
+Goonmill.WarmText.methods( // {{{
     function __init__(self, node, template) { // {{{
         Goonmill.WarmText.upcall(self, '__init__', node);
 
-        // if (!template) template = '#{quote_safe_value}';
+        if (template === undefined || !template) template = '#{quote_safe_value}';
 
-        // self.template = new Template(template);
+        self.template = new Template(template);
 
         // the anchor is the node that gets initialized.  It should probably
         // have the n:render attribute in the template.
@@ -128,11 +141,25 @@ Goonmill.WarmText.methods(
             self.editWarmText(event);
         });
 
+        var startValue = self.inputNode.value;
         self.form.observe('submit', function (event) {
-            self.onSubmit(event);
+            return self.onSubmit(event);
         });
 
-        // self.display(); FIXME
+        /* to make sure quoting and blanks are taken care of nicely, force a
+         * call to setLocally now
+         */
+        self.setLocally(self.anchor.innerHTML);
+    }, // }}}
+
+    function rollback(self, reason, oldValue, newValue) { // {{{
+        debugger;
+        // TODO - slide out an error message here
+        return self.setLocally(oldValue);
+    }, // }}}
+
+    function validate(self, value) { // {{{
+        return (value.length < 2000);
     }, // }}}
 
     /* put guise into editing mode */
@@ -149,15 +176,32 @@ Goonmill.WarmText.methods(
         event.stopPropagation();
         event.preventDefault();
         self.inputNode.hide();
-        var v = self.inputNode.value;
-        if (v) {
-            // todo - validate
-            // notify the server
-            d = self.callRemote("clientUpdated", v);
+        var original = self.anchor.innerHTML;
+        try {
+            return self.clientUpdate(self.inputNode.value);
+        } catch (err) {
+            self.rollback(err, original, self.inputNode.value);
+            return null;
         }
-        // self.display(); fixme
+    }, // }}}
+
+    function setLocally(self, value) { // {{{
+        if (value) { 
+            var v = Goonmill.quoteSafeString(value);
+            var hash = {quote_safe_value: v};
+        } else {
+            /* put a blank space in so the field will never be 0px wide */
+            var hash = {quote_safe_value: '&#xA0'};
+        }
+        var original = self.anchor.innerHTML;
+        self.inputNode.value = value;
+        var markup = self.template.evaluate(hash);
+        self.anchor.update(markup);
+        self.anchor.show();
+        return original;
     } // }}}
-);
+
+); // }}}
 
 
 Goonmill.quoteSafeString = function (s) { // {{{
@@ -167,10 +211,4 @@ Goonmill.quoteSafeString = function (s) { // {{{
     return s;
 }; // }}}
 
-Goonmill.idCounter = 0;
-
-Goonmill.nextId = function () { // {{{
-    Goonmill.idCounter += 1;
-    return Goonmill.idCounter;
-}; // }}}
 // vi:foldmethod=marker
