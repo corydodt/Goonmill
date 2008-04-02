@@ -1,0 +1,20 @@
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" class=
+  "constituentList" n:render="init">
+  <div n:pattern=
+    "constituent"><n:attr name=
+    "class">constituent <n:slot name=
+    "constituentKind" /></n:attr>
+    <span alt="close" class=
+      "closingX"><n:attr name=
+      "title"><n:slot name=
+      "closingXTitle" /></n:attr></span>
+    <span class=
+      "constituentName"><n:slot name=
+      "constituentName" /></span>
+    <span class=
+      "constituentDetail"><n:slot name=
+      "constituentDetail" /></span>
+    <div style="float: left; clear: both;" />
+  </div>
+</div>
+<!-- vim:set ft=xhtml: -->

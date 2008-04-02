@@ -237,6 +237,17 @@ class WorkspaceTitle(WarmText):
         theStore.commit()
         return original
 
+
+def trunc(s, n):
+    """
+    s, truncated to n, with "..."
+    """
+    if len(s) > n:
+        s = s[:n-3]
+        return s + '...'
+    return s
+
+
 class ConstituentList(page.Element):
     docFactory = loaders.xmlfile(RESOURCE('templates/ConstituentList'))
 
@@ -249,14 +260,14 @@ class ConstituentList(page.Element):
         pg = tag.patternGenerator('constituent')
         for c in self.workspace.constituents:
             pat = pg()
-            pat.fillSlots('constituentKind', c.kind)
+            pat.fillSlots('constituentKind', 'kind-%s' % (c.kind,))
             if c.isLibraryKind():
                 pat.fillSlots('closingXTitle', 
                         'Remove from this workspace')
             else:
                 pat.fillSlots('closingXTitle', 'Delete')
-            pat.fillSlots('constituentName', c.name)
-            pat.fillSlots('constituentDetail', c.briefDetail())
+            pat.fillSlots('constituentName', trunc(c.name, 14))
+            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 20))
             tag[pat]
         return tag
         
