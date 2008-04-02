@@ -238,12 +238,19 @@ Goonmill.BasicSearch.methods(
         self.hitContainer = node.select('div[rev=hits]')[0];
     }, // }}}
 
+    /* clear the search form and reset it */
+    function resetSearchInput(self) {
+        self.searchForm.searchTerms.clear();
+        self.searchForm.searchTerms.nextSiblings()[0].focus();
+    },
+
     function onSubmitSearch(self, event) {
         event.stopPropagation();
         event.preventDefault();
         $A(self.hitContainer.childNodes).each(function (e) { e.remove() } );
         var d = self.callRemote('searched', self.searchForm.searchTerms.value);
         d.addCallback(function (hits) {
+            self.resetSearchInput();
             for (var n=0; n<hits.length; n++) {
                 var hit = hits[n];
                 var anc = new Element('a', {href:'#' + n});
@@ -253,19 +260,62 @@ Goonmill.BasicSearch.methods(
                 sub.update(hit[1] + '%');
                 anc.insert(sub, {position: 'bottom'});
                 anc.hide()
-                anc.observe('click', function (event) {
-                    self.clickedHit(event, anc, n);
-                });
+                // sigh, closures in javascript suck.
+                var f = (function (anc, n) { 
+                    return function (event) { self.clickedHit(event, anc, n) } 
+                })(anc, n);
+                anc.observe('click', f);
                 self.hitContainer.insert(anc);
                 Effect.SlideDown(anc);
             }
         });
+        return d;
     },
 
     function clickedHit(self, event, node, n) {
         event.stopPropagation();
         event.preventDefault();
+        Goonmill.Modal(node.innerHTML + ' ' + n);
     }
 );
+
+
+var LightboxConfig = Class.create({
+opacity:0.7,
+fade:true, 
+fadeDuration: 0.7,
+initialize: function() {},
+beforeClose: function() { throw $break; }
+});
+
+Goonmill.Modal = function (node) {
+    // copy the content of node into a modal dialog (lightbox)
+    var config = new LightboxConfig();
+    if (node.innerHTML !== undefined) {
+        config.contents = node.innerHTML;
+    } else {
+        config.contents = '<span>' + node + '</span>';
+    }
+    var closer = '<div><a href="javascript:void(0)" onclick="Control.Modal.current.close(true)">Close</a></div>';
+    config.contents = config.contents + closer;
+
+    // kludge .. hide all embedded stuff when showing the modal
+    var embeds = document.documentElement.select('embed');
+    $A(embeds).each(function (e) { 
+        e.setAttribute('_oldVisibility', e.style['visibility']);
+        e.style['visibility'] = 'hidden'; 
+    });
+    
+    // restore embedded stuff when closing the modal
+    config.afterClose = function () { $A(embeds).each(function(e) {
+        e.style['visibility'] = e.readAttribute('_oldVisibility');
+        e.removeAttribute('_oldVisibility');
+        }
+    )};
+
+    var modal = new Control.Modal(null, config);
+    modal.open();
+    return modal;
+}
 
 // vi:foldmethod=syntax

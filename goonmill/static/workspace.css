@@ -88,7 +88,7 @@
     float: left; 
     position: absolute;
     top: 0px;
-    bottom: 170pt;
+    bottom: 130pt;
     width: 200pt;
     border-bottom: 2px solid #a87675;
 }
@@ -98,7 +98,7 @@
     clear: left;
     position: absolute;
     width: 200pt;
-    height: 170pt;
+    height: 130pt;
     bottom: 0px;
 }
 
@@ -169,6 +169,8 @@ a.warmText:hover {
 }
 
 .constituentList {
+    overflow: auto;
+    height: 100%;
 }
 
 .constituent {
@@ -181,11 +183,15 @@ a.warmText:hover {
     float: left;
     font-size: 13pt;
     padding: 2pt;
+    font-family: Arial Black;
 }
 
 .constituentName, .constituentDetail {
-    font-family: Arial Black;
     color: white;
+}
+
+.constituentDetail {
+    font-family: sans-serif;
 }
 
 .kind-stencil .constituentName, .kind-stencil .constituentDetail {
@@ -251,3 +257,18 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 
 .itemMain {
 }
+
+/* Control.Modal styles */  #modal_container {  
+/* Control.Modal styles */      padding:5px;  
+/* Control.Modal styles */      background-color:#fff;  
+/* Control.Modal styles */      border:2px outset black;
+/* Control.Modal styles */      overflow:auto;  
+/* Control.Modal styles */      font-family:"Lucida Grande",Verdana;  
+/* Control.Modal styles */      font-size:12px;  
+/* Control.Modal styles */      color:#333;
+/* Control.Modal styles */      text-align:left;  
+/* Control.Modal styles */  } 
+/* Control.Modal styles */   
+/* Control.Modal styles */  #modal_overlay {  
+/* Control.Modal styles */      background-color: #a87675;  
+/* Control.Modal styles */  }  
