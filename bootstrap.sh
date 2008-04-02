@@ -62,6 +62,7 @@ fi
 userdb=goonmill/user.db
 if [ ! -r "$userdb" ]; then
     sqlite3 -init goonmill/sql/user.sql $userdb '.exit' || exit 1
+    sqlite3 -init goonmill/sql/dummy.sql $userdb '.exit' || exit 1
 else
     echo "** ${userdb} already exists, not willing to overwrite it!"
     echo ::

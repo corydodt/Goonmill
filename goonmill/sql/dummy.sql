@@ -9,5 +9,5 @@ INSERT INTO constituent VALUES (4, 'Phase Ghoul', 'stencil', NULL,
     1, NULL);
 INSERT INTO constituent VALUES (5, 'SW Corner of Graveyard', 'encounter',
     NULL, 1, NULL);
-INSERT INTO constituent VALUES (6, 'Munnig', 'encounter',
+INSERT INTO constituent VALUES (6, 'Munnig', 'npc',
     NULL, 1, 'Flind:Ftr-1/Clr-3');
