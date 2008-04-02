@@ -274,7 +274,7 @@ class ConstituentList(page.Element):
             else:
                 pat.fillSlots('closingXTitle', 'Delete')
             pat.fillSlots('constituentName', trunc(c.name, 14))
-            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 20))
+            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 14))
             tag[pat]
         return tag
         
