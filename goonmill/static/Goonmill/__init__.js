@@ -164,16 +164,16 @@ Goonmill.WarmText.methods(
     }, // }}}
 
     /* put warmtext into editing mode */
-    function editWarmText(self, event) { // {{{
+    function editWarmText(self, event) {
         event.stopPropagation();
         event.preventDefault();
         self.anchor.hide();
         self.inputNode.show();
         self.inputNode.select();
         self.inputNode.focus();
-    }, // }}}
+    },
 
-    function onSubmit(self, event) { // {{{
+    function onSubmit(self, event) {
         event.stopPropagation();
         event.preventDefault();
         self.inputNode.hide();
@@ -184,9 +184,9 @@ Goonmill.WarmText.methods(
             self.rollback(err, original, self.inputNode.value);
             return null;
         }
-    }, // }}}
+    },
 
-    function setLocally(self, value) { // {{{
+    function setLocally(self, value) {
         if (value) { 
             var v = Goonmill.quoteSafeString(value);
             var hash = {quote_safe_value: v};
@@ -198,18 +198,18 @@ Goonmill.WarmText.methods(
         self.inputNode.value = value;
         var markup = self.template.evaluate(hash);
         self.anchor.update(markup);
-        Effect.Appear(self.anchor); // .show();
+        Effect.Appear(self.anchor);
         return original;
-    } // }}}
+    }
 );
 
 
-Goonmill.quoteSafeString = function (s) { // {{{
+Goonmill.quoteSafeString = function (s) {
     var s = s.gsub(/\\/, '\\\\');
     var s = s.gsub(/'/, "\\'");
     var s = s.gsub(/"/, '\\"');
     return s;
-}; // }}}
+};
 
 
 Goonmill.BasicSearch = Widget.subclass('Goonmill.BasicSearch');

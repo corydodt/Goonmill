@@ -218,6 +218,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 .basicSearch {
+    padding-left: 1em;
 }
 
 [name=searchTerms] {
