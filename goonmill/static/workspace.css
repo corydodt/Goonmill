@@ -217,7 +217,26 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     background-image: url(/static/closing-x.png);
 }
 
-.search {
+.basicSearch {
+}
+
+[name=searchTerms] {
+   width: 18em;
+}
+
+[name=searchTerms].defaultText {
+    color: #aaa;
+    text-align: center;
+}
+
+[name=advancedButton] {
+     position: absolute;
+     bottom: 2pt;
+     right: 2pt;
+}
+
+.hit {
+    display: block;
 }
 
 .mainActions {

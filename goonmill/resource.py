@@ -15,6 +15,7 @@ from twisted.cred.checkers import AllowAnonymousAccess
 
 from .util import RESOURCE
 from .user import Workspace
+from . import search
 
 class Root(rend.Page):
     """
@@ -97,6 +98,9 @@ def guardedWrapper(realm, checkers):
 
 
 class WorkspacePage(athena.LivePage):
+    """
+    The entire workspace area, where the users spends most of his time
+    """
     docFactory = loaders.xmlfile(RESOURCE('templates/workspace.xhtml'))
     addSlash = 1
 
@@ -110,6 +114,9 @@ class WorkspacePage(athena.LivePage):
         title.setFragmentParent(self)
         ctx.tag.fillSlots('titleEdit', title)
         ctx.tag.fillSlots('constituentList', ConstituentList(self.workspace))
+        search = BasicSearch()
+        search.setFragmentParent(self)
+        ctx.tag.fillSlots('basicSearch', search)
         return ctx.tag
 
 
@@ -194,7 +201,7 @@ class WarmControl(athena.LiveElement):
         original = self.setLocally(value)
 
         return value
-        
+ 
 
 class WarmText(WarmControl):
     """
@@ -272,3 +279,12 @@ class ConstituentList(page.Element):
         return tag
         
 
+class BasicSearch(athena.LiveElement):
+    docFactory = loaders.xmlfile(RESOURCE('templates/BasicSearch'))
+    jsClass = u"Goonmill.BasicSearch"
+
+    @athena.expose
+    def searched(self, searchTerms):
+        terms = searchTerms.split()
+        self.lastFound = search.find(terms)
+        return [(t.name, int(t.score * 100)) for t in self.lastFound]

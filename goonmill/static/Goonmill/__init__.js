@@ -4,7 +4,7 @@
 var Widget = Nevow.Athena.Widget;
 
 Goonmill.DiceSandbox = Widget.subclass('Goonmill.DiceSandbox');
-Goonmill.DiceSandbox.methods( // {{{
+Goonmill.DiceSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.DiceSandbox.upcall(self, '__init__', node);
 
@@ -40,10 +40,10 @@ Goonmill.DiceSandbox.methods( // {{{
             self.results.innerHTML = result;
         });
      } // }}}
-); // }}}
+);
 
 Goonmill.SparqlSandbox = Widget.subclass('Goonmill.SparqlSandbox');
-Goonmill.SparqlSandbox.methods( // {{{
+Goonmill.SparqlSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.SparqlSandbox.upcall(self, '__init__', node);
 
@@ -79,11 +79,11 @@ Goonmill.SparqlSandbox.methods( // {{{
             self.results.innerHTML = result;
         });
      } // }}}
-); // }}}
+);
 
 
 Goonmill.WarmControl = Widget.subclass('Goonmill.WarmControl');
-Goonmill.WarmControl.methods( // {{{
+Goonmill.WarmControl.methods(
     function rollback(self, reason, oldValue, newValue) { // {{{
         alert('implement in a subclass')
     }, // }}}
@@ -116,12 +116,11 @@ Goonmill.WarmControl.methods( // {{{
 
         return d
     } // }}}
-
-); // }}}
+);
         
 
 Goonmill.WarmText = Goonmill.WarmControl.subclass('Goonmill.WarmText');
-Goonmill.WarmText.methods( // {{{
+Goonmill.WarmText.methods(
     function __init__(self, node, template) { // {{{
         Goonmill.WarmText.upcall(self, '__init__', node);
 
@@ -199,10 +198,10 @@ Goonmill.WarmText.methods( // {{{
         self.inputNode.value = value;
         var markup = self.template.evaluate(hash);
         self.anchor.update(markup);
-        self.anchor.show();
+        Effect.Appear(self.anchor); // .show();
         return original;
     } // }}}
-); // }}}
+);
 
 
 Goonmill.quoteSafeString = function (s) { // {{{
@@ -212,4 +211,61 @@ Goonmill.quoteSafeString = function (s) { // {{{
     return s;
 }; // }}}
 
-// vi:foldmethod=marker
+
+Goonmill.BasicSearch = Widget.subclass('Goonmill.BasicSearch');
+Goonmill.BasicSearch.methods(
+    function __init__(self, node) { // {{{
+        Goonmill.BasicSearch.upcall(self, '__init__', node);
+        self.searchForm = node.select('.searchForm')[0];
+
+        self.searchForm.observe('submit', function (event) {
+            return self.onSubmitSearch(event);
+        });
+
+        self.searchTerms = self.searchForm.searchTerms;
+
+        self.searchTerms.observe('click', function (event) {
+            self.searchTerms.value = '';
+            self.searchTerms.removeClassName('defaultText');
+        });
+
+        self.searchTerms.observe('blur', function (event) {
+            if (self.searchTerms.value == '') {
+                self.searchTerms.value = 'Search for a monster';
+                self.searchTerms.addClassName('defaultText');
+            }
+        });
+        self.hitContainer = node.select('div[rev=hits]')[0];
+    }, // }}}
+
+    function onSubmitSearch(self, event) {
+        event.stopPropagation();
+        event.preventDefault();
+        $A(self.hitContainer.childNodes).each(function (e) { e.remove() } );
+        var d = self.callRemote('searched', self.searchForm.searchTerms.value);
+        d.addCallback(function (hits) {
+            for (var n=0; n<hits.length; n++) {
+                var hit = hits[n];
+                var anc = new Element('a', {href:'#' + n});
+                anc.addClassName('hit');
+                anc.update(hit[0] + ' ');
+                var sub = new Element('sub');
+                sub.update(hit[1] + '%');
+                anc.insert(sub, {position: 'bottom'});
+                anc.hide()
+                anc.observe('click', function (event) {
+                    self.clickedHit(event, anc, n);
+                });
+                self.hitContainer.insert(anc);
+                Effect.SlideDown(anc);
+            }
+        });
+    },
+
+    function clickedHit(self, event, node, n) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+);
+
+// vi:foldmethod=syntax
