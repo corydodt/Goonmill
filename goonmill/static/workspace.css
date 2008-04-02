@@ -171,6 +171,52 @@ a.warmText:hover {
 .constituentList {
 }
 
+.constituent {
+    width: 192px;
+    height: 41px;
+    padding: 10px;
+}
+
+.constituentName {
+    float: left;
+    font-size: 13pt;
+    padding: 2pt;
+}
+
+.constituentName, .constituentDetail {
+    font-family: Arial Black;
+    color: white;
+}
+
+.kind-stencil .constituentName, .kind-stencil .constituentDetail {
+    color: black;
+}
+
+.kind-encounter .constituentName { 
+    font-size: 11pt;
+}
+
+.constituentDetail {
+    float: left;
+    position: relative;
+    top: 9pt;
+    font-size: x-small;
+}
+
+.kind-npc, .kind-monsterGroup { background-image: url(/static/box-concrete.png); }
+div.kind-npc:hover, div.kind-monsterGroup:hover { background-image: url(/static/box-concrete-sel.png); }
+.kind-encounter { background-image: url(/static/encounter.png); }
+div.kind-encounter:hover { background-image: url(/static/encounter-sel.png); }
+.kind-stencil { background-image: url(/static/box-stencil.png); }
+div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
+
+.closingX { 
+    float: right;
+    height: 16px;
+    width: 16px;
+    background-image: url(/static/closing-x.png);
+}
+
 .search {
 }
 
