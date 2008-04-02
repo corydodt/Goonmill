@@ -4,7 +4,7 @@
     "constituent"><n:attr name=
     "class">constituent <n:slot name=
     "constituentKind" /></n:attr>
-    <span alt="close" class=
+    <span class=
       "closingX"><n:attr name=
       "title"><n:slot name=
       "closingXTitle" /></n:attr></span>
