@@ -155,7 +155,7 @@
 .workspaceTitle {
     font-size: 28pt;
     color: white;
-    font-family: Arial Black;
+    font-family: "Arial Black";
     padding: 10pt;
 }
 
@@ -183,7 +183,7 @@ a.warmText:hover {
     float: left;
     font-size: 13pt;
     padding: 2pt;
-    font-family: Arial Black;
+    font-family: "Arial Black";
 }
 
 .constituentName, .constituentDetail {
@@ -228,7 +228,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 [name=searchTerms] {
-   width: 18em;
+   width: 150pt;
 }
 
 [name=searchTerms].defaultText {
