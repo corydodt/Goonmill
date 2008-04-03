@@ -61,7 +61,7 @@
 
 .x1 {
     float: left;
-    width: 200pt;
+    width: 240px;
     height: 100%;
 }
 
@@ -70,7 +70,7 @@
     position: absolute;
     top: 0px;
     right: 0px;
-    left: 200pt;
+    left: 240px;
     height: 100%;
     margin-left: 10px;
     border-left: 2px solid #a87675;
@@ -88,8 +88,8 @@
     float: left; 
     position: absolute;
     top: 0px;
-    bottom: 130pt;
-    width: 200pt;
+    bottom: 240px;
+    width: 240px;
     border-bottom: 2px solid #a87675;
 }
 
@@ -97,8 +97,8 @@
     float: left;
     clear: left;
     position: absolute;
-    width: 200pt;
-    height: 130pt;
+    width: 240px;
+    height: 240px;
     bottom: 0px;
 }
 
@@ -108,7 +108,7 @@
     top: 0px;
     right: 0px;
     left: 0px;
-    height: 18pt;
+    height: 29px;
 }
 
 .x2-2 {
@@ -116,7 +116,7 @@
     float: left;
     clear: left;
     position: absolute;
-    top: 18pt;
+    top: 29px;
     bottom: 0px;
     right: 0px;
     left: 0px;
@@ -127,17 +127,17 @@
     float: left;
     position: absolute;
     top: 0px;
-    height: 55px;
+    height: 64px;
     right: 0px;
     left: 0px;
 }
 
 .x2-2-1x {
     background-image: url(/static/field-header.png);
-    background-position: -200pt;
+    background-position: -240px;
     position: absolute;
     top: 10px;
-    height: 55px;
+    height: 64px;
     right: 0px;
     left: 0px;
 }
@@ -146,7 +146,7 @@
     float: left;
     clear: left;
     position: absolute;
-    top: 40pt;
+    top: 64px;
     bottom: 0px;
     right: 0px;
     left: 0px;
@@ -228,7 +228,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 [name=searchTerms] {
-   width: 150pt;
+   width: 150px;
 }
 
 [name=searchTerms].defaultText {
@@ -238,8 +238,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 
 [name=advancedButton] {
      position: absolute;
-     bottom: 2pt;
-     right: 2pt;
+     bottom: 4px;
+     right: 4px;
 }
 
 .hit {
