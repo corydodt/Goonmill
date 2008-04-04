@@ -275,7 +275,7 @@ Goonmill.BasicSearch.methods(
     function clickedHit(self, event, node, n) {
         event.stopPropagation();
         event.preventDefault();
-        Goonmill.Modal(node.innerHTML + ' ' + n);
+        Goonmill.messageBox(node.innerHTML + ' ' + n);
     }
 );
 
@@ -283,21 +283,37 @@ Goonmill.BasicSearch.methods(
 var LightboxConfig = Class.create({
 opacity:0.7,
 fade:true, 
-fadeDuration: 0.7,
+fadeDuration: 0.4,
 initialize: function() {},
 beforeClose: function() { throw $break; }
 });
 
-Goonmill.Modal = function (node) {
-    // copy the content of node into a modal dialog (lightbox)
-    var config = new LightboxConfig();
-    if (node.innerHTML !== undefined) {
-        config.contents = node.innerHTML;
-    } else {
-        config.contents = '<span>' + node + '</span>';
+// display any node or string as a message
+Goonmill.messageBox = function (node) {
+    if (node.innerHTML === undefined) {
+        node = new Element('span').update(node);
     }
-    var closer = '<div><a href="javascript:void(0)" onclick="Control.Modal.current.close(true)">Close</a></div>';
-    config.contents = config.contents + closer;
+
+    // add a closing box always
+    var hr = new Element('hr');
+    var close = new Element('input', {type: 'button', value: 'close'});
+    close.observe('click', function() { Control.Modal.current.close(true) } );
+
+    var contents = $A([node, hr, close]);
+    var m = Goonmill.Modal(contents);
+
+    return m;
+}
+
+// copy the contents into a modal dialog (lightbox)
+Goonmill.Modal = function (contents, extraOptions) {
+    var config = new LightboxConfig();
+    if (extraOptions !== undefined) {
+        for (attr in extraOptions) {
+            config[attr] = extraOptions[attr];
+        }
+    }
+    config.contents = '<span>__ignored__</span>';
 
     // kludge .. hide all embedded stuff when showing the modal
     var embeds = document.documentElement.select('embed');
@@ -315,7 +331,67 @@ Goonmill.Modal = function (node) {
 
     var modal = new Control.Modal(null, config);
     modal.open();
+    modal.update(contents);
+
     return modal;
 }
 
-// vi:foldmethod=syntax
+
+// display message.  return 1 for button1text clicked, 2 for button2text
+Goonmill.confirm = function (message, button1text, button2text) {
+    // copy the content of node into a modal dialog (lightbox)
+    var message = new Element('span').update(message);
+    var button1 = new Element('input', {type:'button', value:button1text});
+    var button2 = new Element('input', {type:'button', value:button2text});
+
+    var d = new Divmod.Defer.Deferred(); 
+    var f1 = (function (d) { 
+            return function() { Control.Modal.current.close(true); d.callback(1) }
+    })(d);
+    var f2 = (function (d) { 
+            return function() { Control.Modal.current.close(true); d.callback(2) } 
+    })(d);
+    button1.observe('click', f1);
+    button2.observe('click', f2);
+
+    var contents = $A([message, new Element('hr'), button1, button2]);
+            
+    var m = Goonmill.Modal(contents);
+
+    return d;
+}
+
+
+Goonmill.ConstituentList = Widget.subclass('Goonmill.ConstituentList');
+Goonmill.ConstituentList.methods(
+    function __init__(self, node) {
+        Goonmill.ConstituentList.upcall(self, '__init__', node);
+        // make all closing x's clickable
+        node.select('.constituent').each(function (n) {
+            var f = (function (n) {
+                    return function (event) { self.removeConstituent(n); }
+                })(n);
+            n.select('.closingX')[0].observe('click', f);
+        });
+    }, 
+
+    // throw the given constituent out of the workspace
+    function removeConstituent(self, node) {
+        var id = parseInt(node.readAttribute('rel'));
+        var args = {name: node.select('.constituentName')[0].innerHTML};
+        var d = Goonmill.confirm('Really delete #{name}?'.interpolate(args), 
+                'delete', 'whoops no');
+        d.addCallback(function (button) {
+            if (button == 1) {
+                d = self.callRemote('removeConstituent', id);
+                d.addCallback(function (r) {
+                    f = (function (node) { return function(obj) { node.remove() } })(node);
+                    Effect.Fade(node, {afterFinish: f});
+                });
+                return d;
+            }
+        });
+    }
+);
+
+// vim:set foldmethod=syntax:set smartindent:

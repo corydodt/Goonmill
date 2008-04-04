@@ -113,10 +113,15 @@ class WorkspacePage(athena.LivePage):
         title = WorkspaceTitle(self.workspace)
         title.setFragmentParent(self)
         ctx.tag.fillSlots('titleEdit', title)
-        ctx.tag.fillSlots('constituentList', ConstituentList(self.workspace))
+
+        cl = ConstituentList(self.workspace)
+        cl.setFragmentParent(self)
+        ctx.tag.fillSlots('constituentList', cl)
+
         search = BasicSearch()
         search.setFragmentParent(self)
         ctx.tag.fillSlots('basicSearch', search)
+
         return ctx.tag
 
 
@@ -256,8 +261,9 @@ def trunc(s, n):
     return s
 
 
-class ConstituentList(page.Element):
+class ConstituentList(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/ConstituentList'))
+    jsClass = u'Goonmill.ConstituentList'
 
     def __init__(self, workspace, *a, **kw):
         page.Element.__init__(self, *a, **kw)
@@ -276,8 +282,23 @@ class ConstituentList(page.Element):
                 pat.fillSlots('closingXTitle', 'Delete')
             pat.fillSlots('constituentName', trunc(c.name, 14))
             pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 14))
+            pat.fillSlots('constituentId', c.id)
             tag[pat]
         return tag
+
+    @athena.expose
+    def removeConstituent(self, id):
+        from .user import theStore, Constituent as C
+        constituent = theStore.get(C, id)
+        assert constituent in self.workspace.constituents
+
+        if constituent.isLibraryKind(): 
+            constituent.workspaceId = None
+        else:
+            theStore.remove(constituent)
+        theStore.commit()
+        return u'removed'
+        
         
 
 class BasicSearch(athena.LiveElement):

@@ -90,14 +90,17 @@ Workspace.constituents = locals.ReferenceSet(
         Constituent.workspaceId,
         Constituent.id)
 
+# the global store object. yay, global mutable state!
+theStore = None
+
 
 def userDatabase():
     """Give a user database"""
     import goonmill.user as this
-    if hasattr(this, 'store'):
+    if theStore is not None:
         raise RuntimeError("Already created a db store")
     db = locals.create_database('sqlite:///' + RESOURCE('user.db'))
-    store = locals.Store(db)
-    this.theStore = store
-    return store
+    global theStore
+    theStore = locals.Store(db)
+    return theStore
 
