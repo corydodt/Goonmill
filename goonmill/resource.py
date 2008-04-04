@@ -249,6 +249,7 @@ def trunc(s, n):
     """
     s, truncated to n, with "..."
     """
+    assert n >= 4
     if len(s) > n:
         s = s[:n-3]
         return s + '...'
