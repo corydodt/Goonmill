@@ -260,11 +260,10 @@ Goonmill.BasicSearch.methods(
                 sub.update(hit[1] + '%');
                 anc.insert(sub, {position: 'bottom'});
                 anc.hide()
-                // sigh, closures in javascript suck.
-                var f = (function (anc, n) { 
-                    return function (event) { self.clickedHit(event, anc, n) } 
-                })(anc, n);
-                anc.observe('click', f);
+                // closures in javascript, feh
+                anc.observe('click', (function (anc, n, event) { 
+                        self.clickedHit(event, anc, n)
+                }).curry(anc, n));
                 self.hitContainer.insert(anc);
                 Effect.SlideDown(anc);
             }
@@ -337,7 +336,8 @@ Goonmill.Modal = function (contents, extraOptions) {
 }
 
 
-// display message.  return 1 for button1text clicked, 2 for button2text
+// display message.  return a deferred that will fire with the number of the
+// clicked button.
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
     var message = new Element('span').update(message);
@@ -345,12 +345,8 @@ Goonmill.confirm = function (message, button1text, button2text) {
     var button2 = new Element('input', {type:'button', value:button2text});
 
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = (function (d) { 
-            return function() { Control.Modal.current.close(true); d.callback(1) }
-    })(d);
-    var f2 = (function (d) { 
-            return function() { Control.Modal.current.close(true); d.callback(2) } 
-    })(d);
+    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
+    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2) }).curry(d);
     button1.observe('click', f1);
     button2.observe('click', f2);
 
@@ -368,10 +364,9 @@ Goonmill.ConstituentList.methods(
         Goonmill.ConstituentList.upcall(self, '__init__', node);
         // make all closing x's clickable
         node.select('.constituent').each(function (n) {
-            var f = (function (n) {
-                    return function (event) { self.removeConstituent(n); }
-                })(n);
-            n.select('.closingX')[0].observe('click', f);
+            n.select('.closingX')[0].observe('click', (function (n, event) {
+                self.removeConstituent(n);
+            }).curry(n));
         });
     }, 
 
@@ -385,8 +380,7 @@ Goonmill.ConstituentList.methods(
             if (button == 1) {
                 d = self.callRemote('removeConstituent', id);
                 d.addCallback(function (r) {
-                    f = (function (node) { return function(obj) { node.remove() } })(node);
-                    Effect.Fade(node, {afterFinish: f});
+                    Effect.Fade(node, {afterFinish: (function(n) { n.remove() }).curry(node)});
                 });
                 return d;
             }
