@@ -21,7 +21,7 @@ trap killTwistd EXIT
 [ -e ./options.local ] && source ./options.local
 twistdOptions=${twistdOptions:--n --pidfile goonmill.pid}
 goonmillOptions=${goonmillOptions:---dev}
-dnotifyOptions=${dnotifyOptions:--M $(./sourceFiles)}
+inotifyOptions=${inotifyOptions:--e modify $(find . -name '*.py')}
 
 safeTty() {
     tty="`tty`"
@@ -43,7 +43,6 @@ while true; do
   # doesn't work.
   echo RUNNING
   twistd ${twistdOptions} goonmill ${goonmillOptions} <"`safeTty`" &
-  # and dnotify blocks waiting for anything to change...
-  dnotify --once --queue=1 ${dnotifyOptions} -e echo MODIFIED: "{}"
+  inotifywait ${inotifyOptions}
 done
-
+ 
