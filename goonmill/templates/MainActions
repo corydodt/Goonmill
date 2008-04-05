@@ -1,0 +1,11 @@
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" n:render="liveElement"
+  class="mainActions">
+
+  <a rev="npc" href="javascript:void(0)">New NPC</a> &#160;|&#160;
+  <a rev="monsterGroup" href="javascript:void(0)">New Monster Group</a> &#160;|&#160;
+  <a rev="stencil" href="javascript:void(0)">New Stencil</a> &#160;|&#160;
+  <a rev="encounter" href="javascript:void(0)">New Encounter</a>
+
+<!-- vi:ft=html
+-->
+</div>

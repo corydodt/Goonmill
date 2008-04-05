@@ -388,4 +388,40 @@ Goonmill.ConstituentList.methods(
     }
 );
 
+
+Goonmill.MainActions = Widget.subclass('Goonmill.MainActions');
+Goonmill.MainActions.methods(
+    function __init__(self, node) {
+        Goonmill.MainActions.upcall(self, '__init__', node);
+        node.select('[rev=npc]')[0].observe('click', function (event) {
+            self.newNPCClicked()
+        });
+        node.select('[rev=monsterGroup]')[0].observe('click', function (event) {
+            self.newMonsterGroupClicked()
+        });
+        node.select('[rev=stencil]')[0].observe('click', function (event) {
+            self.newStencilClicked()
+        });
+        node.select('[rev=encounter]')[0].observe('click', function (event) {
+            self.newEncounterClicked()
+        });
+    },
+
+    function newNPCClicked(self, event) {
+        Goonmill.messageBox('new npc');
+    },
+
+    function newMonsterGroupClicked(self, event) {
+        Goonmill.messageBox('new monster group');
+    },
+
+    function newStencilClicked(self, event) {
+        Goonmill.messageBox('new stencil');
+    },
+
+    function newEncounterClicked(self, event) {
+        Goonmill.messageBox('new encounter');
+    }
+);
+
 // vim:set foldmethod=syntax:set smartindent:

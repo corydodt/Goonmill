@@ -247,6 +247,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 .mainActions {
+    float: right;
+    padding-right: 7px;
 }
 
 .itemView {

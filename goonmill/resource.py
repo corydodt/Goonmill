@@ -99,7 +99,7 @@ def guardedWrapper(realm, checkers):
 
 class WorkspacePage(athena.LivePage):
     """
-    The entire workspace area, where the users spends most of his time
+    The entire workspace area, where the user spends most of his time
     """
     docFactory = loaders.xmlfile(RESOURCE('templates/workspace.xhtml'))
     addSlash = 1
@@ -121,6 +121,10 @@ class WorkspacePage(athena.LivePage):
         search = BasicSearch()
         search.setFragmentParent(self)
         ctx.tag.fillSlots('basicSearch', search)
+
+        mainActions = MainActions()
+        mainActions.setFragmentParent(self)
+        ctx.tag.fillSlots('mainActions', mainActions)
 
         return ctx.tag
 
@@ -299,7 +303,14 @@ class ConstituentList(athena.LiveElement):
         theStore.commit()
         return u'removed'
         
-        
+
+class MainActions(athena.LiveElement):
+    """
+    The links in the top-left bar that create new things.
+    """
+    jsClass = u'Goonmill.MainActions'
+    docFactory = loaders.xmlfile(RESOURCE('templates/MainActions'))
+    
 
 class BasicSearch(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/BasicSearch'))
