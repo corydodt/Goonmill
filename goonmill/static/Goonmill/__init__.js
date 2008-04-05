@@ -372,13 +372,13 @@ Goonmill.ConstituentList.methods(
 
     // throw the given constituent out of the workspace
     function removeConstituent(self, node) {
-        var id = parseInt(node.readAttribute('rel'));
         var args = {name: node.select('.constituentName')[0].innerHTML};
         var d = Goonmill.confirm('Really delete #{name}?'.interpolate(args), 
                 'delete', 'whoops no');
         d.addCallback(function (button) {
             if (button == 1) {
-                d = self.callRemote('removeConstituent', id);
+                var id = parseInt(node.readAttribute('rel'));
+                var d = self.callRemote('removeConstituent', id);
                 d.addCallback(function (r) {
                     Effect.Fade(node, {afterFinish: (function(n) { n.remove() }).curry(node)});
                 });
