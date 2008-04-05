@@ -456,6 +456,10 @@ Goonmill.EventBus.methods(
         Goonmill.EventBus.upcall(self, '__init__', node);
         // for debugging
         document.observe('keypress', function (e) {
+            // ignore keypresses that take place in input[type=text]
+            var t = e.target;
+            if (t.tagName == 'INPUT' && t.type == 'text') return;
+
             if (e.keyCode == 68) { // 'd'
                 Goonmill.debugView();
             }
