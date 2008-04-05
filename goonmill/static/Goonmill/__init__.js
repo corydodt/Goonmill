@@ -424,4 +424,45 @@ Goonmill.MainActions.methods(
     }
 );
 
+
+// use this to pump events out to listeners in a pub/sub model
+Goonmill.EventBus = Widget.subclass('Goonmill.EventBus');
+Goonmill.EventBus.methods(
+    function __init__(self, node) {
+        Goonmill.EventBus.upcall(self, '__init__', node);
+        // for debugging
+        document.observe('keypress', function (e) {
+            if (e.keyCode == 68) { // 'd'
+                Goonmill.debugView();
+            }
+        });
+    }
+);
+
+// display all the widgets' top-level nodes, with hints
+Goonmill.debugView = function () {
+    var toPrint = Goonmill.findAllWidgetNodes();
+    var printNodes = toPrint.map(function (n) {
+        var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
+        return [(new Element('dt')).update(dtText),
+                (new Element('dd')).update(n.textContent)];
+    }).flatten();
+    var dl = new Element('dl');
+    // FIXME - printNodes.each should work here, but i get
+    // 'element.appendChild is not an attribute'
+    for (n=0; n<printNodes.length; n++) dl.insert(printNodes[n]);
+    Goonmill.messageBox(dl);
+}
+
+// the top-level node of every widget on the page
+Goonmill.findAllWidgetNodes = function() {
+    var ret = new Array();
+    document.documentElement.select('[id]').each(function (el) {
+        if (el.readAttribute('id').match(/^athena:/)) {
+            ret.push(el)
+        }
+    });
+    return ret;
+}
+
 // vim:set foldmethod=syntax:set smartindent:

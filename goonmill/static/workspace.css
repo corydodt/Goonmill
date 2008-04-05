@@ -260,6 +260,10 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 .itemMain {
 }
 
+.eventBus {
+    display: none;
+}
+
 /* Control.Modal styles */  #modal_container {  
 /* Control.Modal styles */      padding:5px;  
 /* Control.Modal styles */      background-color:#fff;  

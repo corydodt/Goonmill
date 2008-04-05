@@ -110,6 +110,10 @@ class WorkspacePage(athena.LivePage):
         athena.LivePage.__init__(self, *a, **kw)
 
     def render_workspace(self, ctx, data):
+        eb = EventBus()
+        eb.setFragmentParent(self)
+        ctx.tag.fillSlots('eventBus', eb)
+        
         title = WorkspaceTitle(self.workspace)
         title.setFragmentParent(self)
         ctx.tag.fillSlots('titleEdit', title)
@@ -177,6 +181,10 @@ class InvalidValueError(Exception):
 
 
 class WarmControl(athena.LiveElement):
+    """
+    A control which can be configured to be set from either the server or the
+    client, with validation and rollback on BOTH sides
+    """
     implements(IWarmControl)
 
     def init(self):
@@ -227,6 +235,9 @@ class WarmText(WarmControl):
 
 
 class WorkspaceTitle(WarmText):
+    """
+    The title of the workspace, at the top
+    """
     docFactory = loaders.xmlfile(RESOURCE('templates/WorkspaceTitle'))
 
     def __init__(self, workspace, *a, **kw):
@@ -266,6 +277,9 @@ def trunc(s, n):
 
 
 class ConstituentList(athena.LiveElement):
+    """
+    The workspace's list of constituent monsters in the center-left panel
+    """
     docFactory = loaders.xmlfile(RESOURCE('templates/ConstituentList'))
     jsClass = u'Goonmill.ConstituentList'
 
@@ -313,6 +327,9 @@ class MainActions(athena.LiveElement):
     
 
 class BasicSearch(athena.LiveElement):
+    """
+    Search widget in the lower-left corner
+    """
     docFactory = loaders.xmlfile(RESOURCE('templates/BasicSearch'))
     jsClass = u"Goonmill.BasicSearch"
 
@@ -321,3 +338,12 @@ class BasicSearch(athena.LiveElement):
         terms = searchTerms.split()
         self.lastFound = search.find(terms)
         return [(t.name, int(t.score * 100)) for t in self.lastFound]
+
+
+class EventBus(athena.LiveElement):
+    """
+    An event handler.  This simply fires events on the document element, which
+    other widgets can listen for.
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/EventBus'))
+    jsClass = u'Goonmill.EventBus'
