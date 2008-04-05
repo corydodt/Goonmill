@@ -336,8 +336,8 @@ Goonmill.Modal = function (contents, extraOptions) {
 }
 
 
-// display message.  return a deferred that will fire with the number of the
-// clicked button.
+// display message.
+// return a deferred that will fire with the number of the clicked button.
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
     var message = new Element('span').update(message);
@@ -363,10 +363,10 @@ Goonmill.ConstituentList.methods(
     function __init__(self, node) {
         Goonmill.ConstituentList.upcall(self, '__init__', node);
         // make all closing x's clickable
-        node.select('.constituent').each(function (n) {
-            n.select('.closingX')[0].observe('click', (function (n, event) {
-                self.removeConstituent(n);
-            }).curry(n));
+        node.select('.constituent').each(function (cnst) {
+            cnst.select('.closingX')[0].observe('click', (function (c, event) {
+                self.removeConstituent(c);
+            }).curry(cnst));
         });
     }, 
 
