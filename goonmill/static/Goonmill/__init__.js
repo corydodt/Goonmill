@@ -372,9 +372,33 @@ Goonmill.ConstituentList.methods(
 
     // throw the given constituent out of the workspace
     function removeConstituent(self, node) {
-        var args = {name: node.select('.constituentName')[0].innerHTML};
-        var d = Goonmill.confirm('Really delete #{name}?'.interpolate(args), 
-                'delete', 'whoops no');
+        var args = {name: node.select('.constituentName')[0].innerHTML,
+            detail: node.select('.constituentDetail')[0].innerHTML
+        };
+
+        if (node.hasClassName('kind-monsterGroup')) { 
+            var message = 'Delete the monster group #{name}, with #{detail} creatures?';
+            message = message.interpolate(args);
+            var button1 = 'delete';
+        } else if (node.hasClassName('kind-encounter')) {
+            var message = 'Delete the encounter #{name}, with #{detail} creatures?';
+            message = message.interpolate(args);
+            var button1 = 'delete';
+        } else if (node.hasClassName('kind-stencil')) {
+            var message = 'Remove stencil for #{name} from this workspace? (#{name} will remain in your user library.)'
+            message = message.interpolate(args);
+            var button1 = 'remove';
+        } else if (node.hasClassName('kind-npc')) {
+            var message = 'Remove NPC named #{name} from this workspace? (#{name} will remain in your user library.)'
+            message = message.interpolate(args);
+            var button1 = 'remove';
+        } else {
+            var message = 'ONO XX';
+            var button1 = 'ONO';
+        }
+
+
+        var d = Goonmill.confirm(message, button1, 'whoops no');
         d.addCallback(function (button) {
             if (button == 1) {
                 var id = parseInt(node.readAttribute('rel'));
