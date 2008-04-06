@@ -264,6 +264,23 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     display: none;
 }
 
+.whichNewThing {
+}
+
+.wnt-x1, .wnt-x2, .wnt-x3 {
+    float: left;
+}
+
+.wnt-x1, .wnt-x2 {
+    line-height: 130px;
+}
+
+.wnt-x2 { 
+    font-size: 114px; 
+    line-height: 130px;
+    font-family: serif;
+}
+
 /* Control.Modal styles */  #modal_container {  
 /* Control.Modal styles */      padding:5px;  
 /* Control.Modal styles */      background-color:#fff;  

@@ -255,11 +255,15 @@ Goonmill.BasicSearch.methods(
                 var hit = hits[n];
                 var anc = new Element('a', {href:'#' + n});
                 anc.addClassName('hit');
-                anc.update(hit[0] + ' ');
+                var name = new Element('span').update(hit[0]);
+                name.addClassName('hitName');
+
                 var sub = new Element('sub');
-                sub.update(hit[1] + '%');
-                anc.insert(sub, {position: 'bottom'});
+                sub.update(' ' + hit[1] + '%');
+
                 anc.hide()
+                anc.insert(name);
+                anc.insert(sub);
                 // closures in javascript, feh
                 anc.observe('click', (function (anc, n, event) { 
                         self.clickedHit(event, anc, n)
@@ -274,7 +278,16 @@ Goonmill.BasicSearch.methods(
     function clickedHit(self, event, node, n) {
         event.stopPropagation();
         event.preventDefault();
-        Goonmill.messageBox(node.innerHTML + ' ' + n);
+        var name = node.select('.hitName')[0].innerHTML;
+        var d = Goonmill.whichNewThing(name);
+        d.addCallback(function (which) {
+            if (which == 'npc') {
+                Goonmill.messageBox('new npc for ' + name);
+            } else if (which == 'monsterGroup') {
+                Goonmill.messageBox('new monster group for ' + name);
+            }
+        });
+        return d;
     }
 );
 
@@ -336,8 +349,8 @@ Goonmill.Modal = function (contents, extraOptions) {
 }
 
 
-// display message.
-// return a deferred that will fire with the number of the clicked button.
+// ask a question, then return a deferred that will fire with the number of
+// the clicked button.
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
     var message = new Element('span').update(message);
@@ -454,16 +467,19 @@ Goonmill.EventBus = Widget.subclass('Goonmill.EventBus');
 Goonmill.EventBus.methods(
     function __init__(self, node) {
         Goonmill.EventBus.upcall(self, '__init__', node);
-        // for debugging
+
+        // keyboard shortcuts!
         document.observe('keypress', function (e) {
             // ignore keypresses that take place in input[type=text]
             var t = e.target;
             if (t.tagName == 'INPUT' && t.type == 'text') return;
 
+            // for debugging
             if (e.keyCode == 68) { // 'd'
                 Goonmill.debugView();
             }
         });
+        //
     }
 );
 
@@ -492,5 +508,35 @@ Goonmill.findAllWidgetNodes = function() {
     });
     return ret;
 }
+
+Goonmill.whichNewThing = function(name) {
+    var d = new Divmod.Defer.Deferred(); 
+    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
+    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2) }).curry(d);
+
+    var tmpl = document.documentElement.select('.whichNewThing')[0];
+    tmpl = tmpl.cloneNode(true);
+
+    var nameSlot = tmpl.select('.wntName')[0];
+    nameSlot.update(nameSlot.innerHTML.interpolate({name: name}));
+
+    var button1 = tmpl.select('[name=newMonsterGroup]')[0];
+    button1.observe('click', f1);
+    var button2 = tmpl.select('[name=newNPC]')[0];
+    button2.observe('click', f2);
+    var cancel = tmpl.select('[name=cancel]')[0];
+    cancel.observe('click', function (e) { Control.Modal.current.close(true); });
+
+    var contents = $A([tmpl]);
+            
+    d.addCallback(function (button) {
+        if (button == 1) { return 'monsterGroup' }
+        else if (button == 2) { return 'npc' };
+    });
+    contents[0].show();
+    var m = Goonmill.Modal(contents);
+
+    return d;
+};
 
 // vim:set foldmethod=syntax:set smartindent:
