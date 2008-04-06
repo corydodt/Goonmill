@@ -254,7 +254,11 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 .itemView {
 }
 
-.itemHeader {
+.itemHeader .constituent {
+    float: left;
+    position: relative;
+    top: -10px;
+    left: 20px;
 }
 
 .itemMain {
@@ -279,6 +283,15 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     font-size: 114px; 
     line-height: 130px;
     font-family: serif;
+}
+
+.imageBox {
+    background-image: url(/static/image-frame.png);
+    float: right;
+    width: 80px;
+    height: 84px;
+    position: relative;
+    top: -10px;
 }
 
 /* Control.Modal styles */  #modal_container {  

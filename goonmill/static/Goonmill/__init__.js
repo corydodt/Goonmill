@@ -253,21 +253,22 @@ Goonmill.BasicSearch.methods(
             self.resetSearchInput();
             for (var n=0; n<hits.length; n++) {
                 var hit = hits[n];
-                var anc = new Element('a', {href:'#' + n});
+                var monsterId = hit[1];
+                var anc = new Element('a', {href:'#' + n, rev: monsterId});
                 anc.addClassName('hit');
                 var name = new Element('span').update(hit[0]);
                 name.addClassName('hitName');
 
                 var sub = new Element('sub');
-                sub.update(' ' + hit[1] + '%');
+                sub.update(' ' + hit[2] + '%');
 
                 anc.hide()
                 anc.insert(name);
                 anc.insert(sub);
                 // closures in javascript, feh
-                anc.observe('click', (function (anc, n, event) { 
-                        self.clickedHit(event, anc, n)
-                }).curry(anc, n));
+                anc.observe('click', (function (anc, monsterId, event) { 
+                        self.clickedHit(event, anc, monsterId)
+                }).curry(anc, monsterId));
                 self.hitContainer.insert(anc);
                 Effect.SlideDown(anc);
             }
@@ -275,16 +276,24 @@ Goonmill.BasicSearch.methods(
         return d;
     },
 
-    function clickedHit(self, event, node, n) {
+    function clickedHit(self, event, node, monsterId) {
         event.stopPropagation();
         event.preventDefault();
         var name = node.select('.hitName')[0].innerHTML;
         var d = Goonmill.whichNewThing(name);
         d.addCallback(function (which) {
             if (which == 'npc') {
-                Goonmill.messageBox('new npc for ' + name);
+                var d = self.callRemote('newNPC', monsterId);
+                d.addCallback(function (wi) {
+                    var d2 = self.addChildWidgetFromWidgetInfo(wi);
+                    return d2;
+                });
             } else if (which == 'monsterGroup') {
-                Goonmill.messageBox('new monster group for ' + name);
+                var d = self.callRemote('newMonsterGroup', monsterId);
+                d.addCallback(function (wi) {
+                    var d2 = self.addChildWidgetFromWidgetInfo(wi);
+                    return d2;
+                });
             }
         });
         return d;
@@ -533,10 +542,24 @@ Goonmill.whichNewThing = function(name) {
         if (button == 1) { return 'monsterGroup' }
         else if (button == 2) { return 'npc' };
     });
+
     contents[0].show();
     var m = Goonmill.Modal(contents);
 
     return d;
 };
+
+
+// view of a monster group in the main pane
+Goonmill.MonsterGroup = Widget.subclass('Goonmill.MonsterGroup');
+Goonmill.MonsterGroup.methods(
+    function __init__(self, node) {
+        node.hide();
+        Goonmill.MonsterGroup.upcall(self, '__init__', node);
+        var oldView = document.documentElement.select('.itemView')[0];
+        oldView.replace(node);
+        Effect.Appear(node);
+    }
+);
 
 // vim:set foldmethod=syntax:set smartindent:

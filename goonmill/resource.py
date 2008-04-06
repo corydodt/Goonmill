@@ -340,7 +340,15 @@ class BasicSearch(athena.LiveElement):
     def searched(self, searchTerms):
         terms = searchTerms.split()
         self.lastFound = search.find(terms)
-        return [(t.name, int(t.score * 100)) for t in self.lastFound]
+        return [(t.name, int(t.id), int(t.score * 100)) for t in self.lastFound]
+
+    @athena.expose
+    def newMonsterGroup(self, monsterId):
+        from .query2 import db
+        m = db.lookup(monsterId)
+        mg = MonsterGroup(m)
+        mg.setFragmentParent(self.fragmentParent)
+        return mg
 
 
 class EventBus(athena.LiveElement):
@@ -357,3 +365,20 @@ class WhichNewThing(page.Element):
     A dialog box to ask whether you want a new NPC or Monster Group
     """
     docFactory = loaders.xmlfile(RESOURCE('templates/WhichNewThing'))
+
+
+class MonsterGroup(athena.LiveElement):
+    """
+    The view of a monster group in the main page
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/MonsterGroup'))
+    jsClass = u"Goonmill.MonsterGroup"
+
+    def __init__(self, monster):
+        self.monster = monster
+        athena.LiveElement.__init__(self)
+
+    @page.renderer
+    def initialize(self, req, tag):
+        tag.fillSlots('monsterName', trunc(self.monster.name, 14))
+        return tag
