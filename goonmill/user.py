@@ -75,6 +75,20 @@ class Constituent(object):
         c.userId = workspace.userId
         c.data = 'DUMMY DATA TODO'
         c.kind = u'monsterGroup'
+        theStore.add(c)
+        theStore.commit()
+        return c
+
+    @classmethod
+    def npcFromMonster(cls, monster, workspace):
+        c = cls()
+        c.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
+        c.workspace = workspace
+        c.userId = workspace.userId
+        c.data = str(monster.name + ':DUMMY DATA TODO')
+        c.kind = u'npc'
+        theStore.add(c)
+        theStore.commit()
         return c
 
     def isLibraryKind(self):
