@@ -566,16 +566,25 @@ Goonmill.whichNewThing = function(name) {
 };
 
 
-// view of a monster group in the main pane
-Goonmill.MonsterGroup = Widget.subclass('Goonmill.MonsterGroup');
-Goonmill.MonsterGroup.methods(
+// base class of everything that replaces the main pane
+Goonmill.ItemView = Widget.subclass('Goonmill.MonsterGroup');
+Goonmill.ItemView.methods(
     function __init__(self, node) {
+        Goonmill.ItemView.upcall(self, '__init__', node);
         node.hide();
-        Goonmill.MonsterGroup.upcall(self, '__init__', node);
         var oldView = document.documentElement.select('.itemView')[0];
         oldView.replace(node);
         Effect.Appear(node);
     }
 );
+
+
+// view of a monster group in the main pane
+Goonmill.MonsterGroup = Goonmill.ItemView.subclass('Goonmill.MonsterGroup');
+
+
+// view of an npc in the main pane
+Goonmill.NPC = Goonmill.ItemView.subclass('Goonmill.NPC');
+
 
 // vim:set foldmethod=syntax:set smartindent:
