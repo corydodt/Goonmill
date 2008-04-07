@@ -14,7 +14,7 @@ from twisted.cred.credentials import IAnonymous
 from twisted.cred.checkers import AllowAnonymousAccess
 
 from .util import RESOURCE
-from .user import Workspace
+from .user import Workspace, Constituent
 from . import search
 
 class Root(rend.Page):
@@ -124,7 +124,7 @@ class WorkspacePage(athena.LivePage):
 
         self.constituentList = cl
 
-        search = BasicSearch()
+        search = BasicSearch(self.workspace)
         search.setFragmentParent(self)
         ctx.tag.fillSlots('basicSearch', search)
 
@@ -289,7 +289,7 @@ class ConstituentList(athena.LiveElement):
     jsClass = u'Goonmill.ConstituentList'
 
     def __init__(self, workspace, *a, **kw):
-        page.Element.__init__(self, *a, **kw)
+        athena.LiveElement.__init__(self, *a, **kw)
         self.workspace = workspace
 
     @page.renderer
@@ -311,8 +311,8 @@ class ConstituentList(athena.LiveElement):
 
     @athena.expose
     def removeConstituent(self, id):
-        from .user import theStore, Constituent as C
-        constituent = theStore.get(C, id)
+        from .user import theStore
+        constituent = theStore.get(Constituent, id)
         assert constituent in self.workspace.constituents
 
         if constituent.isLibraryKind(): 
@@ -322,21 +322,25 @@ class ConstituentList(athena.LiveElement):
         theStore.commit()
         return u'removed'
 
-    def addMonsterGroup(self, monster):
+    def addMonsterGroup(self, constituent):
         """
-        Create a constituent in the database, for this monster group, based on
-        this monster.  Then tell the client to render one.
+        Tell the client to render a monster group in this list
         """
-        from .user import theStore, Constituent
-        c = Constituent.monsterGroupFromMonster(monster, self.workspace)
-        theStore.add(c)
-        theStore.commit()
-
         kind = u'monsterGroup'
-        name = trunc(c.name, 14)
-        detail = c.briefDetail()
+        name = trunc(constituent.name, 14)
+        detail = constituent.briefDetail()
 
-        return self.callRemote("addConstituent", kind, c.id, name, detail)
+        return self.callRemote("addConstituent", kind, constituent.id, name, detail)
+
+    def addNPC(self, constituent):
+        """
+        Tell the client to render an npc in this list
+        """
+        kind = u'npc'
+        name = trunc(constituent.name, 14)
+        detail = constituent.briefDetail()
+
+        return self.callRemote("addConstituent", kind, constituent.id, name, detail)
 
 
 class MainActions(athena.LiveElement):
@@ -354,6 +358,10 @@ class BasicSearch(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/BasicSearch'))
     jsClass = u"Goonmill.BasicSearch"
 
+    def __init__(self, workspace):
+        self.workspace = workspace
+        athena.LiveElement.__init__(self)
+
     @athena.expose
     def searched(self, searchTerms):
         terms = searchTerms.split()
@@ -362,11 +370,27 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def newMonsterGroup(self, stencilId):
-        mg = MonsterGroup(stencilId)
-        m = mg.monster
+        from .query2 import db
+        m = db.lookup(stencilId)
+        c = Constituent.monsterGroupFromMonster(m, self.workspace)
+        mg = MonsterGroup(c)
         mg.setFragmentParent(self.fragmentParent)
-        d = self.fragmentParent.constituentList.addMonsterGroup(m)
+
+        d = self.fragmentParent.constituentList.addMonsterGroup(c)
         d.addCallback(lambda _: mg)
+        return d
+
+    @athena.expose
+    def newNPC(self, stencilId):
+        from .query2 import db
+        m = db.lookup(stencilId)
+        c = Constituent.npcFromMonster(m, self.workspace)
+
+        npc = NPC(c)
+        npc.setFragmentParent(self.fragmentParent)
+
+        d = self.fragmentParent.constituentList.addNPC(c)
+        d.addCallback(lambda _: npc)
         return d
 
 
@@ -393,12 +417,28 @@ class MonsterGroup(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/MonsterGroup'))
     jsClass = u"Goonmill.MonsterGroup"
 
-    def __init__(self, stencilId):
-        from .query2 import db
-        self.monster = db.lookup(stencilId)
+    def __init__(self, constituent):
+        self.constituent = constituent
         athena.LiveElement.__init__(self)
 
     @page.renderer
     def initialize(self, req, tag):
-        tag.fillSlots('monsterName', trunc(self.monster.name, 14))
+        tag.fillSlots('monsterName', trunc(self.constituent.name, 14))
+        return tag
+
+
+class NPC(athena.LiveElement):
+    """
+    The view of an npc in the main page
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/NPC'))
+    jsClass = u"Goonmill.NPC"
+
+    def __init__(self, constituent):
+        self.constituent = constituent
+        athena.LiveElement.__init__(self)
+
+    @page.renderer
+    def initialize(self, req, tag):
+        tag.fillSlots('monsterName', trunc(self.constituent.name, 14))
         return tag

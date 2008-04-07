@@ -1,0 +1,16 @@
+<div class="x2-2 itemView" xmlns:n="http://nevow.com/ns/nevow/0.1"
+  n:render="liveElement">
+  <n:invisible n:render="initialize">
+    <div class="x2-2-1">
+      <div class="x2-2-1x itemHeader">
+        <div class="personalName">FIXME</div>
+        <div class="constituent kind-npc">
+          <span class="constituentName"><n:slot name="monsterName" /></span>
+        </div>
+        <div class="imageBox" />
+      </div>
+    </div>
+    <div class="x2-2-2 itemMain" />
+  </n:invisible>
+</div>
+<!-- vim:set ft=html: -->
