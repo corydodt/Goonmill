@@ -6,8 +6,7 @@
         <div class="constituent kind-monsterGroup">
           <span class="constituentName"><n:slot name="monsterName" /></span>
         </div>
-        <!-- <div class="constituentGroupName"><n:slot name="constituentGroupName"
-          /></div> -->
+        <div class="constituentGroupName">FIXME</div>
         <div class="imageBox" />
       </div>
     </div>
