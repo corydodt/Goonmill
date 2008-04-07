@@ -113,7 +113,7 @@ class WorkspacePage(athena.LivePage):
         eb = EventBus()
         eb.setFragmentParent(self)
         ctx.tag.fillSlots('eventBus', eb)
-        
+
         title = WorkspaceTitle(self.workspace)
         title.setFragmentParent(self)
         ctx.tag.fillSlots('titleEdit', title)
@@ -121,6 +121,8 @@ class WorkspacePage(athena.LivePage):
         cl = ConstituentList(self.workspace)
         cl.setFragmentParent(self)
         ctx.tag.fillSlots('constituentList', cl)
+
+        self.constituentList = cl
 
         search = BasicSearch()
         search.setFragmentParent(self)
@@ -319,7 +321,23 @@ class ConstituentList(athena.LiveElement):
             theStore.remove(constituent)
         theStore.commit()
         return u'removed'
-        
+
+    def addMonsterGroup(self, monster):
+        """
+        Create a constituent in the database, for this monster group, based on
+        this monster.  Then tell the client to render one.
+        """
+        from .user import theStore, Constituent
+        c = Constituent.monsterGroupFromMonster(monster, self.workspace)
+        theStore.add(c)
+        theStore.commit()
+
+        kind = u'monsterGroup'
+        name = trunc(c.name, 14)
+        detail = c.briefDetail()
+
+        return self.callRemote("addConstituent", kind, c.id, name, detail)
+
 
 class MainActions(athena.LiveElement):
     """
@@ -343,12 +361,13 @@ class BasicSearch(athena.LiveElement):
         return [(t.name, int(t.id), int(t.score * 100)) for t in self.lastFound]
 
     @athena.expose
-    def newMonsterGroup(self, monsterId):
-        from .query2 import db
-        m = db.lookup(monsterId)
-        mg = MonsterGroup(m)
+    def newMonsterGroup(self, stencilId):
+        mg = MonsterGroup(stencilId)
+        m = mg.monster
         mg.setFragmentParent(self.fragmentParent)
-        return mg
+        d = self.fragmentParent.constituentList.addMonsterGroup(m)
+        d.addCallback(lambda _: mg)
+        return d
 
 
 class EventBus(athena.LiveElement):
@@ -374,8 +393,9 @@ class MonsterGroup(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/MonsterGroup'))
     jsClass = u"Goonmill.MonsterGroup"
 
-    def __init__(self, monster):
-        self.monster = monster
+    def __init__(self, stencilId):
+        from .query2 import db
+        self.monster = db.lookup(stencilId)
         athena.LiveElement.__init__(self)
 
     @page.renderer

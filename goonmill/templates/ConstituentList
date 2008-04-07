@@ -1,5 +1,14 @@
 <div xmlns:n="http://nevow.com/ns/nevow/0.1" class=
   "constituentList" n:render="liveElement">
+
+  <!-- the platonic ideal constituent - for use by addStencil, addNPC etc. -->
+  <div style="display:none" class="template constituent kind-#{kind}" rel="#{constituentId}">
+    <span class="closingX" title="#{closingXTitle}"></span>
+    <span class="constituentName">#{constituentName}</span>
+    <span class="constituentDetail">#{constituentDetail}</span>
+    <div style="float: left; clear: both;" />
+  </div>
+
   <n:invisible n:render="init">
   <div n:pattern=
     "constituent"><n:attr name=

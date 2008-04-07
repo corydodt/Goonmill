@@ -53,8 +53,7 @@ class Constituent(object):
     userId = locals.Int()
 
     workspaceId = locals.Int()
-    # may not need:
-    # workspace = locals.Reference(workspaceId, Workspace.id)
+    workspace = locals.Reference(workspaceId, Workspace.id)
 
     # store a (pickle?) here of the object that is the
     # constituent.
@@ -66,6 +65,17 @@ class Constituent(object):
 
     # here we probably also need some other tidbits needed to
     # display it.  for monster group, a count?  for any, an image?
+
+
+    @classmethod
+    def monsterGroupFromMonster(cls, monster, workspace):
+        c = cls()
+        c.name = monster.name
+        c.workspace = workspace
+        c.userId = workspace.userId
+        c.data = 'DUMMY DATA TODO'
+        c.kind = u'monsterGroup'
+        return c
 
     def isLibraryKind(self):
         """

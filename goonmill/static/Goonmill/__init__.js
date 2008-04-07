@@ -431,6 +431,22 @@ Goonmill.ConstituentList.methods(
                 return d;
             }
         });
+    },
+
+    function addConstituent(self, kind, id, name, detail) {
+        var listItem = self.node.select('.template')[0].cloneNode(true);
+        listItem.removeClassName('template');
+        listItem.className = listItem.className.interpolate({kind: kind});
+        listItem.setAttribute('rel', id);
+        listItem.select('.closingX')[0].setAttribute('title', 'FIXME'); // FIXME
+        listItem.select('.constituentName')[0].update(name);
+        listItem.select('.constituentDetail')[0].update(detail);
+        self.node.insert(listItem);
+        listItem.select('.closingX')[0].observe('click', function (event) {
+            self.removeConstituent(listItem);
+        });
+        Effect.Appear(listItem);
+        return null;
     }
 );
 
