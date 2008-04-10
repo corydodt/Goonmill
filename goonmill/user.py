@@ -5,13 +5,21 @@ from storm import locals
 
 from .util import RESOURCE
 
+from zope.interface import Interface, implements, Attribute
+from twisted.python.components import registerAdapter
+
+
+KIND_MONSTERGROUP = u'monsterGroup'
+KIND_NPC = u'npc'
+KIND_STENCIL = u'stencil'
+KIND_ENCOUNTER = u'encounter'
 
 class User(object):
     """A User"""
     __storm_table__ = 'user'
     id = locals.Int(primary=True)                #
     name = locals.Unicode()
-    password = locals.Unicode()
+    passwordHash = locals.Unicode()
     cookie = locals.Unicode()
 
 
@@ -34,59 +42,64 @@ class Workspace(object):
 User.workspaces = locals.ReferenceSet(
         User.id,
         Workspace.userId,
-        Workspace.id)
+)
 
+
+class IRealConstituent(Interface):
+    """
+    The inner monster or encounter or whatever of a constituent
+    """
+
+
+# Major FIXME - when an NPC or Stencil is found on more than one workspace,
+# it should be a singleton.  As currently designed, all constituents are
+# separate by workspace, meaning there are differing clones of NPC everywhere.
+# Possible solution: make a glue table between workspace and constituent
 
 class Constituent(object):
     """
     An item that can be found in a workspace, i.e. monster group,
     npc, encounter, or stencil
     """
+    implements(IRealConstituent)
+
     __storm_table__ = 'constituent'
     id = locals.Int(primary=True)
-    name = locals.Unicode()
-
-    # kind is u'monster group', u'npc', u'encounter', or
-    # u'stencil'
-    kind = locals.Unicode()
-
-    userId = locals.Int()
-
-    workspaceId = locals.Int()
+    name = locals.Unicode() # Alias, or personal name, not monster name
+    base = locals.Int() # Id of some base monster; None for encounter/stencil
+    otherId = locals.Int() # Reference to some other table (monsterGroup, npc, stencil, encounter) resolved by the adapter
+    kind = locals.Unicode() # is monsterGroup, npc, encounter or stencil
+    userId = locals.Int() # the user owning this
+    workspaceId = locals.Int() # the workspace this is found on
     workspace = locals.Reference(workspaceId, Workspace.id)
-
-    # store a (pickle?) here of the object that is the
-    # constituent.
-    # use adapters later to produce das Ding an Sich
-    data = locals.RawStr()
-
-    # here we probably eventually need a search-findable form of
-    # the data
-
-    # here we probably also need some other tidbits needed to
-    # display it.  for monster group, a count?  for any, an image?
-
+    # we need a search-findable form of the data as an attribute (?)
+    # image = locals.Unicode()
 
     @classmethod
-    def monsterGroupFromMonster(cls, monster, workspace):
+    def monsterGroupKind(cls, monster, count, workspace):
+        """
+        Return a Constituent instance that is configured as a monsterGroup
+        (c.kind=monsterGroup and c.data is a json-ized
+        goonmill.user.MonsterGroup)
+        """
         c = cls()
         c.name = monster.name
         c.workspace = workspace
         c.userId = workspace.userId
         c.data = 'DUMMY DATA TODO'
-        c.kind = u'monsterGroup'
+        c.kind = KIND_MONSTERGROUP
         theStore.add(c)
         theStore.commit()
         return c
 
     @classmethod
-    def npcFromMonster(cls, monster, workspace):
+    def npcKind(cls, monster, workspace):
         c = cls()
         c.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
         c.workspace = workspace
         c.userId = workspace.userId
         c.data = str(monster.name + ':DUMMY DATA TODO')
-        c.kind = u'npc'
+        c.kind = KIND_NPC
         theStore.add(c)
         theStore.commit()
         return c
@@ -96,23 +109,96 @@ class Constituent(object):
         Is this the kind of constituent that can appear in the user's
         permanent library?
         """
-        return self.kind not in ['monsterGroup', 'encounter']
+        return self.kind not in [KIND_MONSTERGROUP, KIND_ENCOUNTER]
 
     def briefDetail(self):
         """
         The text for brief details about the creature (i.e. count or NPC
         stats)
         """
-        if self.kind == 'monsterGroup':
-            return u'n'
-        elif self.kind == 'npc':
-            return u'clsN / clsM / ...'
-        return u''
+        return self.fuckComponentArchitecture().briefDetail()
+
+    def fuckComponentArchitecture(self):
+        kind = self.kind
+        if kind == KIND_MONSTERGROUP:
+            return theStore.get(MonsterGroup, self.otherId)
+        elif kind == KIND_NPC:
+            return theStore.get(NPC, self.otherId)
+        elif kind == KIND_STENCIL:
+            return theStore.get(Stencil, self.otherId)
+        elif kind == KIND_ENCOUNTER:
+            return theStore.get(Encounter, self.otherId)
+
 
 Workspace.constituents = locals.ReferenceSet(
         Workspace.id,
         Constituent.workspaceId,
-        Constituent.id)
+)
+
+
+class MonsterGroup(object):
+    """
+    A group of monsters of the same kind
+    """
+    __storm_table__ = 'monsterGroup'
+    id = locals.Int(primary=True)
+
+    def briefDetail(self):
+        return str(len(list(self.groupies)))
+
+
+class Stencil(object):
+    """
+    A monster stencil, used as the base for other monsters
+    """
+    __storm_table__ = 'stencil'
+    id = locals.Int(primary=True)
+
+    def briefDetail(self):
+        return u''
+
+
+class Encounter(object):
+    """
+    A group of monsters of the same kind
+    """
+    __storm_table__ = 'encounter'
+    id = locals.Int(primary=True)
+
+    def briefDetail(self):
+        return u''
+
+
+class Groupie(object):
+    """
+    A single monster in a monster group
+    """
+    __storm_table__ = 'groupie'
+    id = locals.Int(primary=True)
+    monsterGroupId = locals.Int()
+    gear = locals.Unicode()
+    spells = locals.Unicode()
+
+
+MonsterGroup.groupies = locals.ReferenceSet(
+        MonsterGroup.id,
+        Groupie.monsterGroupId,
+)
+
+
+class NPC(object):
+    """
+    One of those NPC guys
+    """
+    __storm_table__ = 'npc'
+    id = locals.Int(primary=True)
+    classes = locals.Unicode()
+    gear = locals.Unicode()
+    spells = locals.Unicode()
+
+    def briefDetail(self):
+        return self.classes
+
 
 # the global store object. yay, global mutable state!
 theStore = None
@@ -121,10 +207,10 @@ theStore = None
 def userDatabase():
     """Give a user database"""
     import goonmill.user as this
+    global theStore
     if theStore is not None:
         raise RuntimeError("Already created a db store")
     db = locals.create_database('sqlite:///' + RESOURCE('user.db'))
-    global theStore
     theStore = locals.Store(db)
     return theStore
 

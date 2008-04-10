@@ -17,10 +17,40 @@ CREATE TABLE workspace (
 CREATE TABLE constituent (
     id INTEGER PRIMARY KEY,
     name varchar(255),
+    base INTEGER,
+    otherId INTEGER,
     kind varchar(100),
     userId INTEGER,
-    workspaceId INTEGER,
-    data longtext
+    workspaceId INTEGER
+);
+
+CREATE TABLE npc (
+    id INTEGER PRIMARY KEY,
+    classes longtext,
+    gear longtext,
+    spells longtext
+);
+
+CREATE TABLE encounter (
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE stencil (
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE monsterGroup (
+    id INTEGER PRIMARY KEY
+);
+
+
+CREATE TABLE groupie (
+    id INTEGER PRIMARY KEY,
+    monsterGroupId INTEGER, 
+    hitPoints INTEGER,
+    name varchar(255),
+    gear longtext,
+    spells longtext
 );
 
 COMMIT;

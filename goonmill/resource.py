@@ -294,6 +294,7 @@ class ConstituentList(athena.LiveElement):
 
     @page.renderer
     def init(self, req, tag):
+        from .query2 import db
         pg = tag.patternGenerator('constituent')
         for c in self.workspace.constituents:
             pat = pg()
@@ -303,7 +304,11 @@ class ConstituentList(athena.LiveElement):
                         'Remove from this workspace')
             else:
                 pat.fillSlots('closingXTitle', 'Delete')
-            pat.fillSlots('constituentName', trunc(c.name, 14))
+            base = db.lookup(c.base)
+            if c.kind == 'monsterGroup':
+                pat.fillSlots('constituentName', trunc(base.name, 14))
+            else:
+                pat.fillSlots('constituentName', trunc(c.name, 14))
             pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 14))
             pat.fillSlots('constituentId', c.id)
             tag[pat]
