@@ -83,11 +83,23 @@ class Constituent(object):
         goonmill.user.MonsterGroup)
         """
         c = cls()
-        c.name = monster.name
+        c.kind = KIND_MONSTERGROUP
+        c.name = u''
+        c.base = monster.id
         c.workspace = workspace
         c.userId = workspace.userId
-        c.data = 'DUMMY DATA TODO'
-        c.kind = KIND_MONSTERGROUP
+
+        mg = MonsterGroup()
+        c.otherId = mg.id
+        theStore.add(mg)
+        
+        assert count < 123
+
+        for n in range(count):
+            groupie = Groupie()
+            groupie.monsterGroup = mg
+            theStore.add(groupie)
+
         theStore.add(c)
         theStore.commit()
         return c
@@ -95,11 +107,16 @@ class Constituent(object):
     @classmethod
     def npcKind(cls, monster, workspace):
         c = cls()
+        c.kind = KIND_NPC
         c.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
+        c.base = monster.id
         c.workspace = workspace
         c.userId = workspace.userId
-        c.data = str(monster.name + ':DUMMY DATA TODO')
-        c.kind = KIND_NPC
+        
+        npc = NPC()
+        c.otherId = npc.id
+        theStore.add(npc)
+
         theStore.add(c)
         theStore.commit()
         return c
@@ -119,6 +136,9 @@ class Constituent(object):
         return self.fuckComponentArchitecture().briefDetail()
 
     def fuckComponentArchitecture(self):
+        """
+        Return the inner monster
+        """
         kind = self.kind
         if kind == KIND_MONSTERGROUP:
             return theStore.get(MonsterGroup, self.otherId)
@@ -129,6 +149,16 @@ class Constituent(object):
         elif kind == KIND_ENCOUNTER:
             return theStore.get(Encounter, self.otherId)
 
+    def getStencilBase(self):
+        """
+        Return the base creature for the stencil
+        """
+        from .query2 import db
+        if (self.base < 1000):
+            ret = db.lookup(self.base)
+        else: 
+            ret = theStore.get(Stencil, self.base)
+        return ret
 
 Workspace.constituents = locals.ReferenceSet(
         Workspace.id,
@@ -176,6 +206,7 @@ class Groupie(object):
     __storm_table__ = 'groupie'
     id = locals.Int(primary=True)
     monsterGroupId = locals.Int()
+    monsterGroup = locals.Reference(monsterGroupId, MonsterGroup.id)
     gear = locals.Unicode()
     spells = locals.Unicode()
 

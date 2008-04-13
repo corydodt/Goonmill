@@ -298,19 +298,24 @@ class ConstituentList(athena.LiveElement):
         pg = tag.patternGenerator('constituent')
         for c in self.workspace.constituents:
             pat = pg()
+
             pat.fillSlots('constituentKind', 'kind-%s' % (c.kind,))
+
             if c.isLibraryKind():
                 pat.fillSlots('closingXTitle', 
                         'Remove from this workspace')
             else:
                 pat.fillSlots('closingXTitle', 'Delete')
-            base = db.lookup(c.base)
-            if c.kind == 'monsterGroup':
+
+            base = c.getStencilBase()
+            if base and c.kind == 'monsterGroup':
                 pat.fillSlots('constituentName', trunc(base.name, 14))
             else:
                 pat.fillSlots('constituentName', trunc(c.name, 14))
+
             pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 14))
             pat.fillSlots('constituentId', c.id)
+
             tag[pat]
         return tag
 
@@ -374,28 +379,28 @@ class BasicSearch(athena.LiveElement):
         return [(t.name, int(t.id), int(t.score * 100)) for t in self.lastFound]
 
     @athena.expose
-    def newMonsterGroup(self, stencilId):
+    def newMonsterGroup(self, stencilId, count):
         from .query2 import db
         m = db.lookup(stencilId)
-        c = Constituent.monsterGroupFromMonster(m, self.workspace)
-        mg = MonsterGroup(c)
-        mg.setFragmentParent(self.fragmentParent)
+        c = Constituent.monsterGroupKind(m, count, self.workspace)
+        mgv = MonsterGroupView(c)
+        mgv.setFragmentParent(self.fragmentParent)
 
         d = self.fragmentParent.constituentList.addMonsterGroup(c)
-        d.addCallback(lambda _: mg)
+        d.addCallback(lambda _: mgv)
         return d
 
     @athena.expose
     def newNPC(self, stencilId):
         from .query2 import db
         m = db.lookup(stencilId)
-        c = Constituent.npcFromMonster(m, self.workspace)
+        c = Constituent.npcKind(m, self.workspace)
 
-        npc = NPC(c)
-        npc.setFragmentParent(self.fragmentParent)
+        npcv = NPCView(c)
+        npcv.setFragmentParent(self.fragmentParent)
 
         d = self.fragmentParent.constituentList.addNPC(c)
-        d.addCallback(lambda _: npc)
+        d.addCallback(lambda _: npcv)
         return d
 
 
@@ -415,7 +420,7 @@ class WhichNewThing(page.Element):
     docFactory = loaders.xmlfile(RESOURCE('templates/WhichNewThing'))
 
 
-class MonsterGroup(athena.LiveElement):
+class MonsterGroupView(athena.LiveElement):
     """
     The view of a monster group in the main page
     """
@@ -432,7 +437,7 @@ class MonsterGroup(athena.LiveElement):
         return tag
 
 
-class NPC(athena.LiveElement):
+class NPCView(athena.LiveElement):
     """
     The view of an npc in the main page
     """
