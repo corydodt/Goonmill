@@ -282,14 +282,15 @@ Goonmill.BasicSearch.methods(
         var name = node.select('.hitName')[0].innerHTML;
         var d = Goonmill.whichNewThing(name);
         d.addCallback(function (which) {
-            if (which == 'npc') {
+            if (which[0] == 'npc') {
                 var d = self.callRemote('newNPC', monsterId);
                 d.addCallback(function (wi) {
                     var d2 = self.addChildWidgetFromWidgetInfo(wi);
                     return d2;
                 });
-            } else if (which == 'monsterGroup') {
-                var d = self.callRemote('newMonsterGroup', monsterId);
+            } else if (which[0] == 'monsterGroup') {
+                var count = which[1];
+                var d = self.callRemote('newMonsterGroup', monsterId, count);
                 d.addCallback(function (wi) {
                     var d2 = self.addChildWidgetFromWidgetInfo(wi);
                     return d2;
@@ -540,23 +541,23 @@ Goonmill.whichNewThing = function(name) {
     var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2) }).curry(d);
 
     var tmpl = document.documentElement.select('.whichNewThing')[0];
-    tmpl = tmpl.cloneNode(true);
+    var clone = tmpl.cloneNode(true);
 
-    var nameSlot = tmpl.select('.wntName')[0];
+    var nameSlot = clone.select('.wntName')[0];
     nameSlot.update(nameSlot.innerHTML.interpolate({name: name}));
 
-    var button1 = tmpl.select('[name=newMonsterGroup]')[0];
+    var button1 = clone.select('[name=newMonsterGroup]')[0];
     button1.observe('click', f1);
-    var button2 = tmpl.select('[name=newNPC]')[0];
+    var button2 = clone.select('[name=newNPC]')[0];
     button2.observe('click', f2);
-    var cancel = tmpl.select('[name=cancel]')[0];
+    var cancel = clone.select('[name=cancel]')[0];
     cancel.observe('click', function (e) { Control.Modal.current.close(true); });
 
-    var contents = $A([tmpl]);
+    var contents = $A([clone]);
             
     d.addCallback(function (button) {
-        if (button == 1) { return 'monsterGroup' }
-        else if (button == 2) { return 'npc' };
+        if (button == 1) { return ['monsterGroup', clone.select('[name=count]')[0].value] }
+        else if (button == 2) { return ['npc' ] };
     });
 
     contents[0].show();
