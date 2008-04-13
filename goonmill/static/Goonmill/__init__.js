@@ -289,7 +289,7 @@ Goonmill.BasicSearch.methods(
                     return d2;
                 });
             } else if (which[0] == 'monsterGroup') {
-                var count = which[1];
+                var count = parseInt(which[1]);
                 var d = self.callRemote('newMonsterGroup', monsterId, count);
                 d.addCallback(function (wi) {
                     var d2 = self.addChildWidgetFromWidgetInfo(wi);
@@ -568,7 +568,7 @@ Goonmill.whichNewThing = function(name) {
 
 
 // base class of everything that replaces the main pane
-Goonmill.ItemView = Widget.subclass('Goonmill.MonsterGroup');
+Goonmill.ItemView = Widget.subclass('Goonmill.ItemView');
 Goonmill.ItemView.methods(
     function __init__(self, node) {
         Goonmill.ItemView.upcall(self, '__init__', node);
