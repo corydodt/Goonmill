@@ -25,8 +25,8 @@ INSERT INTO groupie VALUES (14, 3, 8, NULL, NULL, NULL);
 INSERT INTO groupie VALUES (15, 3, 6, NULL, NULL, NULL);
 
 -- FIXME: name for stencils should be NULL and looked up from the base
-INSERT INTO constituent VALUES (4, 'Phase Ghoul', 1001, 4, 'stencil', NULL, 1);
-INSERT INTO stencil VALUES (4);
+INSERT INTO constituent VALUES (4, 'Phase Ghoul', 1001, 1001, 'stencil', NULL, 1);
+INSERT INTO stencil VALUES (1001);
 
 INSERT INTO constituent VALUES (5, 'SW Corner of Graveyard', NULL, 5, 'encounter', NULL, 1);
 INSERT INTO encounter VALUES (5);
