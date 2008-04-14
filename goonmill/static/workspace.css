@@ -299,6 +299,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     font-family: "Arial Black";
     color: white;
     font-size: 13pt;
+    line-height: 64px;
+    padding-left: 30px;
 }
 
 /* Control.Modal styles */  #modal_container {  
