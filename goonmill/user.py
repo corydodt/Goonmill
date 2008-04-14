@@ -5,8 +5,7 @@ from storm import locals
 
 from .util import RESOURCE
 
-from zope.interface import Interface, implements, Attribute
-from twisted.python.components import registerAdapter
+from zope.interface import Interface, implements
 
 
 KIND_MONSTERGROUP = u'monsterGroup'
@@ -90,8 +89,9 @@ class Constituent(object):
         c.userId = workspace.userId
 
         mg = MonsterGroup()
-        c.otherId = mg.id
         theStore.add(mg)
+        mg.id = locals.AutoReload
+        c.otherId = mg.id
         
         assert count < 123
 
@@ -114,6 +114,7 @@ class Constituent(object):
         c.userId = workspace.userId
         
         npc = NPC()
+        npc.id = locals.AutoReload
         c.otherId = npc.id
         theStore.add(npc)
 
@@ -174,7 +175,7 @@ class MonsterGroup(object):
     id = locals.Int(primary=True)
 
     def briefDetail(self):
-        return str(len(list(self.groupies)))
+        return unicode(len(list(self.groupies)))
 
 
 class Stencil(object):
@@ -237,7 +238,6 @@ theStore = None
 
 def userDatabase():
     """Give a user database"""
-    import goonmill.user as this
     global theStore
     if theStore is not None:
         raise RuntimeError("Already created a db store")

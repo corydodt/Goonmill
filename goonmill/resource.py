@@ -124,9 +124,9 @@ class WorkspacePage(athena.LivePage):
 
         self.constituentList = cl
 
-        search = BasicSearch(self.workspace)
-        search.setFragmentParent(self)
-        ctx.tag.fillSlots('basicSearch', search)
+        bs = BasicSearch(self.workspace)
+        bs.setFragmentParent(self)
+        ctx.tag.fillSlots('basicSearch', bs)
 
         mainActions = MainActions()
         mainActions.setFragmentParent(self)
@@ -294,7 +294,6 @@ class ConstituentList(athena.LiveElement):
 
     @page.renderer
     def init(self, req, tag):
-        from .query2 import db
         pg = tag.patternGenerator('constituent')
         for c in self.workspace.constituents:
             pat = pg()
@@ -336,21 +335,21 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render a monster group in this list
         """
-        kind = u'monsterGroup'
-        name = trunc(constituent.name, 14)
+        name = trunc(constituent.getStencilBase().name, 14)
         detail = constituent.briefDetail()
 
-        return self.callRemote("addConstituent", kind, constituent.id, name, detail)
+        return self.callRemote("addConstituent", 
+                constituent.kind, constituent.id, name, detail)
 
     def addNPC(self, constituent):
         """
         Tell the client to render an npc in this list
         """
-        kind = u'npc'
-        name = trunc(constituent.name, 14)
+        name = trunc(constituent.getStencilBase().name, 14)
         detail = constituent.briefDetail()
 
-        return self.callRemote("addConstituent", kind, constituent.id, name, detail)
+        return self.callRemote("addConstituent", 
+                constituent.kind, constituent.id, name, detail)
 
 
 class MainActions(athena.LiveElement):
