@@ -247,12 +247,13 @@ Goonmill.BasicSearch.methods(
         self.hitContainer = node.select('div[rev=hits]')[0];
     }, // }}}
 
-    /* clear the search form and reset it */
+    // clear the search form and reset it
     function resetSearchInput(self) {
         self.searchForm.searchTerms.clear();
         self.searchForm.searchTerms.nextSiblings()[0].focus();
     },
 
+    // tell the server we want a new list of search results
     function onSubmitSearch(self, event) {
         event.stopPropagation();
         event.preventDefault();
@@ -285,6 +286,7 @@ Goonmill.BasicSearch.methods(
         return d;
     },
 
+    // tell the server that this search hit is our search hit
     function clickedHit(self, event, node, monsterId) {
         event.stopPropagation();
         event.preventDefault();
@@ -311,85 +313,6 @@ Goonmill.BasicSearch.methods(
 );
 
 
-var LightboxConfig = Class.create({
-opacity:0.7,
-fade:true, 
-fadeDuration: 0.4,
-initialize: function() {},
-beforeClose: function() { throw $break; }
-});
-
-// display any node or string as a message
-Goonmill.messageBox = function (node) {
-    if (node.innerHTML === undefined) {
-        node = new Element('span').update(node);
-    }
-
-    // add a closing box always
-    var hr = new Element('hr');
-    var close = new Element('input', {type: 'button', value: 'close'});
-    close.observe('click', function() { Control.Modal.current.close(true) } );
-
-    var contents = $A([node, hr, close]);
-    var m = Goonmill.Modal(contents);
-
-    return m;
-}
-
-// copy the contents into a modal dialog (lightbox)
-Goonmill.Modal = function (contents, extraOptions) {
-    var config = new LightboxConfig();
-    if (extraOptions !== undefined) {
-        for (attr in extraOptions) {
-            config[attr] = extraOptions[attr];
-        }
-    }
-    config.contents = '<span>__ignored__</span>';
-
-    // kludge .. hide all embedded stuff when showing the modal
-    var embeds = document.documentElement.select('embed');
-    $A(embeds).each(function (e) { 
-        e.setAttribute('_oldVisibility', e.style['visibility']);
-        e.style['visibility'] = 'hidden'; 
-    });
-    
-    // restore embedded stuff when closing the modal
-    config.afterClose = function () { $A(embeds).each(function(e) {
-        e.style['visibility'] = e.readAttribute('_oldVisibility');
-        e.removeAttribute('_oldVisibility');
-        }
-    )};
-
-    var modal = new Control.Modal(null, config);
-    modal.open();
-    modal.update(contents);
-
-    return modal;
-}
-
-
-// ask a question, then return a deferred that will fire with the number of
-// the clicked button.
-Goonmill.confirm = function (message, button1text, button2text) {
-    // copy the content of node into a modal dialog (lightbox)
-    var message = new Element('span').update(message);
-    var button1 = new Element('input', {type:'button', value:button1text});
-    var button2 = new Element('input', {type:'button', value:button2text});
-
-    var d = new Divmod.Defer.Deferred(); 
-    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
-    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2) }).curry(d);
-    button1.observe('click', f1);
-    button2.observe('click', f2);
-
-    var contents = $A([message, new Element('hr'), button1, button2]);
-            
-    var m = Goonmill.Modal(contents);
-
-    return d;
-}
-
-
 Goonmill.ConstituentList = Widget.subclass('Goonmill.ConstituentList');
 Goonmill.ConstituentList.methods(
     function __init__(self, node) {
@@ -400,6 +323,8 @@ Goonmill.ConstituentList.methods(
                 self.removeConstituent(c);
             }).curry(cnst));
         });
+
+        // make the buttons themselves clickable
     }, 
 
     // throw the given constituent out of the workspace
@@ -443,6 +368,7 @@ Goonmill.ConstituentList.methods(
         });
     },
 
+    // put a new constituent into the list
     function addConstituent(self, kind, id, name, detail) {
         var listItem = self.node.select('.template')[0].cloneNode(true);
         listItem.removeClassName('template');
@@ -518,32 +444,33 @@ Goonmill.EventBus.methods(
     }
 );
 
-// display all the widgets' top-level nodes, with hints
-Goonmill.debugView = function () {
-    var toPrint = Goonmill.findAllWidgetNodes();
-    var printNodes = toPrint.map(function (n) {
-        var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
-        return [(new Element('dt')).update(dtText),
-                (new Element('dd')).update(n.textContent)];
-    }).flatten();
-    var dl = new Element('dl');
-    // FIXME - printNodes.each should work here, but i get
-    // 'element.appendChild is not an attribute'
-    for (n=0; n<printNodes.length; n++) dl.insert(printNodes[n]);
-    Goonmill.messageBox(dl);
-}
 
-// the top-level node of every widget on the page
-Goonmill.findAllWidgetNodes = function() {
-    var ret = new Array();
-    document.documentElement.select('[id]').each(function (el) {
-        if (el.readAttribute('id').match(/^athena:/)) {
-            ret.push(el)
-        }
-    });
-    return ret;
-}
+// base class of everything that replaces the main pane
+Goonmill.ItemView = Widget.subclass('Goonmill.ItemView');
+Goonmill.ItemView.methods(
+    function __init__(self, node) {
+        Goonmill.ItemView.upcall(self, '__init__', node);
+        node.hide();
+        var oldView = document.documentElement.select('.itemView')[0];
+        oldView.replace(node);
+        Effect.Appear(node);
+    }
+);
 
+
+// view of a monster group in the main pane
+Goonmill.MonsterGroup = Goonmill.ItemView.subclass('Goonmill.MonsterGroup');
+Goonmill.MonsterGroup.methods(
+);
+
+
+// view of an npc in the main pane
+Goonmill.NPC = Goonmill.ItemView.subclass('Goonmill.NPC');
+Goonmill.NPC.methods(
+);
+
+
+// display the dialog that disambiguates monster groups and npcs
 Goonmill.whichNewThing = function(name) {
     var d = new Divmod.Defer.Deferred(); 
     var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
@@ -583,26 +510,113 @@ Goonmill.whichNewThing = function(name) {
     return d;
 };
 
+// this is the standard default way lightboxes will display in goonmill
+// (function is for folding purposes only)
+var LightboxConfig = function () {
+    return Class.create({
+        opacity:0.7,
+        fade:true, 
+        fadeDuration: 0.4,
+        initialize: function() {},
+        beforeClose: function() { throw $break; }
+})}();
 
-// base class of everything that replaces the main pane
-Goonmill.ItemView = Widget.subclass('Goonmill.ItemView');
-Goonmill.ItemView.methods(
-    function __init__(self, node) {
-        Goonmill.ItemView.upcall(self, '__init__', node);
-        node.hide();
-        var oldView = document.documentElement.select('.itemView')[0];
-        oldView.replace(node);
-        Effect.Appear(node);
+
+// display any node or string as a message
+Goonmill.messageBox = function (node) {
+    if (node.innerHTML === undefined) {
+        node = new Element('span').update(node);
     }
-);
+
+    // add a closing box always
+    var hr = new Element('hr');
+    var close = new Element('input', {type: 'button', value: 'close'});
+    close.observe('click', function() { Control.Modal.current.close(true) } );
+
+    var contents = $A([node, hr, close]);
+    var m = Goonmill.Modal(contents);
+
+    return m;
+}
+
+// copy the contents into a modal dialog (lightbox)
+Goonmill.Modal = function (contents, extraOptions) {
+    var config = new LightboxConfig();
+    if (extraOptions !== undefined) {
+        for (attr in extraOptions) {
+            config[attr] = extraOptions[attr];
+        }
+    }
+    config.contents = '<span>__ignored__</span>';
+
+    // kludge .. hide all embedded stuff when showing the modal
+    var embeds = document.documentElement.select('embed');
+    $A(embeds).each(function (e) { 
+        e.setAttribute('_oldVisibility', e.style['visibility']);
+        e.style['visibility'] = 'hidden'; 
+    });
+    
+    // restore embedded stuff when closing the modal
+    config.afterClose = function () { $A(embeds).each(function(e) {
+        e.style['visibility'] = e.readAttribute('_oldVisibility');
+        e.removeAttribute('_oldVisibility');
+        }
+    )};
+
+    var modal = new Control.Modal(null, config);
+    modal.open();
+    modal.update(contents);
+
+    return modal;
+}
 
 
-// view of a monster group in the main pane
-Goonmill.MonsterGroup = Goonmill.ItemView.subclass('Goonmill.MonsterGroup');
+// ask a question, then return a deferred that will fire with the number of
+// the clicked button.
+Goonmill.confirm = function (message, button1text, button2text) {
+    // copy the content of node into a modal dialog (lightbox)
+    var message = new Element('span').update(message);
+    var button1 = new Element('input', {type:'button', value:button1text});
+    var button2 = new Element('input', {type:'button', value:button2text});
+
+    var d = new Divmod.Defer.Deferred(); 
+    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
+    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2) }).curry(d);
+    button1.observe('click', f1);
+    button2.observe('click', f2);
+
+    var contents = $A([message, new Element('hr'), button1, button2]);
+            
+    var m = Goonmill.Modal(contents);
+
+    return d;
+}
 
 
-// view of an npc in the main pane
-Goonmill.NPC = Goonmill.ItemView.subclass('Goonmill.NPC');
+// display all the widgets' top-level nodes, with hints
+Goonmill.debugView = function () {
+    var toPrint = Goonmill.findAllWidgetNodes();
+    var printNodes = toPrint.map(function (n) {
+        var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
+        return [(new Element('dt')).update(dtText),
+                (new Element('dd')).update(n.textContent)];
+    }).flatten();
+    var dl = new Element('dl');
+    // FIXME - printNodes.each should work here, but i get
+    // 'element.appendChild is not an attribute'
+    for (n=0; n<printNodes.length; n++) dl.insert(printNodes[n]);
+    Goonmill.messageBox(dl);
+}
 
+// the top-level node of every widget on the page
+Goonmill.findAllWidgetNodes = function() {
+    var ret = new Array();
+    document.documentElement.select('[id]').each(function (el) {
+        if (el.readAttribute('id').match(/^athena:/)) {
+            ret.push(el)
+        }
+    });
+    return ret;
+}
 
 // vim:set foldmethod=syntax:set smartindent:
