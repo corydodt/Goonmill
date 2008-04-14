@@ -4,8 +4,8 @@
   <div class="wnt-x1 wntName"><span>#{name}</span></div>
   <div class="wnt-x2"><span>{</span></div>
   <div class="wnt-x3">
-    <div>Monster Group: How many?</div>
-    <input type="text" value="1"></input>
+    <p><strong>Monster Group: How many?</strong></p>
+    <p><input name='count' type="text" value="1"></input></p>
     <p><input type=
       "button" name="newMonsterGroup" value="New Monster Group"></input>
     </p>

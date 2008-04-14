@@ -218,15 +218,24 @@ Goonmill.BasicSearch.methods(
         Goonmill.BasicSearch.upcall(self, '__init__', node);
         self.searchForm = node.select('.searchForm')[0];
 
-        self.searchForm.observe('submit', function (event) {
-            return self.onSubmitSearch(event);
-        });
-
         self.searchTerms = self.searchForm.searchTerms;
 
         self.searchTerms.observe('click', function (event) {
             self.searchTerms.value = '';
             self.searchTerms.removeClassName('defaultText');
+        });
+
+        var searchTermsValid = new LiveValidation(self.searchTerms,
+            {validMessage: '' }
+        );
+        searchTermsValid.add(Validate.Presence, {failureMessage: ''});
+        searchTermsValid.add(Validate.Exclusion,
+            {within: ['Search for a monster'], failureMessage: ''}
+        );
+
+        self.searchForm.observe('submit', function (event) {
+            if (LiveValidation.massValidate([searchTermsValid]))
+                return self.onSubmitSearch(event);
         });
 
         self.searchTerms.observe('blur', function (event) {
@@ -543,6 +552,14 @@ Goonmill.whichNewThing = function(name) {
     var tmpl = document.documentElement.select('.whichNewThing')[0];
     var clone = tmpl.cloneNode(true);
 
+    /* if using new monster group, only integers between 1-123 allowed */
+    var count = clone.select('[name=count]')[0];
+    var countValid = new LiveValidation(count, {validMessage:''} );
+    countValid.add(Validate.Presence);
+    countValid.add(Validate.Numericality, 
+            { onlyInteger: true, minimum: 1, maximum: 123 }
+    );
+
     var nameSlot = clone.select('.wntName')[0];
     nameSlot.update(nameSlot.innerHTML.interpolate({name: name}));
 
@@ -556,7 +573,7 @@ Goonmill.whichNewThing = function(name) {
     var contents = $A([clone]);
             
     d.addCallback(function (button) {
-        if (button == 1) { return ['monsterGroup', clone.select('[name=count]')[0].value] }
+        if (button == 1) { return ['monsterGroup', count.value] }
         else if (button == 2) { return ['npc' ] };
     });
 
