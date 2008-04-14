@@ -14,8 +14,10 @@ from twisted.cred.credentials import IAnonymous
 from twisted.cred.checkers import AllowAnonymousAccess
 
 from .util import RESOURCE
-from .user import Workspace, Constituent
+from .user import (Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
+            KIND_STENCIL, KIND_ENCOUNTER)
 from . import search
+
 
 class Root(rend.Page):
     """
@@ -113,6 +115,7 @@ class WorkspacePage(athena.LivePage):
         eb = EventBus()
         eb.setFragmentParent(self)
         ctx.tag.fillSlots('eventBus', eb)
+        self.eventBus = eb
 
         title = WorkspaceTitle(self.workspace)
         title.setFragmentParent(self)
@@ -307,7 +310,7 @@ class ConstituentList(athena.LiveElement):
                 pat.fillSlots('closingXTitle', 'Delete')
 
             base = c.getStencilBase()
-            if base and c.kind == 'monsterGroup':
+            if base and c.kind == KIND_MONSTERGROUP:
                 pat.fillSlots('constituentName', trunc(base.name, 14))
             else:
                 pat.fillSlots('constituentName', trunc(c.name, 14))
@@ -317,6 +320,22 @@ class ConstituentList(athena.LiveElement):
 
             tag[pat]
         return tag
+
+    @athena.expose
+    def displayConstituent(self, id):
+        from .user import theStore
+        c = theStore.get(Constituent, id)
+
+        if c.kind == KIND_NPC:
+            view = NPCView(c)
+            view.setFragmentParent(self.fragmentParent.eventBus)
+        elif c.kind == KIND_MONSTERGROUP:
+            view = MonsterGroupView(c)
+            view.setFragmentParent(self.fragmentParent.eventBus)
+        else:
+            raise NotImplemented('other kinds')
+
+        self.fragmentParent.eventBus.showConstituent(view)
 
     @athena.expose
     def removeConstituent(self, id):
@@ -383,10 +402,15 @@ class BasicSearch(athena.LiveElement):
         m = db.lookup(stencilId)
         c = Constituent.monsterGroupKind(m, count, self.workspace)
         mgv = MonsterGroupView(c)
-        mgv.setFragmentParent(self.fragmentParent)
+        mgv.setFragmentParent(self.fragmentParent.eventBus)
 
         d = self.fragmentParent.constituentList.addMonsterGroup(c)
-        d.addCallback(lambda _: mgv)
+
+        def _monsterGroupWasListed(_):
+            d = self.fragmentParent.eventBus.showConstituent(mgv)
+            return None
+
+        d.addCallback(_monsterGroupWasListed)
         return d
 
     @athena.expose
@@ -396,10 +420,15 @@ class BasicSearch(athena.LiveElement):
         c = Constituent.npcKind(m, self.workspace)
 
         npcv = NPCView(c)
-        npcv.setFragmentParent(self.fragmentParent)
+        npcv.setFragmentParent(self.fragmentParent.eventBus)
 
         d = self.fragmentParent.constituentList.addNPC(c)
-        d.addCallback(lambda _: npcv)
+
+        def _npcWasListed(_):
+            d = self.fragmentParent.eventBus.showConstituent(npcv)
+            return None
+
+        d.addCallback(_npcWasListed)
         return d
 
 
@@ -410,6 +439,12 @@ class EventBus(athena.LiveElement):
     """
     docFactory = loaders.xmlfile(RESOURCE('templates/EventBus'))
     jsClass = u'Goonmill.EventBus'
+
+    def showConstituent(self, constituentView):
+        """
+        Push a constituentView widget over to the client
+        """
+        return self.callRemote("showConstituent", constituentView)
 
 
 class WhichNewThing(page.Element):
@@ -432,7 +467,8 @@ class MonsterGroupView(athena.LiveElement):
 
     @page.renderer
     def initialize(self, req, tag):
-        tag.fillSlots('monsterName', trunc(self.constituent.name, 14))
+        name = trunc(self.constituent.getStencilBase().name, 14)
+        tag.fillSlots('monsterName', name)
         return tag
 
 

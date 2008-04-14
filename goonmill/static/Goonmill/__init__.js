@@ -294,19 +294,12 @@ Goonmill.BasicSearch.methods(
         var d = Goonmill.whichNewThing(name);
         d.addCallback(function (which) {
             if (which[0] == 'npc') {
-                var d = self.callRemote('newNPC', monsterId);
-                d.addCallback(function (wi) {
-                    var d2 = self.addChildWidgetFromWidgetInfo(wi);
-                    return d2;
-                });
+                var dd = self.callRemote('newNPC', monsterId);
             } else if (which[0] == 'monsterGroup') {
                 var count = parseInt(which[1]);
-                var d = self.callRemote('newMonsterGroup', monsterId, count);
-                d.addCallback(function (wi) {
-                    var d2 = self.addChildWidgetFromWidgetInfo(wi);
-                    return d2;
-                });
+                var dd = self.callRemote('newMonsterGroup', monsterId, count);
             }
+            return dd;
         });
         return d;
     }
@@ -317,15 +310,27 @@ Goonmill.ConstituentList = Widget.subclass('Goonmill.ConstituentList');
 Goonmill.ConstituentList.methods(
     function __init__(self, node) {
         Goonmill.ConstituentList.upcall(self, '__init__', node);
-        // make all closing x's clickable
+        // make all closing x's clickable, and the buttons themselves
+        // clickable
         node.select('.constituent').each(function (cnst) {
+            // closing x
             cnst.select('.closingX')[0].observe('click', (function (c, event) {
                 self.removeConstituent(c);
             }).curry(cnst));
-        });
 
-        // make the buttons themselves clickable
+            // the button itself
+            cnst.observe('click', (function (c, event) {
+                self.displayConstituent(c);
+            }).curry(cnst));
+        });
     }, 
+
+    // put a constituent on the stage
+    function displayConstituent(self, node) {
+        var id = parseInt(node.readAttribute('rel'));
+        d = self.callRemote('displayConstituent', id);
+        return d;
+    },
 
     // throw the given constituent out of the workspace
     function removeConstituent(self, node) {
@@ -441,6 +446,13 @@ Goonmill.EventBus.methods(
             }
         });
         //
+    },
+
+    // display a constituent on the stage
+    function showConstituent(self, wi) {
+        // TODO - remove the old widget that was on the stage
+        var d = self.addChildWidgetFromWidgetInfo(wi);
+        return null;
     }
 );
 
@@ -595,12 +607,15 @@ Goonmill.confirm = function (message, button1text, button2text) {
 
 // display all the widgets' top-level nodes, with hints
 Goonmill.debugView = function () {
-    var toPrint = Goonmill.findAllWidgetNodes();
-    var printNodes = toPrint.map(function (n) {
+    var toPrint = Goonmill.findAllWidgets();
+
+    var printNodes = toPrint.map(function (w) {
+        var n = w.node;
         var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
         return [(new Element('dt')).update(dtText),
                 (new Element('dd')).update(n.textContent)];
     }).flatten();
+
     var dl = new Element('dl');
     // FIXME - printNodes.each should work here, but i get
     // 'element.appendChild is not an attribute'
@@ -609,14 +624,11 @@ Goonmill.debugView = function () {
 }
 
 // the top-level node of every widget on the page
-Goonmill.findAllWidgetNodes = function() {
-    var ret = new Array();
-    document.documentElement.select('[id]').each(function (el) {
-        if (el.readAttribute('id').match(/^athena:/)) {
-            ret.push(el)
-        }
-    });
-    return ret;
+Goonmill.findAllWidgets = function() {
+    var widgets = [];
+    var widgetMap = Nevow.Athena.Widget._athenaWidgets;
+    for (wid in widgetMap) widgets.push(widgetMap[wid]);
+    return widgets;
 }
 
 // vim:set foldmethod=syntax:set smartindent:
