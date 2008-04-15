@@ -208,6 +208,8 @@ class Groupie(object):
     id = locals.Int(primary=True)
     monsterGroupId = locals.Int()
     monsterGroup = locals.Reference(monsterGroupId, MonsterGroup.id)
+    hitPoints = locals.Int()
+    name = locals.Unicode()
     gear = locals.Unicode()
     spells = locals.Unicode()
 
