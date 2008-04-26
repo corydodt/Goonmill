@@ -41,116 +41,7 @@
 }
 */
 
-
-.y1 {
-    background-image: url(/static/field-header.png);
-    background-repeat: repeat;
-    height: 94px;
-    left: 0px;
-    right: 4px;
-}
-
-.y2 {
-    position: absolute;
-    top: 94px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    margin-top: 10px;
-}
-
-.x1 {
-    float: left;
-    width: 240px;
-    height: 100%;
-}
-
-.x2 {
-    float: left;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    left: 240px;
-    height: 100%;
-    margin-left: 10px;
-    border-left: 2px solid #a87675;
-}
-
-.x2x {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    left: 10px;
-    height: 100%;
-}
-
-.x1-1 {
-    float: left; 
-    position: absolute;
-    top: 0px;
-    bottom: 240px;
-    width: 240px;
-    border-bottom: 2px solid #a87675;
-}
-
-.x1-2 {
-    float: left;
-    clear: left;
-    position: absolute;
-    width: 240px;
-    height: 240px;
-    bottom: 0px;
-}
-
-.x2-1 {
-    float: left;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    left: 0px;
-    height: 29px;
-}
-
-.x2-2 {
-    border-top: 2px solid #a87675;
-    float: left;
-    clear: left;
-    position: absolute;
-    top: 29px;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-}
-
-
-.x2-2-1 {
-    float: left;
-    position: absolute;
-    top: 0px;
-    height: 64px;
-    right: 0px;
-    left: 0px;
-}
-
-.x2-2-1x {
-    background-image: url(/static/field-header.png);
-    background-position: -240px;
-    position: absolute;
-    top: 10px;
-    height: 64px;
-    right: 0px;
-    left: 0px;
-}
-
-.x2-2-2 {
-    float: left;
-    clear: left;
-    position: absolute;
-    top: 64px;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-}
+@import "/static/layoutWorkspace.css";
 
 .workspaceTitle {
     font-size: 28pt;
@@ -223,28 +114,28 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     background-image: url(/static/closing-x.png);
 }
 
-.basicSearch {
-    padding-left: 1em;
-}
-
-[name=searchTerms] {
-   width: 150px;
-}
-
-[name=searchTerms].defaultText {
-    color: #aaa;
-    text-align: center;
-}
-
-[name=advancedButton] {
-     position: absolute;
-     bottom: 4px;
-     right: 4px;
-}
-
-.hit {
-    display: block;
-}
+/* search */ .basicSearch {
+/* search */     padding-left: 1em;
+/* search */ }
+/* search */ 
+/* search */ [name=searchTerms] {
+/* search */    width: 150px;
+/* search */ }
+/* search */ 
+/* search */ [name=searchTerms].defaultText {
+/* search */     color: #aaa;
+/* search */     text-align: center;
+/* search */ }
+/* search */ 
+/* search */ [name=advancedButton] {
+/* search */      position: absolute;
+/* search */      bottom: 4px;
+/* search */      right: 4px;
+/* search */ }
+/* search */
+/* search */ .hit {
+/* search */     display: block;
+/* search */ }
 
 .mainActions {
     float: right;
@@ -268,22 +159,22 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     display: none;
 }
 
-.whichNewThing {
-}
-
-.wnt-x1, .wnt-x2, .wnt-x3 {
-    float: left;
-}
-
-.wnt-x1, .wnt-x2 {
-    line-height: 130px;
-}
-
-.wnt-x2 { 
-    font-size: 114px; 
-    line-height: 130px;
-    font-family: serif;
-}
+/* whichNewThing dialog */ .whichNewThing {
+/* whichNewThing dialog */ }
+/* whichNewThing dialog */ 
+/* whichNewThing dialog */ .wnt-x1, .wnt-x2, .wnt-x3 {
+/* whichNewThing dialog */     float: left;
+/* whichNewThing dialog */ }
+/* whichNewThing dialog */ 
+/* whichNewThing dialog */ .wnt-x1, .wnt-x2 {
+/* whichNewThing dialog */     line-height: 130px;
+/* whichNewThing dialog */ }
+/* whichNewThing dialog */ 
+/* whichNewThing dialog */ .wnt-x2 { 
+/* whichNewThing dialog */     font-size: 114px; 
+/* whichNewThing dialog */     line-height: 130px;
+/* whichNewThing dialog */     font-family: serif;
+/* whichNewThing dialog */ }
 
 .imageBox {
     background-image: url(/static/image-frame.png);
@@ -303,17 +194,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     padding-left: 30px;
 }
 
-/* Control.Modal styles */  #modal_container {  
-/* Control.Modal styles */      padding:5px;  
-/* Control.Modal styles */      background-color:#fff;  
-/* Control.Modal styles */      border:2px outset black;
-/* Control.Modal styles */      overflow:auto;  
-/* Control.Modal styles */      font-family:"Lucida Grande",Verdana;  
-/* Control.Modal styles */      font-size:12px;  
-/* Control.Modal styles */      color:#333;
-/* Control.Modal styles */      text-align:left;  
-/* Control.Modal styles */  } 
-/* Control.Modal styles */   
-/* Control.Modal styles */  #modal_overlay {  
-/* Control.Modal styles */      background-color: #a87675;  
-/* Control.Modal styles */  }  
+@import "/static/modal.css";
+
+.offstage {
+    display: none;
+}

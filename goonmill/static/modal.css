@@ -1,0 +1,16 @@
+/* Control.Modal styles */
+
+#modal_container {  
+    padding:5px;  
+    background-color:#fff;  
+    border:2px outset black;
+    overflow:auto;  
+    font-family:"Lucida Grande",Verdana;  
+    font-size:12px;  
+    color:#333;
+    text-align:left;  
+} 
+ 
+#modal_overlay {  
+    background-color: #a87675;  
+}  
