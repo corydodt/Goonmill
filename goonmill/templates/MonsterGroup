@@ -12,8 +12,8 @@
     </div>
     <div class="x2-2-2 itemMain">
 
-      <input type="button" value="Delete Checked..." />
-      <div class="printButton"><a href="#">Print</a></div>
+      <input class="deleteChecked" type="button" value="Delete Checked..." />
+      <a class="printButton" href="#">Print</a>
 
       <table class="monsterGroupTable">
         <thead>
@@ -40,7 +40,7 @@
         </tbody>
       </table>
 
-      <input type="button" value="Delete Checked..." />
+      <input class="deleteChecked" type="button" value="Delete Checked..." />
 
       <form name="increaseBy">
         <span>Increase group by:</span>

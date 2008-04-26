@@ -42,6 +42,7 @@
 */
 
 @import "/static/layoutWorkspace.css";
+@import "/static/modal.css";
 
 .workspaceTitle {
     font-size: 28pt;
@@ -190,12 +191,39 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     font-family: "Arial Black";
     color: white;
     font-size: 13pt;
-    line-height: 64px;
+    line-height: 48px;
     padding-left: 30px;
 }
 
-@import "/static/modal.css";
-
 .offstage {
     display: none;
+}
+
+.printButton {
+    background-image: url(/static/printer.png);
+    background-repeat: no-repeat;
+    float: right;
+    padding-left: 26px;
+    padding-right: 10px;
+    position: absolute;
+    right: 72px;
+    top: -8px;
+}
+
+.deleteChecked {
+    float: left;
+}
+
+.monsterGroupTable {
+    clear: left;
+    margin-top: 10px;
+}
+
+.monsterGroupTable thead {
+    font-family: "arial black";
+    font-size: 12pt;
+}
+
+.monsterGroupTable td {
+    border: 0px;
 }

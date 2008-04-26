@@ -329,6 +329,8 @@ Goonmill.ConstituentList.methods(
     function displayConstituent(self, node) {
         var id = parseInt(node.readAttribute('rel'));
         d = self.callRemote('displayConstituent', id);
+        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+        d.addBoth(function () { Goonmill.unspin(spinner); });
         return d;
     },
 
@@ -624,12 +626,26 @@ Goonmill.debugView = function () {
     Goonmill.messageBox(dl);
 }
 
-// the top-level node of every widget on the page
+// collect all the widgets (using Athena internals) and return them
 Goonmill.findAllWidgets = function() {
     var widgets = [];
     var widgetMap = Nevow.Athena.Widget._athenaWidgets;
     for (wid in widgetMap) widgets.push(widgetMap[wid]);
     return widgets;
 }
+
+
+// display a spinner while busy loading
+Goonmill.spin = function(el) {
+    var spinner = new Element('img', {src: '/static/loading.gif'});
+    el.insert(spinner);
+    return spinner;
+}
+
+// destroy a spinner
+Goonmill.unspin = function(spinner) {
+    spinner.remove();
+}
+
 
 // vim:set foldmethod=syntax:set smartindent:
