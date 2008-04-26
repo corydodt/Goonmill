@@ -227,3 +227,12 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 .monsterGroupTable td {
     border: 0px;
 }
+
+form[name=increaseBy] {
+    float: left;
+    margin-left: 60px;
+}
+
+input[name=increaseBy] {
+    width: 7em;
+}
