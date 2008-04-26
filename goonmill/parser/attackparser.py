@@ -1,4 +1,5 @@
-from goonmill import diceparser, query2
+from . import diceparser
+from .. import query2
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
