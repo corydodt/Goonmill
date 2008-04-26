@@ -10,7 +10,45 @@
         <div class="imageBox" />
       </div>
     </div>
-    <div class="x2-2-2 itemMain" />
+    <div class="x2-2-2 itemMain">
+
+      <input type="button" value="Delete Checked..." />
+      <div class="printButton"><a href="#">Print</a></div>
+
+      <table class="monsterGroupTable">
+        <thead>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td><img src="/static/d20.png" /></td>
+            <td>Hit Points</td>
+            <td>Alignment</td>
+            <td>Treasure/Gear</td>
+            <td>Spells</td>
+            <td>Individual's name</td>
+          </tr>
+        </thead>
+        <tbody n:render="monsterGroupList">
+          <tr n:pattern="monsterGroupRow">
+            <td><input type="checkbox" /></td>
+            <td />
+            <td><n:slot name="hitPoints" /></td>
+            <td><n:slot name="alignment" /></td>
+            <td><n:slot name="gear" /></td>
+            <td><n:slot name="spells" /></td>
+            <td><n:slot name="personalName" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <input type="button" value="Delete Checked..." />
+
+      <form name="increaseBy">
+        <span>Increase group by:</span>
+        <input type="text" value="1" />
+        <input type="submit" value="Add Creature(s)" />
+      </form>
+
+    </div>
   </n:invisible>
 </div>
 <!-- vim:set ft=html: -->

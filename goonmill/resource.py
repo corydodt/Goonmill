@@ -471,6 +471,20 @@ class MonsterGroupView(athena.LiveElement):
         tag.fillSlots('monsterName', name)
         return tag
 
+    @page.renderer
+    def monsterGroupList(self, req, tag):
+        mg = self.constituent.fuckComponentArchitecture()
+        pg = tag.patternGenerator("monsterGroupRow")
+        for group in mg.groupies:
+            pat = pg()
+            pat.fillSlots('hitPoints', 'TODO')
+            pat.fillSlots('alignment', 'TODO')
+            pat.fillSlots('gear', 'TODO')
+            pat.fillSlots('spells', 'TODO')
+            pat.fillSlots('personalName', 'TODO')
+            tag[pat]
+        return tag
+
 
 class NPCView(athena.LiveElement):
     """
