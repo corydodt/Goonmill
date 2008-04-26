@@ -1,5 +1,4 @@
-<div xmlns:n="http://nevow.com/ns/nevow/0.1"
-  style="display:none" class="whichNewThing">
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" class="whichNewThing">
 
   <div class="wnt-x1 wntName"><span>#{name}</span></div>
   <div class="wnt-x2"><span>{</span></div>
