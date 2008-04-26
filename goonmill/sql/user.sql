@@ -48,6 +48,7 @@ CREATE TABLE groupie (
     id INTEGER PRIMARY KEY,
     monsterGroupId INTEGER, 
     hitPoints INTEGER,
+    alignment varchar(40),
     name varchar(255),
     gear longtext,
     spells longtext
