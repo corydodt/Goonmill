@@ -450,7 +450,7 @@ Goonmill.EventBus.methods(
 
     // display a constituent on the stage
     function showConstituent(self, wi) {
-        // TODO - remove the old widget that was on the stage
+        self.childWidgets.each(function (w) { w.detach() } );
         var d = self.addChildWidgetFromWidgetInfo(wi);
         return null;
     }
@@ -465,7 +465,8 @@ Goonmill.ItemView.methods(
         node.hide();
         var oldView = document.documentElement.select('.itemView')[0];
         oldView.replace(node);
-        Effect.Appear(node);
+        // Effect.Appear(node); -- this is way too damn slow
+        node.show();
     }
 );
 
