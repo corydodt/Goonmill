@@ -73,7 +73,7 @@ a.warmText:hover {
 
 .constituentName {
     float: left;
-    font-size: 13pt;
+    font-size: 11pt;
     padding: 2pt;
     font-family: "Arial Black";
 }
@@ -190,7 +190,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     float: left;
     font-family: "Arial Black";
     color: white;
-    font-size: 13pt;
+    font-size: 11pt;
     line-height: 48px;
     padding-left: 30px;
 }
@@ -221,11 +221,12 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 
 .monsterGroupTable thead {
     font-family: "arial black";
-    font-size: 12pt;
+    font-size: 10pt;
 }
 
 .monsterGroupTable td {
     border: 0px;
+    font-size: 10pt;
 }
 
 form[name=increaseBy] {
