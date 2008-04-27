@@ -240,3 +240,11 @@ input[name=increaseBy] {
 .defaultText {
     color: #aaa;
 }
+
+.workspaceTitle .defaultText, .constituentGroupName .defaultText {
+    color: #d0d0d0;
+}
+
+.constituentGroupName {
+    font-style: italic;
+}
