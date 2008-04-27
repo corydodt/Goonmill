@@ -174,6 +174,7 @@ class MonsterGroup(object):
     """
     __storm_table__ = 'monsterGroup'
     id = locals.Int(primary=True)
+    name = locals.Unicode()
 
     def briefDetail(self):
         return unicode(len(list(self.groupies)))

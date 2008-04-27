@@ -3,7 +3,25 @@
 
 var Widget = Nevow.Athena.Widget;
 
-Goonmill.DiceSandbox = Widget.subclass('Goonmill.DiceSandbox');
+// attach certain automatic behavior to every widget, such as checking for
+// behavior-oriented class names and applying those behaviors
+Goonmill.GoonmillWidget = Widget.subclass('Goonmill.GoonmillWidget');
+Goonmill.GoonmillWidget.methods(
+    function __init__(self, node) {
+        Goonmill.GoonmillWidget.upcall(self, '__init__', node);
+        // apply behaviors based on class
+        node.select('.truncate18').each(function (n) {
+            // this class should never be used on a node that isn't a
+            // container of only text.
+            if (n.childElements().length > 0) {
+                debugger;
+            }
+            n.update(Goonmill.t(n.innerHTML));
+        });
+    }
+);
+
+Goonmill.DiceSandbox = Goonmill.GoonmillWidget.subclass('Goonmill.DiceSandbox');
 Goonmill.DiceSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.DiceSandbox.upcall(self, '__init__', node);
@@ -42,7 +60,7 @@ Goonmill.DiceSandbox.methods(
      } // }}}
 );
 
-Goonmill.SparqlSandbox = Widget.subclass('Goonmill.SparqlSandbox');
+Goonmill.SparqlSandbox = Goonmill.GoonmillWidget.subclass('Goonmill.SparqlSandbox');
 Goonmill.SparqlSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.SparqlSandbox.upcall(self, '__init__', node);
@@ -82,7 +100,7 @@ Goonmill.SparqlSandbox.methods(
 );
 
 
-Goonmill.WarmControl = Widget.subclass('Goonmill.WarmControl');
+Goonmill.WarmControl = Goonmill.GoonmillWidget.subclass('Goonmill.WarmControl');
 Goonmill.WarmControl.methods(
     function rollback(self, reason, oldValue, newValue) { // {{{
         alert('implement in a subclass')
@@ -121,8 +139,9 @@ Goonmill.WarmControl.methods(
 
 Goonmill.WarmText = Goonmill.WarmControl.subclass('Goonmill.WarmText');
 Goonmill.WarmText.methods(
-    function __init__(self, node, template) { // {{{
+    function __init__(self, node, defaultText, template) { // {{{
         Goonmill.WarmText.upcall(self, '__init__', node);
+        self.defaultText = (defaultText ? defaultText : 'Click to edit');
 
         if (template === undefined || !template) template = '#{quote_safe_value}';
 
@@ -190,9 +209,11 @@ Goonmill.WarmText.methods(
         if (value) { 
             var v = Goonmill.quoteSafeString(value);
             var hash = {quote_safe_value: v};
+            self.anchor.removeClassName('defaultText');
         } else {
-            /* put a blank space in so the field will never be 0px wide */
-            var hash = {quote_safe_value: '&#xA0'};
+            /* put something in so the field will never be 0px wide */
+            var hash = {quote_safe_value: self.defaultText};
+            self.anchor.addClassName('defaultText');
         }
         var original = self.anchor.innerHTML;
         self.inputNode.value = value;
@@ -212,7 +233,7 @@ Goonmill.quoteSafeString = function (s) {
 };
 
 
-Goonmill.BasicSearch = Widget.subclass('Goonmill.BasicSearch');
+Goonmill.BasicSearch = Goonmill.GoonmillWidget.subclass('Goonmill.BasicSearch');
 Goonmill.BasicSearch.methods(
     function __init__(self, node) { // {{{
         Goonmill.BasicSearch.upcall(self, '__init__', node);
@@ -306,7 +327,12 @@ Goonmill.BasicSearch.methods(
 );
 
 
-Goonmill.ConstituentList = Widget.subclass('Goonmill.ConstituentList');
+Goonmill.TRUNCATE_CHARS = 15;
+
+Goonmill.t = function (s) { return s.truncate(Goonmill.TRUNCATE_CHARS) };
+
+
+Goonmill.ConstituentList = Goonmill.GoonmillWidget.subclass('Goonmill.ConstituentList');
 Goonmill.ConstituentList.methods(
     function __init__(self, node) {
         Goonmill.ConstituentList.upcall(self, '__init__', node);
@@ -382,8 +408,8 @@ Goonmill.ConstituentList.methods(
         listItem.className = listItem.className.interpolate({kind: kind});
         listItem.setAttribute('rel', id);
         listItem.select('.closingX')[0].setAttribute('title', 'FIXME'); // FIXME
-        listItem.select('.constituentName')[0].update(name);
-        listItem.select('.constituentDetail')[0].update(detail);
+        listItem.select('.constituentName')[0].update(Goonmill.t(name));
+        listItem.select('.constituentDetail')[0].update(Goonmill.t(detail));
         self.node.insert(listItem);
         listItem.select('.closingX')[0].observe('click', function (event) {
             self.removeConstituent(listItem);
@@ -391,10 +417,11 @@ Goonmill.ConstituentList.methods(
         Effect.Appear(listItem);
         return null;
     }
+
 );
 
 
-Goonmill.MainActions = Widget.subclass('Goonmill.MainActions');
+Goonmill.MainActions = Goonmill.GoonmillWidget.subclass('Goonmill.MainActions');
 Goonmill.MainActions.methods(
     function __init__(self, node) {
         Goonmill.MainActions.upcall(self, '__init__', node);
@@ -431,7 +458,7 @@ Goonmill.MainActions.methods(
 
 
 // use this to pump events out to listeners in a pub/sub model
-Goonmill.EventBus = Widget.subclass('Goonmill.EventBus');
+Goonmill.EventBus = Goonmill.GoonmillWidget.subclass('Goonmill.EventBus');
 Goonmill.EventBus.methods(
     function __init__(self, node) {
         Goonmill.EventBus.upcall(self, '__init__', node);
@@ -460,7 +487,7 @@ Goonmill.EventBus.methods(
 
 
 // base class of everything that replaces the main pane
-Goonmill.ItemView = Widget.subclass('Goonmill.ItemView');
+Goonmill.ItemView = Goonmill.GoonmillWidget.subclass('Goonmill.ItemView');
 Goonmill.ItemView.methods(
     function __init__(self, node) {
         Goonmill.ItemView.upcall(self, '__init__', node);

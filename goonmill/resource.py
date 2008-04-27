@@ -18,8 +18,6 @@ from .user import (Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
             KIND_STENCIL, KIND_ENCOUNTER)
 from . import search
 
-TRUNCATE_NAME_LENGTH = 15
-
 
 class Root(rend.Page):
     """
@@ -235,6 +233,7 @@ class WarmText(WarmControl):
     A text edit control
     """
     jsClass = u'Goonmill.WarmText'
+    defaultText = u'Click to edit'
 
     def validate(self, value):
         """
@@ -275,17 +274,6 @@ class WorkspaceTitle(WarmText):
         return original
 
 
-def trunc(s, n):
-    """
-    s, truncated to n, with "..."
-    """
-    assert n >= 4
-    if len(s) > n:
-        s = s[:n-3]
-        return s + '...'
-    return s
-
-
 class ConstituentList(athena.LiveElement):
     """
     The workspace's list of constituent monsters in the center-left panel
@@ -313,11 +301,11 @@ class ConstituentList(athena.LiveElement):
 
             base = c.getStencilBase()
             if base and c.kind == KIND_MONSTERGROUP:
-                pat.fillSlots('constituentName', trunc(base.name, TRUNCATE_NAME_LENGTH))
+                pat.fillSlots('constituentName', base.name)
             else:
-                pat.fillSlots('constituentName', trunc(c.name, TRUNCATE_NAME_LENGTH))
+                pat.fillSlots('constituentName', c.name)
 
-            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), TRUNCATE_NAME_LENGTH))
+            pat.fillSlots('constituentDetail', c.briefDetail())
             pat.fillSlots('constituentId', c.id)
 
             tag[pat]
@@ -356,7 +344,7 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render a monster group in this list
         """
-        name = trunc(constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
+        name = constituent.getStencilBase().name
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
@@ -366,7 +354,7 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render an npc in this list
         """
-        name = trunc(constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
+        name = constituent.getStencilBase().name
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
@@ -469,8 +457,14 @@ class MonsterGroupView(athena.LiveElement):
 
     @page.renderer
     def initialize(self, req, tag):
-        name = trunc(self.constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
+        name = self.constituent.getStencilBase().name
         tag.fillSlots('monsterName', name)
+
+        mgroup = self.constituent.fuckComponentArchitecture()
+        gn = GroupName(mgroup)
+        gn.setFragmentParent(self)
+        tag.fillSlots('groupName', gn)
+
         return tag
 
     @page.renderer
@@ -522,6 +516,32 @@ class GroupieHitPoints(WarmText):
         return original
 
 
+class GroupName(WarmText):
+    """
+    Change the hit points on a groupie
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupName'))
+    def __init__(self, monsterGroup, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.monsterGroup = monsterGroup 
+
+    @page.renderer
+    def init(self, req, tag):
+        gn = self.monsterGroup.name
+        tag.fillSlots('value', gn or '')
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.monsterGroup.name = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.monsterGroup.name
+        self.monsterGroup.name = value
+        from .user import theStore
+        theStore.commit()
+        return original
 
 
 class NPCView(athena.LiveElement):
@@ -537,5 +557,5 @@ class NPCView(athena.LiveElement):
 
     @page.renderer
     def initialize(self, req, tag):
-        tag.fillSlots('monsterName', trunc(self.constituent.name, TRUNCATE_NAME_LENGTH))
+        tag.fillSlots('monsterName', self.constituent.name)
         return tag

@@ -20,10 +20,10 @@
       "title"><n:slot name=
       "closingXTitle" /></n:attr></span>
     <span class=
-      "constituentName"><n:slot name=
+      "constituentName truncate18"><n:slot name=
       "constituentName" /></span>
     <span class=
-      "constituentDetail"><n:slot name=
+      "constituentDetail truncate18"><n:slot name=
       "constituentDetail" /></span>
     <div style="float: left; clear: both;" />
   </div>

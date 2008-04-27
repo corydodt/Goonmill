@@ -40,7 +40,8 @@ CREATE TABLE stencil (
 );
 
 CREATE TABLE monsterGroup (
-    id INTEGER PRIMARY KEY
+    id INTEGER PRIMARY KEY,
+    name varchar(255)
 );
 
 

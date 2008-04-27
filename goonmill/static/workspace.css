@@ -124,7 +124,6 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 /* search */ }
 /* search */ 
 /* search */ [name=searchTerms].defaultText {
-/* search */     color: #aaa;
 /* search */     text-align: center;
 /* search */ }
 /* search */ 
@@ -236,4 +235,8 @@ form[name=increaseBy] {
 
 input[name=increaseBy] {
     width: 7em;
+}
+
+.defaultText {
+    color: #aaa;
 }
