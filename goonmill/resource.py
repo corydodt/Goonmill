@@ -480,9 +480,12 @@ class MonsterGroupView(athena.LiveElement):
             ghp = GroupieHitPoints(groupie)
             ghp.setFragmentParent(self)
 
+            ga = GroupieAlignment(groupie)
+            ga.setFragmentParent(self)
+
             pat = pg()
             pat.fillSlots('hitPoints', ghp)
-            pat.fillSlots('alignment', groupie.alignment)
+            pat.fillSlots('alignment', ga)
             pat.fillSlots('gear', 'TODO')
             pat.fillSlots('spells', 'TODO')
             pat.fillSlots('personalName', gn)
@@ -549,7 +552,7 @@ class GroupName(WarmText):
 
 class GroupieName(WarmText):
     """
-    Change the hit points on a groupie
+    Change the personal name on a groupie
     """
     docFactory = loaders.xmlfile(RESOURCE('templates/GroupieName'))
     def __init__(self, groupie, *a, **kw):
@@ -570,6 +573,34 @@ class GroupieName(WarmText):
     def setLocally(self, value):
         original = self.groupie.name
         self.groupie.name = value
+        from .user import theStore
+        theStore.commit()
+        return original
+
+
+class GroupieAlignment(WarmText):
+    """
+    Change the alignment on a groupie
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupieAlignment'))
+    def __init__(self, groupie, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.groupie = groupie 
+
+    @page.renderer
+    def init(self, req, tag):
+        gn = self.groupie.alignment
+        tag.fillSlots('value', gn or '')
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.groupie.alignment = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.groupie.alignment
+        self.groupie.alignment = value
         from .user import theStore
         theStore.commit()
         return original
