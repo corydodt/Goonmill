@@ -18,6 +18,8 @@ from .user import (Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
             KIND_STENCIL, KIND_ENCOUNTER)
 from . import search
 
+TRUNCATE_NAME_LENGTH = 15
+
 
 class Root(rend.Page):
     """
@@ -311,11 +313,11 @@ class ConstituentList(athena.LiveElement):
 
             base = c.getStencilBase()
             if base and c.kind == KIND_MONSTERGROUP:
-                pat.fillSlots('constituentName', trunc(base.name, 14))
+                pat.fillSlots('constituentName', trunc(base.name, TRUNCATE_NAME_LENGTH))
             else:
-                pat.fillSlots('constituentName', trunc(c.name, 14))
+                pat.fillSlots('constituentName', trunc(c.name, TRUNCATE_NAME_LENGTH))
 
-            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), 14))
+            pat.fillSlots('constituentDetail', trunc(c.briefDetail(), TRUNCATE_NAME_LENGTH))
             pat.fillSlots('constituentId', c.id)
 
             tag[pat]
@@ -354,7 +356,7 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render a monster group in this list
         """
-        name = trunc(constituent.getStencilBase().name, 14)
+        name = trunc(constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
@@ -364,7 +366,7 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render an npc in this list
         """
-        name = trunc(constituent.getStencilBase().name, 14)
+        name = trunc(constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
@@ -467,7 +469,7 @@ class MonsterGroupView(athena.LiveElement):
 
     @page.renderer
     def initialize(self, req, tag):
-        name = trunc(self.constituent.getStencilBase().name, 14)
+        name = trunc(self.constituent.getStencilBase().name, TRUNCATE_NAME_LENGTH)
         tag.fillSlots('monsterName', name)
         return tag
 
@@ -475,15 +477,51 @@ class MonsterGroupView(athena.LiveElement):
     def monsterGroupList(self, req, tag):
         mg = self.constituent.fuckComponentArchitecture()
         pg = tag.patternGenerator("monsterGroupRow")
-        for group in mg.groupies:
+        for groupie in mg.groupies:
+            groupie.randomize(overwrite=False)
+
+            ghp = GroupieHitPoints(groupie)
+            ghp.setFragmentParent(self)
+
             pat = pg()
-            pat.fillSlots('hitPoints', 'TODO')
-            pat.fillSlots('alignment', 'TODO')
+            pat.fillSlots('hitPoints', ghp)
+            pat.fillSlots('alignment', groupie.alignment)
             pat.fillSlots('gear', 'TODO')
             pat.fillSlots('spells', 'TODO')
             pat.fillSlots('personalName', 'TODO')
             tag[pat]
         return tag
+
+
+class GroupieHitPoints(WarmText):
+    """
+    Change the hit points on a groupie
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupieHitPoints'))
+    def __init__(self, groupie, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.groupie = groupie 
+
+    @page.renderer
+    def init(self, req, tag):
+        hp = self.groupie.hitPoints
+        assert hp is not None
+        tag.fillSlots('value', hp)
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.groupie.hitPoints = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.groupie.hitPoints
+        self.groupie.hitPoints = int(value)
+        from .user import theStore
+        theStore.commit()
+        return original
+
+
 
 
 class NPCView(athena.LiveElement):
@@ -499,5 +537,5 @@ class NPCView(athena.LiveElement):
 
     @page.renderer
     def initialize(self, req, tag):
-        tag.fillSlots('monsterName', trunc(self.constituent.name, 14))
+        tag.fillSlots('monsterName', trunc(self.constituent.name, TRUNCATE_NAME_LENGTH))
         return tag

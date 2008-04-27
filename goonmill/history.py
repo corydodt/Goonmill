@@ -254,26 +254,30 @@ class Statblock(object):
         """
         @return: A string of multiple hit points
         """
+        rolled = [self.singleHitPoints() for n in range(self._count)]
+        for n in enumerate(rolled):
+            if n == -1:
+                rolled[n] = 'Special'
+
+        return ', '.join(map(str, rolled))
+
+    def singleHitPoints(self):
+        """
+        @return: integer hit points
+        """
         if self._parsedHitDice is None:
             self._parsedHitDice = self.parseHitPoints()
 
-        hplist = []
-
         # STILL None.. (i.e. no valid dice expression)
         if self._parsedHitDice is None: 
-            hplist = ['Special'] * self._count
-        else:
-            for n in range(self._count):
-                rolled = list(dice.roll(self._parsedHitDice))
-                assert len(rolled) == 1, "Too many repeats in this expression - a monter may have only one hit dice expression with no repeats!"
-                hplist.append(rolled[0].sum())
+            return -1
 
-            # minimum of 1hp for a monster
-            for n, hp in enumerate(hplist):
-                if hp < 1: 
-                    hplist[n] = 1
+        rolled = list(dice.roll(self._parsedHitDice))
+        assert (len(rolled) == 1, "No repeat count allowed in expression")
+        hp = rolled[0].sum()
 
-        return ', '.join(map(str, hplist))
+        # must have at least 1 hp if monster has a legitimate dice expression
+        return (hp if hp >= 1 else 1)
 
     def languages(self):
         """Return the languages a creature knows, determined by inspecting

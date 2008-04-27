@@ -4,6 +4,7 @@ Users and user acquisition
 from storm import locals
 
 from .util import RESOURCE
+from .history import Statblock
 
 from zope.interface import Interface, implements
 
@@ -208,10 +209,27 @@ class Groupie(object):
     id = locals.Int(primary=True)
     monsterGroupId = locals.Int()
     monsterGroup = locals.Reference(monsterGroupId, MonsterGroup.id)
+    constituent = locals.Reference(monsterGroupId, Constituent.id)
     hitPoints = locals.Int()
+    alignment = locals.Unicode()
     name = locals.Unicode()
     gear = locals.Unicode()
     spells = locals.Unicode()
+
+    def randomize(self, overwrite=True):
+        """
+        Generate random dierolled attributes.  Currently this means hit points
+        and alignment.
+
+        If overwrite=False, do not overwrite any attributes that are already
+        set.
+        """
+        base = self.constituent.getStencilBase()
+        sb = Statblock.fromMonster(base)
+        if overwrite == True or self.hitPoints is None:
+            self.hitPoints = sb.singleHitPoints()
+        if overwrite == True or self.alignment is None:
+            self.alignment = sb.formatAlignment()
 
 
 MonsterGroup.groupies = locals.ReferenceSet(
