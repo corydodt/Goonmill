@@ -242,6 +242,8 @@ class WarmText(WarmControl):
         """
         return len(value) < 2000
 
+    def getInitialArguments(self):
+        return (self.defaultText, )
 
 class WorkspaceTitle(WarmText):
     """
@@ -480,14 +482,20 @@ class MonsterGroupView(athena.LiveElement):
             ghp = GroupieHitPoints(groupie)
             ghp.setFragmentParent(self)
 
+            gg = GroupieGear(groupie)
+            gg.setFragmentParent(self)
+
+            gs = GroupieSpells(groupie)
+            gs.setFragmentParent(self)
+
             ga = GroupieAlignment(groupie)
             ga.setFragmentParent(self)
 
             pat = pg()
             pat.fillSlots('hitPoints', ghp)
             pat.fillSlots('alignment', ga)
-            pat.fillSlots('gear', 'TODO')
-            pat.fillSlots('spells', 'TODO')
+            pat.fillSlots('gear', gg)
+            pat.fillSlots('spells', gs)
             pat.fillSlots('personalName', gn)
             tag[pat]
         return tag
@@ -554,6 +562,7 @@ class GroupieName(WarmText):
     """
     Change the personal name on a groupie
     """
+    defaultText = u'Edit name'
     docFactory = loaders.xmlfile(RESOURCE('templates/GroupieName'))
     def __init__(self, groupie, *a, **kw):
         athena.LiveElement.__init__(self, *a, **kw)
@@ -573,6 +582,64 @@ class GroupieName(WarmText):
     def setLocally(self, value):
         original = self.groupie.name
         self.groupie.name = value
+        from .user import theStore
+        theStore.commit()
+        return original
+
+
+class GroupieGear(WarmText):
+    """
+    Change the gear on a groupie
+    """
+    defaultText = u'Edit gear'
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupieGear'))
+    def __init__(self, groupie, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.groupie = groupie 
+
+    @page.renderer
+    def init(self, req, tag):
+        gn = self.groupie.gear
+        tag.fillSlots('value', gn or '')
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.groupie.gear = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.groupie.gear
+        self.groupie.gear = value
+        from .user import theStore
+        theStore.commit()
+        return original
+
+
+class GroupieSpells(WarmText):
+    """
+    Change the spells on a groupie
+    """
+    defaultText = u'Edit spells'
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupieSpells'))
+    def __init__(self, groupie, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.groupie = groupie 
+
+    @page.renderer
+    def init(self, req, tag):
+        gn = self.groupie.spells
+        tag.fillSlots('value', gn or '')
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.groupie.spells = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.groupie.spells
+        self.groupie.spells = value
         from .user import theStore
         theStore.commit()
         return original

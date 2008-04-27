@@ -1,0 +1,5 @@
+<div xmlns:n="http://nevow.com/ns/nevow/0.1" class=
+  "groupieGear" n:render="liveElement"><a name=
+  "groupieGear" class="warmText" n:render="init"><n:slot name=
+  "value" /></a></div>
+<!-- vim:set ft=xhtml: -->
