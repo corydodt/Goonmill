@@ -54,7 +54,7 @@
 a.warmText:hover {
     color: #555;
     background-color: white;
-    border: 2px inset black;
+    outline: 2px inset black;
 }
 
 .sidebar {
