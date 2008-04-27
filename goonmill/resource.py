@@ -474,6 +474,9 @@ class MonsterGroupView(athena.LiveElement):
         for groupie in mg.groupies:
             groupie.randomize(overwrite=False)
 
+            gn = GroupieName(groupie)
+            gn.setFragmentParent(self)
+
             ghp = GroupieHitPoints(groupie)
             ghp.setFragmentParent(self)
 
@@ -482,7 +485,7 @@ class MonsterGroupView(athena.LiveElement):
             pat.fillSlots('alignment', groupie.alignment)
             pat.fillSlots('gear', 'TODO')
             pat.fillSlots('spells', 'TODO')
-            pat.fillSlots('personalName', 'TODO')
+            pat.fillSlots('personalName', gn)
             tag[pat]
         return tag
 
@@ -539,6 +542,34 @@ class GroupName(WarmText):
     def setLocally(self, value):
         original = self.monsterGroup.name
         self.monsterGroup.name = value
+        from .user import theStore
+        theStore.commit()
+        return original
+
+
+class GroupieName(WarmText):
+    """
+    Change the hit points on a groupie
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/GroupieName'))
+    def __init__(self, groupie, *a, **kw):
+        athena.LiveElement.__init__(self, *a, **kw)
+        self.groupie = groupie 
+
+    @page.renderer
+    def init(self, req, tag):
+        gn = self.groupie.name
+        tag.fillSlots('value', gn or '')
+        return tag
+
+    def rollback(self, failure, oldValue, newValue):
+        self.groupie.name = oldValue
+        from .user import theStore
+        theStore.commit()
+
+    def setLocally(self, value):
+        original = self.groupie.name
+        self.groupie.name = value
         from .user import theStore
         theStore.commit()
         return original
