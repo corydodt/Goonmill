@@ -19,7 +19,8 @@
         <thead>
           <tr>
             <td><input type="checkbox" /></td>
-            <td><img src="/static/d20.png" /></td>
+            <td><img src="/static/d20.png" title=
+              "Reroll all checked" alt="Reroll all checked" /></td>
             <td>Hit Points</td>
             <td>Alignment</td>
             <td>Treasure/Gear</td>
