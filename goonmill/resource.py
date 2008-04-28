@@ -330,12 +330,7 @@ class ConstituentList(athena.LiveElement):
 
         view.setFragmentParent(self.fragmentParent.eventBus)
 
-        self.fragmentParent.eventBus.showConstituent(view)
-
-        # TODO - the above is silly.  i really just need to return view!
-        # a callback on the client can call
-        # document.fire('Goonmill:widgetReady'), and EventBus can call
-        # document.observe('...')
+        return view
 
     @athena.expose
     def removeConstituent(self, id):
@@ -407,8 +402,7 @@ class BasicSearch(athena.LiveElement):
         d = self.fragmentParent.constituentList.addMonsterGroup(c)
 
         def _monsterGroupWasListed(_):
-            d = self.fragmentParent.eventBus.showConstituent(mgv)
-            return None
+            return mgv
 
         d.addCallback(_monsterGroupWasListed)
         return d
@@ -425,8 +419,7 @@ class BasicSearch(athena.LiveElement):
         d = self.fragmentParent.constituentList.addNPC(c)
 
         def _npcWasListed(_):
-            d = self.fragmentParent.eventBus.showConstituent(npcv)
-            return None
+            return npcv
 
         d.addCallback(_npcWasListed)
         return d
@@ -440,11 +433,8 @@ class EventBus(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/EventBus'))
     jsClass = u'Goonmill.EventBus'
 
-    def showConstituent(self, constituentView):
-        """
-        Push a constituentView widget over to the client
-        """
-        return self.callRemote("showConstituent", constituentView)
+    # TODO - drop this class entirely.  this is completely implemented in
+    # javascript now.
 
 
 class WhichNewThing(page.Element):

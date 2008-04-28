@@ -289,6 +289,7 @@ Goonmill.BasicSearch.methods(
         event.preventDefault();
         $A(self.hitContainer.childNodes).each(function (e) { e.remove() } );
         var d = self.callRemote('searched', self.searchForm.searchTerms.value);
+
         d.addCallback(function (hits) {
             self.resetSearchInput();
             for (var n=0; n<hits.length; n++) {
@@ -313,6 +314,7 @@ Goonmill.BasicSearch.methods(
                 Effect.SlideDown(anc);
             }
         });
+
         return d;
     },
 
@@ -322,15 +324,29 @@ Goonmill.BasicSearch.methods(
         event.preventDefault();
         var name = node.select('.hitName')[0].innerHTML;
         var d = Goonmill.whichNewThing(name);
+
         d.addCallback(function (which) {
             if (which[0] == 'npc') {
                 var dd = self.callRemote('newNPC', monsterId);
+                dd.addCallback(function (wi) {
+                    document.fire('Goonmill:newNPC', {
+                        npc:wi
+                    });
+                    return null;
+                });
             } else if (which[0] == 'monsterGroup') {
                 var count = parseInt(which[1]);
                 var dd = self.callRemote('newMonsterGroup', monsterId, count);
+                dd.addCallback(function (wi) {
+                    document.fire('Goonmill:newMonsterGroup', {
+                        monsterGroup:wi
+                    });
+                    return null;
+                });
             }
             return dd;
         });
+
         return d;
     }
 );
@@ -345,12 +361,12 @@ Goonmill.ConstituentList.methods(
         node.select('.constituent').each(function (cnst) {
             // closing x
             cnst.select('.closingX')[0].observe('click', (function (c, event) {
-                self.removeConstituent(c);
+                self.removeConstituentClicked(event, c);
             }).curry(cnst));
 
             // the button itself
             cnst.observe('click', (function (c, event) {
-                self.displayConstituent(c);
+                self.constituentClicked(c);
             }).curry(cnst));
         });
 
@@ -361,16 +377,25 @@ Goonmill.ConstituentList.methods(
     }, 
 
     // put a constituent on the stage
-    function displayConstituent(self, node) {
+    function constituentClicked(self, node) {
         var id = parseInt(node.readAttribute('rel'));
         d = self.callRemote('displayConstituent', id);
         var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+        d.addCallback(function (wi) {
+            if (node.hasClassName('kind-monsterGroup')) {
+                document.fire('Goonmill:newMonsterGroup', {monsterGroup:wi});
+            } else if (node.hasClassName('kind-npc')) {
+                document.fire('Goonmill:newNPC', {npc:wi});
+            } else {
+                throw 'Not implemented - clicked constituent';
+            }
+        });
         d.addBoth(function () { Goonmill.unspin(spinner); });
         return d;
     },
 
     // throw the given constituent out of the workspace
-    function removeConstituent(self, node) {
+    function removeConstituentClicked(self, event, node) {
         var args = {name: node.select('.constituentName')[0].innerHTML,
             detail: node.select('.constituentDetail')[0].innerHTML
         };
@@ -495,6 +520,9 @@ Goonmill.EventBus.methods(
         });
 
         // watch for incoming widgets, and field them.
+        document.observe('Goonmill:newNPC', function (e) {
+            self.showConstituent(e.memo.npc);
+        });
         document.observe('Goonmill:newMonsterGroup', function (e) {
             self.showConstituent(e.memo.monsterGroup);
         });
