@@ -43,18 +43,36 @@
           <div class="x2-1 mainActions">
             <n:slot name="mainActions" />
           </div>
-          <a name="itemViewPlaceholder" />
+
+          <!-- 
+          the itemView will be replaced whenever a constituent is viewed
+          -->
           <div class="x2-2 itemView">
             <div class="x2-2-1">
               <div class="x2-2-1x itemHeader" />
             </div>
             <div class="x2-2-2 itemMain" />
           </div>
+
         </div>
       </div>
     </div>
     <div class="offstage">
+      <!-- things that are held offstage with display:none so they can be
+      cloned into the "visible" part of the DOM when needed.
+      -->
+
+      <!-- the dialog that disambiguates after you click a search hit -->
       <n:slot name="whichNewThing" />
+
+      <!-- the "blank" constituent view -->
+      <div class="x2-2 itemView">
+        <div class="x2-2-1">
+          <div class="x2-2-1x itemHeader" />
+        </div>
+        <div class="x2-2-2 itemMain" />
+      </div>
+
     </div>
   </body>
 </html>

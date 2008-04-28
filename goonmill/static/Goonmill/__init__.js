@@ -381,6 +381,7 @@ Goonmill.ConstituentList.methods(
         var id = parseInt(node.readAttribute('rel'));
         d = self.callRemote('displayConstituent', id);
         var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+
         d.addCallback(function (wi) {
             if (node.hasClassName('kind-monsterGroup')) {
                 document.fire('Goonmill:newMonsterGroup', {monsterGroup:wi});
@@ -390,6 +391,7 @@ Goonmill.ConstituentList.methods(
                 throw 'Not implemented - clicked constituent';
             }
         });
+
         d.addBoth(function () { Goonmill.unspin(spinner); });
         return d;
     },
@@ -430,6 +432,7 @@ Goonmill.ConstituentList.methods(
                 var d = self.callRemote('removeConstituent', id);
                 d.addCallback(function (r) {
                     Effect.Fade(node, {afterFinish: (function(n) { n.remove() }).curry(node)});
+                    document.fire('Goonmill:removedConstituent', {id:id});
                 });
                 return d;
             }
@@ -524,8 +527,13 @@ Goonmill.EventBus.methods(
         document.observe('Goonmill:newNPC', function (e) {
             self.showConstituent(e.memo.npc);
         });
+
         document.observe('Goonmill:newMonsterGroup', function (e) {
             self.showConstituent(e.memo.monsterGroup);
+        });
+
+        document.observe('Goonmill:removedConstituent', function (e) {
+            self.hideConstituent(e.memo.id);
         });
     },
 
@@ -536,6 +544,19 @@ Goonmill.EventBus.methods(
         self.childWidgets.each(function (w) { w.detach() } );
         var d = self.addChildWidgetFromWidgetInfo(wi);
         return null;
+    },
+
+    // clean up the stage when a constituent is there that was just removed
+    function hideConstituent(self, id) {
+        self.childWidgets.each(function (w) {
+            if (w.constituentId == id) {
+                w.detach();
+
+                var blank = document.body.select(
+                    '.offstage .itemView')[0].cloneNode(true);
+                w.node.replace(blank);
+            }
+        });
     }
 );
 
@@ -581,7 +602,7 @@ Goonmill.MonsterGroup.methods(
         // browser.  Server code will check to make sure the total is in sane
         // limits (and raise if not)
         var increaseBy = node.select('[name=increaseBy]')[0];
-        /*
+
         var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
             validMessage:''
         });
@@ -589,10 +610,13 @@ Goonmill.MonsterGroup.methods(
         increaseValid.add(Validate.Numericality, {
             onlyInteger: true, minimum: 1, maximum: 123
         });
-        */
 
         increaseBy.observe('submit', function (e) { 
-                self.onIncreaseBySubmit(e)
+            // we have to manually validate the form to block submittal, since
+            // we are overriding the default submit behavior.  LiveValidation
+            // only attempts to block the default submit behavior.
+            if (LiveValidation.massValidate([increaseValid]))
+                return self.onIncreaseBySubmit(e);
         });
 
         // whenever this displays, fix the constituent list to match it
@@ -741,8 +765,8 @@ Goonmill.whichNewThing = function(name) {
 var LightboxConfig = function () {
     return Class.create({
         opacity:0.7,
-        fade:true, 
-        fadeDuration: 0.4,
+        fade: false,  // too slow joe
+        // fadeDuration: 0.4,
         initialize: function() {},
         beforeClose: function() { throw $break; }
 })}();
