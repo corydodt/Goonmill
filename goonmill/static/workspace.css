@@ -41,8 +41,8 @@
 }
 */
 
-@import "/static/layoutWorkspace.css";
-@import "/static/modal.css";
+@import url(/static/layoutWorkspace.css);
+@import url(/static/modal.css);
 
 .workspaceTitle {
     font-size: 28pt;
