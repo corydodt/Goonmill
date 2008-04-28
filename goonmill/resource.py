@@ -18,6 +18,8 @@ from .user import (Groupie, Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
             KIND_STENCIL, KIND_ENCOUNTER)
 from . import search
 
+TOO_MANY_GROUPIES = 123
+
 
 class Root(rend.Page):
     """
@@ -321,14 +323,19 @@ class ConstituentList(athena.LiveElement):
 
         if c.kind == KIND_NPC:
             view = NPCView(c)
-            view.setFragmentParent(self.fragmentParent.eventBus)
         elif c.kind == KIND_MONSTERGROUP:
             view = MonsterGroupView(c)
-            view.setFragmentParent(self.fragmentParent.eventBus)
         else:
             raise NotImplemented('other kinds')
 
+        view.setFragmentParent(self.fragmentParent.eventBus)
+
         self.fragmentParent.eventBus.showConstituent(view)
+
+        # TODO - the above is silly.  i really just need to return view!
+        # a callback on the client can call
+        # document.fire('Goonmill:widgetReady'), and EventBus can call
+        # document.observe('...')
 
     @athena.expose
     def removeConstituent(self, id):
@@ -503,6 +510,32 @@ class MonsterGroupView(athena.LiveElement):
         return tag
 
     @athena.expose
+    def increaseGroupies(self, amount):
+        """
+        Add 'amount' more groupies.
+
+        Returns a new widget to display by cloning me.
+        """
+        cn = self.constituent
+        mg = cn.fuckComponentArchitecture()
+        total = len(list(mg.groupies)) + amount
+        assert total <= TOO_MANY_GROUPIES
+
+
+        from .user import theStore
+        for n in range(amount):
+            groupie = Groupie()
+            groupie.monsterGroup = mg
+            groupie.randomize()
+            theStore.add(groupie)
+        theStore.commit()
+
+        newMg = MonsterGroupView(self.constituent)
+        newMg.setFragmentParent(self.fragmentParent)
+        self.detach()
+        return newMg
+
+    @athena.expose
     def deleteChecked(self, ids):
         """
         Remove from the group the groupies identified by 'ids'
@@ -519,6 +552,7 @@ class MonsterGroupView(athena.LiveElement):
 
     def getInitialArguments(self):
         return [self.constituent.id]
+
 
 class GroupieHitPoints(WarmText):
     """

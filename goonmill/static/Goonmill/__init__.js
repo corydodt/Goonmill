@@ -59,7 +59,7 @@ Goonmill.DiceSandbox.methods(
     }, // }}}
 
     function onQuerySubmit(self, event) { // {{{
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
 
         var d = self.callRemote("onQuerySubmit", self.queryForm.query.value);
@@ -98,7 +98,7 @@ Goonmill.SparqlSandbox.methods(
     }, // }}}
 
     function onQuerySubmit(self, event) { // {{{
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
 
         var d = self.callRemote("onQuerySubmit", self.queryForm.query.value);
@@ -193,7 +193,7 @@ Goonmill.WarmText.methods(
 
     /* put warmtext into editing mode */
     function editWarmText(self, event) {
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
         self.anchor.hide();
         self.inputNode.show();
@@ -202,7 +202,7 @@ Goonmill.WarmText.methods(
     },
 
     function onSubmit(self, event) {
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
         self.inputNode.hide();
         var original = self.anchor.innerHTML;
@@ -285,7 +285,7 @@ Goonmill.BasicSearch.methods(
 
     // tell the server we want a new list of search results
     function onSubmitSearch(self, event) {
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
         $A(self.hitContainer.childNodes).each(function (e) { e.remove() } );
         var d = self.callRemote('searched', self.searchForm.searchTerms.value);
@@ -318,7 +318,7 @@ Goonmill.BasicSearch.methods(
 
     // tell the server that this search hit is our search hit
     function clickedHit(self, event, node, monsterId) {
-        event.stopPropagation();
+        event.stop();
         event.preventDefault();
         var name = node.select('.hitName')[0].innerHTML;
         var d = Goonmill.whichNewThing(name);
@@ -431,7 +431,10 @@ Goonmill.ConstituentList.methods(
     function updateConstituentDetail(self, id, detail) {
         var match = '.constituent[rel=' + id + '] .constituentDetail';
         var detail = detail.toString().truncate(15);
-        self.node.select(match).invoke('update', detail);
+        var n = self.node.select(match)[0];
+        n.hide();
+        n.update(detail);
+        Effect.Appear(n);
     }
 
 );
@@ -482,7 +485,7 @@ Goonmill.EventBus.methods(
         // keyboard shortcuts!
         document.observe('keypress', function (e) {
             // ignore keypresses that take place in input[type=text]
-            var t = e.target;
+            var t = e.element();
             if (t.tagName == 'INPUT' && t.type == 'text') return;
 
             // for debugging
@@ -490,7 +493,11 @@ Goonmill.EventBus.methods(
                 Goonmill.debugView();
             }
         });
-        //
+
+        // watch for incoming widgets, and field them.
+        document.observe('Goonmill:newMonsterGroup', function (e) {
+            self.showConstituent(e.memo.monsterGroup);
+        });
     },
 
     // display a constituent on the stage
@@ -500,10 +507,6 @@ Goonmill.EventBus.methods(
         self.childWidgets.each(function (w) { w.detach() } );
         var d = self.addChildWidgetFromWidgetInfo(wi);
         return null;
-    },
-    
-    // re-display detail of a constituent in response to some change
-    function updateConstituentDetail(self, constituentId, detail) {
     }
 );
 
@@ -545,7 +548,45 @@ Goonmill.MonsterGroup.methods(
                 self.randomize(randomizeClicked, e);
         });
 
+        // the "increase by" form must have a limit to prevent overloading the
+        // browser.  Server code will check to make sure the total is in sane
+        // limits (and raise if not)
+        var increaseBy = node.select('[name=increaseBy]')[0];
+        /*
+        var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
+            validMessage:''
+        });
+        increaseValid.add(Validate.Presence);
+        increaseValid.add(Validate.Numericality, {
+            onlyInteger: true, minimum: 1, maximum: 123
+        });
+        */
+
+        increaseBy.observe('submit', function (e) { 
+                self.onIncreaseBySubmit(e)
+        });
+
+        // whenever this displays, fix the constituent list to match it
+        document.fire('Goonmill:constituentDetailUpdate', {
+            id: self.constituentId,
+            detail: node.select('.monsterGroupRow').length
+        });
+
         self.fixDeleteButtons();
+    },
+
+    // ask the server to increase groupies.
+    function onIncreaseBySubmit(self, event) {
+        event.stop();
+        event.preventDefault();
+        var amount = parseInt(event.element().increaseByAmount.value, 10);
+        var d = self.callRemote('increaseGroupies', amount);
+            
+
+        d.addCallback(function (wi) {
+            document.fire('Goonmill:newMonsterGroup', {monsterGroup:wi});
+        });
+        return d;
     },
 
     function deleteClicked(self, node, event) {
