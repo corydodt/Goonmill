@@ -14,7 +14,7 @@ from twisted.cred.credentials import IAnonymous
 from twisted.cred.checkers import AllowAnonymousAccess
 
 from .util import RESOURCE
-from .user import (Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
+from .user import (Groupie, Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
             KIND_STENCIL, KIND_ENCOUNTER)
 from . import search
 
@@ -244,6 +244,7 @@ class WarmText(WarmControl):
 
     def getInitialArguments(self):
         return (self.defaultText, )
+
 
 class WorkspaceTitle(WarmText):
     """
@@ -497,9 +498,27 @@ class MonsterGroupView(athena.LiveElement):
             pat.fillSlots('gear', gg)
             pat.fillSlots('spells', gs)
             pat.fillSlots('personalName', gn)
+            pat.fillSlots('groupieId', groupie.id)
             tag[pat]
         return tag
 
+    @athena.expose
+    def deleteChecked(self, ids):
+        """
+        Remove from the group the groupies identified by 'ids'
+
+        Returns count of removed.
+        """
+        from .user import theStore
+        for id in ids:
+            groupie = theStore.get(Groupie, id)
+            theStore.remove(groupie)
+        theStore.commit()
+
+        return len(ids)
+
+    def getInitialArguments(self):
+        return [self.constituent.id]
 
 class GroupieHitPoints(WarmText):
     """

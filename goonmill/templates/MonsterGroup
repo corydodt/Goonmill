@@ -4,7 +4,7 @@
     <div class="x2-2-1">
       <div class="x2-2-1x itemHeader">
         <div class="constituent kind-monsterGroup">
-          <span class="constituentName truncate18"><n:slot name="monsterName" /></span>
+          <span class="constituentName truncate25"><n:slot name="monsterName" /></span>
         </div>
         <div class="constituentGroupName"><n:slot name="groupName" /></div>
         <div class="imageBox" />
@@ -18,8 +18,8 @@
       <table class="monsterGroupTable">
         <thead>
           <tr>
-            <td><input type="checkbox" /></td>
-            <td><img src="/static/d20.png" title=
+            <td><input name="toggleAll" type="checkbox" /></td>
+            <td><img class="randomize" src="/static/d20.png" title=
               "Reroll all checked" alt="Reroll all checked" /></td>
             <td>Hit Points</td>
             <td>Alignment</td>
@@ -29,8 +29,9 @@
           </tr>
         </thead>
         <tbody n:render="monsterGroupList">
-          <tr n:pattern="monsterGroupRow">
-            <td><input type="checkbox" /></td>
+          <tr class="monsterGroupRow" n:pattern="monsterGroupRow"><n:attr name=
+            "rel"><n:slot name="groupieId" /></n:attr>
+            <td><input name='selectGroupie' type="checkbox" /></td>
             <td />
             <td><n:slot name="hitPoints" /></td>
             <td><n:slot name="alignment" /></td>

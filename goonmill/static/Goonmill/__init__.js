@@ -16,7 +16,16 @@ Goonmill.GoonmillWidget.methods(
             if (n.childElements().length > 0) {
                 debugger;
             }
-            n.update(Goonmill.t(n.innerHTML));
+            n.update(n.innerHTML.truncate(15));
+        });
+
+        node.select('.truncate25').each(function (n) {
+            // this class should never be used on a node that isn't a
+            // container of only text.
+            if (n.childElements().length > 0) {
+                debugger;
+            }
+            n.update(n.innerHTML.truncate(22));
         });
     }
 );
@@ -327,11 +336,6 @@ Goonmill.BasicSearch.methods(
 );
 
 
-Goonmill.TRUNCATE_CHARS = 15;
-
-Goonmill.t = function (s) { return s.truncate(Goonmill.TRUNCATE_CHARS) };
-
-
 Goonmill.ConstituentList = Goonmill.GoonmillWidget.subclass('Goonmill.ConstituentList');
 Goonmill.ConstituentList.methods(
     function __init__(self, node) {
@@ -348,6 +352,11 @@ Goonmill.ConstituentList.methods(
             cnst.observe('click', (function (c, event) {
                 self.displayConstituent(c);
             }).curry(cnst));
+        });
+
+        // using custom events
+        document.observe('Goonmill:constituentDetailUpdate', function (e) {
+            self.updateConstituentDetail(e.memo.id, e.memo.detail);
         });
     }, 
 
@@ -408,14 +417,21 @@ Goonmill.ConstituentList.methods(
         listItem.className = listItem.className.interpolate({kind: kind});
         listItem.setAttribute('rel', id);
         listItem.select('.closingX')[0].setAttribute('title', 'FIXME'); // FIXME
-        listItem.select('.constituentName')[0].update(Goonmill.t(name));
-        listItem.select('.constituentDetail')[0].update(Goonmill.t(detail));
+        listItem.select('.constituentName')[0].update(name.truncate(15));
+        listItem.select('.constituentDetail')[0].update(detail.truncate(15));
         self.node.insert(listItem);
         listItem.select('.closingX')[0].observe('click', function (event) {
             self.removeConstituent(listItem);
         });
         Effect.Appear(listItem);
         return null;
+    },
+
+    // set the visible detail of a constituent item in the list
+    function updateConstituentDetail(self, id, detail) {
+        var match = '.constituent[rel=' + id + '] .constituentDetail';
+        var detail = detail.toString().truncate(15);
+        self.node.select(match).invoke('update', detail);
     }
 
 );
@@ -479,9 +495,15 @@ Goonmill.EventBus.methods(
 
     // display a constituent on the stage
     function showConstituent(self, wi) {
+        // before showing a new one, remove all children of this event bus,
+        // which should only be the ItemViews (at present..)
         self.childWidgets.each(function (w) { w.detach() } );
         var d = self.addChildWidgetFromWidgetInfo(wi);
         return null;
+    },
+    
+    // re-display detail of a constituent in response to some change
+    function updateConstituentDetail(self, constituentId, detail) {
     }
 );
 
@@ -503,6 +525,79 @@ Goonmill.ItemView.methods(
 // view of a monster group in the main pane
 Goonmill.MonsterGroup = Goonmill.ItemView.subclass('Goonmill.MonsterGroup');
 Goonmill.MonsterGroup.methods(
+    function __init__(self, node, constituentId) {
+        Goonmill.MonsterGroup.upcall(self, '__init__', node);
+        self.constituentId = constituentId;
+
+        node.select('.deleteChecked').each(function (n) {
+            n.observe('click', (function (nn, e) {
+                self.deleteClicked(nn, e);
+            }).curry(n) );
+        });
+
+        var toggleAll = node.select('[name=toggleAll]')[0];
+        toggleAll.observe('click', function (e) {
+                self.toggleAllClicked(toggleAll, e);
+        });
+
+        var randomize = node.select('.randomize')[0];
+        randomize.observe('click', function (e) {
+                self.randomize(randomizeClicked, e);
+        });
+
+        self.fixDeleteButtons();
+    },
+
+    function deleteClicked(self, node, event) {
+        var rows = self.node.select('.monsterGroupRow');
+        var checkedRows = [];
+
+        var ids = rows.map(function (r) {
+            var checkbox = r.select('[name=selectGroupie]')[0];
+            if (checkbox.checked) {
+                checkedRows.push(r);
+                return parseInt(r.readAttribute('rel'), 10);
+            }
+        }).filter(Prototype.K);
+
+        var d = self.callRemote('deleteChecked', ids);
+
+        d.addCallback((function (checkedRows, count) {
+            if (count != checkedRows.length) { 
+                throw 'count != checkedRows.length' 
+            };
+            checkedRows.invoke('remove');
+            self.fixDeleteButtons();
+            
+            document.fire('Goonmill:constituentDetailUpdate', {
+                id:self.constituentId, 
+                detail:self.node.select('.monsterGroupRow').length
+            });
+        }).curry(checkedRows));
+
+        return d;
+    },
+
+    // hide delete buttons if there's no groupies left
+    function fixDeleteButtons(self) {
+        var remaining = self.node.select('.monsterGroupRow');
+        if (remaining.length == 0) {
+            self.node.select('.deleteChecked').invoke('hide');
+        } else {
+            self.node.select('.deleteChecked').invoke('show');
+        }
+    },
+
+    // when the 'toggle all' is clicked, all the other checkboxes toggle
+    // to match it
+    function toggleAllClicked(self, node, event) {
+        self.node.select('[name=selectGroupie]').each( function (n) {
+                n.checked = node.checked;
+        });
+    },
+
+    function randomizeClicked(self, node, event) {
+    }
 );
 
 
@@ -510,6 +605,25 @@ Goonmill.MonsterGroup.methods(
 Goonmill.NPC = Goonmill.ItemView.subclass('Goonmill.NPC');
 Goonmill.NPC.methods(
 );
+
+
+
+
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+/* functions begin here **************************************************/
+
+
 
 
 // display the dialog that disambiguates monster groups and npcs
