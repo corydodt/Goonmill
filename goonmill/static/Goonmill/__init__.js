@@ -396,6 +396,7 @@ Goonmill.ConstituentList.methods(
 
     // throw the given constituent out of the workspace
     function removeConstituentClicked(self, event, node) {
+        event.stop();
         var args = {name: node.select('.constituentName')[0].innerHTML,
             detail: node.select('.constituentDetail')[0].innerHTML
         };
