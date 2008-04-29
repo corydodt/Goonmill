@@ -740,7 +740,7 @@ Goonmill.MonsterGroup.methods(
         var d = self.callRemote('randomizeChecked', ids);
 
         var spinners = rows.map(function (n) {
-            return Goonmill.spin(n);
+            return Goonmill.spin(n.select('.blankCell')[0]);
         });
 
         d.addCallback(function (wi) {

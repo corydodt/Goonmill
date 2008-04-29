@@ -32,7 +32,7 @@
           <tr class="monsterGroupRow" n:pattern="monsterGroupRow"><n:attr name=
             "rel"><n:slot name="groupieId" /></n:attr>
             <td class="checkboxCell"><input name='selectGroupie' type="checkbox" /></td>
-            <td />
+            <td class="blankCell" />
             <td><n:slot name="hitPoints" /></td>
             <td><n:slot name="alignment" /></td>
             <td><n:slot name="gear" /></td>
