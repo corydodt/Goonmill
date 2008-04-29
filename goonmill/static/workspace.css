@@ -250,5 +250,5 @@ input[name=increaseBy] {
 }
 
 *.checkboxCell:hover {
-    background-color: #b9cc8f;
+    outline: thin solid #bdbb60;
 }
