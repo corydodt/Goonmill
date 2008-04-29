@@ -654,8 +654,10 @@ Goonmill.MonsterGroup.methods(
         var amount = parseInt(event.element().increaseByAmount.value, 10);
         var d = self.callRemote('increaseGroupies', amount);
             
+        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
 
         d.addCallback(function (wi) {
+            Goonmill.unspin(spinner);
             document.fire('Goonmill:newMonsterGroup', {monsterGroup:wi});
         });
         return d;
@@ -687,7 +689,11 @@ Goonmill.MonsterGroup.methods(
 
         var d = self.callRemote('deleteChecked', ids);
 
+        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+
         d.addCallback((function (checkedRows, count) {
+            Goonmill.unspin(spinner);
+
             if (count != checkedRows.length) { 
                 throw 'count != checkedRows.length' 
             };
@@ -727,9 +733,15 @@ Goonmill.MonsterGroup.methods(
         var checked = self.checked();
         var ids = checked[0];
 
+        var rows = checked[1];
+
         if (ids.length == 0) return null;
 
         var d = self.callRemote('randomizeChecked', ids);
+
+        var spinners = rows.map(function (n) {
+            return Goonmill.spin(n);
+        });
 
         d.addCallback(function (wi) {
             document.fire('Goonmill:newMonsterGroup', {
