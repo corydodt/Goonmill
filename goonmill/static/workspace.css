@@ -4,7 +4,7 @@
  * 5d8059 dark green
  * b9cc8f light green
  * 527476 bluegreen
- * bgbb60 goldish tannish
+ * bdbb60 goldish tannish
  * fffdc0 bright yellow
  * fff white
  * 000 black
@@ -247,4 +247,8 @@ input[name=increaseBy] {
 
 .constituentGroupName {
     font-style: italic;
+}
+
+*.checkboxCell:hover {
+    background-color: #b9cc8f;
 }

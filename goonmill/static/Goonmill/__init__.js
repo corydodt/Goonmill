@@ -10,25 +10,42 @@ Goonmill.GoonmillWidget.methods(
     function __init__(self, node) {
         Goonmill.GoonmillWidget.upcall(self, '__init__', node);
         // apply behaviors based on class
-        node.select('.truncate18').each(function (n) {
-            // this class should never be used on a node that isn't a
-            // container of only text.
-            if (n.childElements().length > 0) {
-                debugger;
-            }
-            n.update(n.innerHTML.truncate(15));
-        });
-
-        node.select('.truncate25').each(function (n) {
-            // this class should never be used on a node that isn't a
-            // container of only text.
-            if (n.childElements().length > 0) {
-                debugger;
-            }
-            n.update(n.innerHTML.truncate(22));
-        });
+        for (behavior in Goonmill.Behaviors) {
+            node.select('.' + behavior).each(Goonmill.Behaviors[behavior]);
+        }
     }
 );
+
+// methods of this will be used to look for the corresponding class names
+// inside nodes.  any node that has one of these classes will get the
+// corresponding behavior attached.
+Goonmill.Behaviors = {
+    truncate18: function (n) {
+        // this class should never be used on a node that isn't a
+        // container of only text.
+        if (n.childElements().length > 0) {
+            debugger;
+        }
+        n.update(n.innerHTML.truncate(15));
+    },
+
+    truncate25: function (n) {
+        // this class should never be used on a node that isn't a
+        // container of only text.
+        if (n.childElements().length > 0) {
+            debugger;
+        }
+        n.update(n.innerHTML.truncate(22));
+    },
+
+    checkboxCell: function (n) {
+        n.observe('click', function (e) { 
+            var checkboxes = e.element().select('input[type=checkbox]');
+            if (checkboxes === undefined) return true;
+            checkboxes[0].click();
+        });
+    }
+};
 
 Goonmill.DiceSandbox = Goonmill.GoonmillWidget.subclass('Goonmill.DiceSandbox');
 Goonmill.DiceSandbox.methods(

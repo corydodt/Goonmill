@@ -18,7 +18,7 @@
       <table class="monsterGroupTable">
         <thead>
           <tr>
-            <td><input name="toggleAll" type="checkbox" /></td>
+            <td class="checkboxCell"><input name="toggleAll" type="checkbox" /></td>
             <td><img class="randomize" src="/static/d20.png" title=
               "Reroll all checked" alt="Reroll all checked" /></td>
             <td>Hit Points</td>
@@ -31,7 +31,7 @@
         <tbody n:render="monsterGroupList">
           <tr class="monsterGroupRow" n:pattern="monsterGroupRow"><n:attr name=
             "rel"><n:slot name="groupieId" /></n:attr>
-            <td><input name='selectGroupie' type="checkbox" /></td>
+            <td class="checkboxCell"><input name='selectGroupie' type="checkbox" /></td>
             <td />
             <td><n:slot name="hitPoints" /></td>
             <td><n:slot name="alignment" /></td>
