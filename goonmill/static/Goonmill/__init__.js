@@ -529,6 +529,9 @@ Goonmill.EventBus.methods(
         });
 
         document.observe('Goonmill:newMonsterGroup', function (e) {
+            if (e.memo.monsterGroup === undefined) {
+                throw ('must fire this event with {monsterGroup:someWidget}');
+            }
             self.showConstituent(e.memo.monsterGroup);
         });
 
@@ -569,7 +572,6 @@ Goonmill.ItemView.methods(
         node.hide();
         var oldView = document.documentElement.select('.itemView')[0];
         oldView.replace(node);
-        // Effect.Appear(node); -- this is way too damn slow
         node.show();
     }
 );
@@ -595,7 +597,7 @@ Goonmill.MonsterGroup.methods(
 
         var randomize = node.select('.randomize')[0];
         randomize.observe('click', function (e) {
-                self.randomize(randomizeClicked, e);
+            self.randomizeClicked(e);
         });
 
         // the "increase by" form must have a limit to prevent overloading the
@@ -642,7 +644,8 @@ Goonmill.MonsterGroup.methods(
         return d;
     },
 
-    function deleteClicked(self, node, event) {
+    // which gropuies are checked?  returns a 2-tuple of rows and ids
+    function checked(self) {
         var rows = self.node.select('.monsterGroupRow');
         var checkedRows = [];
 
@@ -653,6 +656,17 @@ Goonmill.MonsterGroup.methods(
                 return parseInt(r.readAttribute('rel'), 10);
             }
         }).filter(Prototype.K);
+
+        return [ids, checkedRows];
+    },
+
+    // tell the server to remove the groupies that were checked
+    function deleteClicked(self, node, event) {
+        var checked = self.checked();
+        var ids = checked[0];
+        var checkedRows = checked[1];
+
+        if (ids.length == 0) return null;
 
         var d = self.callRemote('deleteChecked', ids);
 
@@ -667,6 +681,8 @@ Goonmill.MonsterGroup.methods(
                 id:self.constituentId, 
                 detail:self.node.select('.monsterGroupRow').length
             });
+
+            return null;
         }).curry(checkedRows));
 
         return d;
@@ -691,6 +707,22 @@ Goonmill.MonsterGroup.methods(
     },
 
     function randomizeClicked(self, node, event) {
+        var checked = self.checked();
+        var ids = checked[0];
+
+        if (ids.length == 0) return null;
+
+        var d = self.callRemote('randomizeChecked', ids);
+
+        d.addCallback(function (wi) {
+            document.fire('Goonmill:newMonsterGroup', {
+                monsterGroup:wi
+            });
+            return null;
+        });
+
+        return d;
+
     }
 );
 

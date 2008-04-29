@@ -543,6 +543,27 @@ class MonsterGroupView(athena.LiveElement):
     def getInitialArguments(self):
         return [self.constituent.id]
 
+    @athena.expose
+    def randomizeChecked(self, ids):
+        """
+        Randomize groupies identified by 'ids'
+
+        Returns a new monstergroup widget to display
+        """
+        cn = self.constituent
+        mg = cn.fuckComponentArchitecture()
+
+        from .user import theStore
+        for id in ids:
+            groupie = theStore.get(Groupie, id)
+            groupie.randomize(overwrite=True)
+        theStore.commit()
+
+        newMg = MonsterGroupView(self.constituent)
+        newMg.setFragmentParent(self.fragmentParent)
+        self.detach()
+        return newMg
+
 
 class GroupieHitPoints(WarmText):
     """
