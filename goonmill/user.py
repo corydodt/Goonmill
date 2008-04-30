@@ -45,12 +45,6 @@ User.workspaces = locals.ReferenceSet(
 )
 
 
-class IRealConstituent(Interface):
-    """
-    The inner monster or encounter or whatever of a constituent
-    """
-
-
 # Major FIXME - when an NPC or Stencil is found on more than one workspace,
 # it should be a singleton.  As currently designed, all constituents are
 # separate by workspace, meaning there are differing clones of NPC everywhere.
@@ -61,12 +55,9 @@ class Constituent(object):
     An item that can be found in a workspace, i.e. monster group,
     npc, encounter, or stencil
     """
-    implements(IRealConstituent)
-
     __storm_table__ = 'constituent'
     id = locals.Int(primary=True)
     name = locals.Unicode() # Alias, or personal name, not monster name
-    base = locals.Int() # Id of some base monster; None for encounter/stencil
     otherId = locals.Int() # Reference to some other table (monsterGroup, npc, stencil, encounter) resolved by the adapter
     kind = locals.Unicode() # is monsterGroup, npc, encounter or stencil
     userId = locals.Int() # the user owning this
@@ -155,12 +146,14 @@ class Constituent(object):
         """
         Return the base creature for the stencil
         """
-        from .query2 import db
-        if (self.base < 1000):
-            ret = db.lookup(self.base)
-        else: 
-            ret = theStore.get(Stencil, self.base)
-        return ret
+        if self.kind in [KIND_MONSTERGROUP, KIND_NPC]:
+            return self.fuckComponentArchitecture().getStencilBase()
+        return None
+
+    def __repr__(self):
+        inner = self.fuckComponentArchitecture()
+        return '<Constituent|%s %r at 0x%x>' % (self.id, inner, id(self))
+
 
 Workspace.constituents = locals.ReferenceSet(
         Workspace.id,
@@ -174,10 +167,23 @@ class MonsterGroup(object):
     """
     __storm_table__ = 'monsterGroup'
     id = locals.Int(primary=True)
+    base = locals.Int()
     name = locals.Unicode()
 
     def briefDetail(self):
         return unicode(len(list(self.groupies)))
+
+    def getStencilBase(self):
+        from .query2 import db
+        if (self.base < 1000):
+            ret = db.lookup(self.base)
+        else: 
+            ret = theStore.get(Stencil, self.base)
+        return ret
+
+    def __repr__(self):
+        base = self.getStencilBase().name
+        return '<MonsterGroup|%s of %s at 0x%x>' % (self.id, base, id(self))
 
 
 class Stencil(object):
@@ -190,6 +196,9 @@ class Stencil(object):
     def briefDetail(self):
         return u''
 
+    def __repr__(self):
+        return '<Stencil|%s at 0x%x>' % (self.id, id(self))
+
 
 class Encounter(object):
     """
@@ -201,6 +210,9 @@ class Encounter(object):
     def briefDetail(self):
         return u''
 
+    def __repr__(self):
+        return '<Encounter|%s at 0x%x>' % (self.id, id(self))
+
 
 class Groupie(object):
     """
@@ -210,7 +222,7 @@ class Groupie(object):
     id = locals.Int(primary=True)
     monsterGroupId = locals.Int()
     monsterGroup = locals.Reference(monsterGroupId, MonsterGroup.id)
-    constituent = locals.Reference(monsterGroupId, Constituent.id)
+    constituent = locals.Reference(monsterGroupId, Constituent.otherId)
     hitPoints = locals.Int()
     alignment = locals.Unicode()
     name = locals.Unicode()
@@ -245,12 +257,25 @@ class NPC(object):
     """
     __storm_table__ = 'npc'
     id = locals.Int(primary=True)
+    base = locals.Int()
     classes = locals.Unicode()
     gear = locals.Unicode()
     spells = locals.Unicode()
 
     def briefDetail(self):
         return self.classes
+
+    def getStencilBase(self):
+        from .query2 import db
+        if (self.base < 1000):
+            ret = db.lookup(self.base)
+        else: 
+            ret = theStore.get(Stencil, self.base)
+        return ret
+
+    def __repr__(self):
+        base = self.getStencilBase().name
+        return '<NPC|%s of %s at 0x%x>' % (self.id, base, id(self))
 
 
 # the global store object. yay, global mutable state!

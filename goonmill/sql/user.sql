@@ -17,7 +17,6 @@ CREATE TABLE workspace (
 CREATE TABLE constituent (
     id INTEGER PRIMARY KEY,
     name varchar(255),
-    base INTEGER,
     otherId INTEGER,
     kind varchar(100),
     userId INTEGER,
@@ -26,6 +25,7 @@ CREATE TABLE constituent (
 
 CREATE TABLE npc (
     id INTEGER PRIMARY KEY,
+    base INTEGER,
     classes longtext,
     gear longtext,
     spells longtext
@@ -41,6 +41,7 @@ CREATE TABLE stencil (
 
 CREATE TABLE monsterGroup (
     id INTEGER PRIMARY KEY,
+    base INTEGER,
     name varchar(255)
 );
 
