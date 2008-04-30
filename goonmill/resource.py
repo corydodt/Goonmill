@@ -468,9 +468,9 @@ class MonsterGroupView(athena.LiveElement):
         return tag
 
     @page.renderer
-    def monsterGroupList(self, req, tag):
+    def groupieList(self, req, tag):
         mg = self.constituent.fuckComponentArchitecture()
-        pg = tag.patternGenerator("monsterGroupRow")
+        pg = tag.patternGenerator("groupieRow")
         for groupie in mg.groupies:
             groupie.randomize(overwrite=False)
 

@@ -323,10 +323,12 @@ Goonmill.BasicSearch.methods(
                 anc.hide()
                 anc.insert(name);
                 anc.insert(sub);
+
                 // closures in javascript, feh
                 anc.observe('click', (function (anc, monsterId, event) { 
-                        self.clickedHit(event, anc, monsterId)
+                        self.onClickedHit(event, anc, monsterId)
                 }).curry(anc, monsterId));
+
                 self.hitContainer.insert(anc);
                 Effect.SlideDown(anc);
             }
@@ -336,7 +338,7 @@ Goonmill.BasicSearch.methods(
     },
 
     // tell the server that this search hit is our search hit
-    function clickedHit(self, event, node, monsterId) {
+    function onClickedHit(self, event, node, monsterId) {
         event.stop();
         event.preventDefault();
         var name = node.select('.hitName')[0].innerHTML;
@@ -641,7 +643,7 @@ Goonmill.MonsterGroup.methods(
         // whenever this displays, fix the constituent list to match it
         document.fire('Goonmill:constituentDetailUpdate', {
             id: self.constituentId,
-            detail: node.select('.monsterGroupRow').length
+            detail: node.select('.groupieRow').length
         });
 
         self.fixDeleteButtons();
@@ -665,7 +667,7 @@ Goonmill.MonsterGroup.methods(
 
     // which gropuies are checked?  returns a 2-tuple of rows and ids
     function checked(self) {
-        var rows = self.node.select('.monsterGroupRow');
+        var rows = self.node.select('.groupieRow');
         var checkedRows = [];
 
         var ids = rows.map(function (r) {
@@ -702,7 +704,7 @@ Goonmill.MonsterGroup.methods(
             
             document.fire('Goonmill:constituentDetailUpdate', {
                 id:self.constituentId, 
-                detail:self.node.select('.monsterGroupRow').length
+                detail:self.node.select('.groupieRow').length
             });
 
             return null;
@@ -713,7 +715,7 @@ Goonmill.MonsterGroup.methods(
 
     // hide delete buttons if there's no groupies left
     function fixDeleteButtons(self) {
-        var remaining = self.node.select('.monsterGroupRow');
+        var remaining = self.node.select('.groupieRow');
         if (remaining.length == 0) {
             self.node.select('.deleteChecked').invoke('hide');
         } else {

@@ -15,7 +15,7 @@
       <input class="deleteChecked" type="button" value="Delete Checked..." />
       <a class="printButton" href="#">Print</a>
 
-      <table class="monsterGroupTable">
+      <table class="groupieTable">
         <thead>
           <tr>
             <td class="checkboxCell"><input name="toggleAll" type="checkbox" /></td>
@@ -28,8 +28,8 @@
             <td>Individual's name</td>
           </tr>
         </thead>
-        <tbody n:render="monsterGroupList">
-          <tr class="monsterGroupRow" n:pattern="monsterGroupRow"><n:attr name=
+        <tbody n:render="groupieList">
+          <tr class="groupieRow" n:pattern="groupieRow"><n:attr name=
             "rel"><n:slot name="groupieId" /></n:attr>
             <td class="checkboxCell"><input name='selectGroupie' type="checkbox" /></td>
             <td class="blankCell" />

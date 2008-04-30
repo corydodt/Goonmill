@@ -213,17 +213,17 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     float: left;
 }
 
-.monsterGroupTable {
+.groupieTable {
     clear: left;
     margin-top: 10px;
 }
 
-.monsterGroupTable thead {
+.groupieTable thead {
     font-family: "arial black";
     font-size: 10pt;
 }
 
-.monsterGroupTable td {
+.groupieTable td {
     border: 0px;
     font-size: 10pt;
 }
