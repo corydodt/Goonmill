@@ -17,7 +17,7 @@ INSERT INTO groupie VALUES (9, 2, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO groupie VALUES (10, 2, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO groupie VALUES (11, 2, NULL, NULL, NULL, NULL, NULL);
 
-INSERT INTO constituent VALUES (3, '2 dead crew', 554, 3, 'monsterGroup', NULL, 1);
+INSERT INTO constituent VALUES (4, '2 dead crew', 554, 3, 'monsterGroup', NULL, 1);
 INSERT INTO monsterGroup VALUES (3, NULL);
 INSERT INTO groupie VALUES (12, 3, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO groupie VALUES (13, 3, NULL, NULL, 'Mr. Bonypants', NULL, NULL);
@@ -25,7 +25,7 @@ INSERT INTO groupie VALUES (14, 3, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO groupie VALUES (15, 3, NULL, NULL, NULL, NULL, NULL);
 
 -- FIXME: name for stencils should be NULL and looked up from the base
-INSERT INTO constituent VALUES (4, 'Phase Ghoul', 1001, 1001, 'stencil', NULL, 1);
+INSERT INTO constituent VALUES (3, 'Phase Ghoul', 1001, 1001, 'stencil', NULL, 1);
 INSERT INTO stencil VALUES (1001);
 
 INSERT INTO constituent VALUES (5, 'SW Corner of Graveyard', NULL, 5, 'encounter', NULL, 1);
