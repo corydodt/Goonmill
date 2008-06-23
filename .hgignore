@@ -11,3 +11,5 @@
 ^goonmill/tripledb\.n3$
 ^doc/goonmill-shots\.graffle.*$
 ^goonmill/user.db$
+^wingdbstub.py$
+^goonmill.wpu$

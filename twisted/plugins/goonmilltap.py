@@ -33,6 +33,11 @@ class GoonmillServerMaker(object):
         """
         Construct the goonmill
         """
+        if options['dev']:
+            try:
+                import wingdbstub
+            except ImportError:
+                pass
         from goonmill.webserver import WebServer, WebSite
         site = WebSite()
         ws = WebServer(int(options['port']), site)
