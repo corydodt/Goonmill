@@ -14,35 +14,32 @@ CREATE TABLE workspace (
     url varchar(255)
 );
 
-CREATE TABLE constituent (
+CREATE TABLE workspaceConstituent (
     id INTEGER PRIMARY KEY,
-    name varchar(255),
-    otherId INTEGER,
-    kind varchar(100),
-    userId INTEGER,
-    workspaceId INTEGER
+    workspaceId INTEGER,
+    npcId INTEGER,
+    encounterId INTEGER,
+    monsterGroupId INTEGER
 );
 
 CREATE TABLE npc (
     id INTEGER PRIMARY KEY,
-    base INTEGER,
+    name longtext,
+    stencilId INTEGER,
     classes longtext,
     gear longtext,
     spells longtext
 );
 
 CREATE TABLE encounter (
-    id INTEGER PRIMARY KEY
-);
-
-CREATE TABLE stencil (
-    id INTEGER PRIMARY KEY
+    id INTEGER PRIMARY KEY,
+    name longtext
 );
 
 CREATE TABLE monsterGroup (
     id INTEGER PRIMARY KEY,
-    base INTEGER,
-    name varchar(255)
+    stencilId INTEGER,
+    name longtext
 );
 
 

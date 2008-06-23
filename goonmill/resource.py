@@ -14,11 +14,9 @@ from twisted.cred.credentials import IAnonymous
 from twisted.cred.checkers import AllowAnonymousAccess
 
 from .util import RESOURCE
-from .user import (Groupie, Workspace, Constituent, KIND_MONSTERGROUP, KIND_NPC,
-            KIND_STENCIL, KIND_ENCOUNTER)
+from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
+        KIND_NPC, KIND_MONSTERGROUP)
 from . import search
-
-TOO_MANY_GROUPIES = 123
 
 
 class Root(rend.Page):
@@ -296,7 +294,7 @@ class ConstituentList(athena.LiveElement):
         for c in self.workspace.constituents:
             pat = pg()
 
-            pat.fillSlots('constituentKind', 'kind-%s' % (c.kind,))
+            pat.fillSlots('constituentKind', 'kind-%s' % (c.kind(),))
 
             if c.isLibraryKind():
                 pat.fillSlots('closingXTitle', 
@@ -305,10 +303,11 @@ class ConstituentList(athena.LiveElement):
                 pat.fillSlots('closingXTitle', 'Delete')
 
             base = c.getStencilBase()
-            if base and c.kind == KIND_MONSTERGROUP:
+            if base and c.kind() == KIND_MONSTERGROUP:
                 pat.fillSlots('constituentName', base.name)
             else:
-                pat.fillSlots('constituentName', c.name)
+                o = c.fuckComponentArchitecture()
+                pat.fillSlots('constituentName', o.name)
 
             pat.fillSlots('constituentDetail', c.briefDetail())
             pat.fillSlots('constituentId', c.id)
@@ -321,9 +320,9 @@ class ConstituentList(athena.LiveElement):
         from .user import theStore
         c = theStore.get(Constituent, id)
 
-        if c.kind == KIND_NPC:
+        if c.kind() == KIND_NPC:
             view = NPCView(c)
-        elif c.kind == KIND_MONSTERGROUP:
+        elif c.kind() == KIND_MONSTERGROUP:
             view = MonsterGroupView(c)
         else:
             raise NotImplemented('other kinds')
@@ -353,7 +352,7 @@ class ConstituentList(athena.LiveElement):
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
-                constituent.kind, constituent.id, name, detail)
+                constituent.kind(), constituent.id, name, detail)
 
     def addNPC(self, constituent):
         """
@@ -363,7 +362,7 @@ class ConstituentList(athena.LiveElement):
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
-                constituent.kind, constituent.id, name, detail)
+                constituent.kind(), constituent.id, name, detail)
 
 
 class MainActions(athena.LiveElement):
@@ -396,6 +395,7 @@ class BasicSearch(athena.LiveElement):
         from .query2 import db
         m = db.lookup(stencilId)
         c = Constituent.monsterGroupKind(m, count, self.workspace)
+        assert c.fuckComponentArchitecture().stencilId == stencilId
         mgv = MonsterGroupView(c)
         mgv.setFragmentParent(self.fragmentParent.eventBus)
 
@@ -453,6 +453,7 @@ class MonsterGroupView(athena.LiveElement):
 
     def __init__(self, constituent):
         self.constituent = constituent
+        self.monsterGroup = self.constituent.fuckComponentArchitecture()
         athena.LiveElement.__init__(self)
 
     @page.renderer
@@ -460,8 +461,7 @@ class MonsterGroupView(athena.LiveElement):
         name = self.constituent.getStencilBase().name
         tag.fillSlots('monsterName', name)
 
-        mgroup = self.constituent.fuckComponentArchitecture()
-        gn = GroupName(mgroup)
+        gn = GroupName(self.monsterGroup)
         gn.setFragmentParent(self)
         tag.fillSlots('groupName', gn)
 
@@ -469,9 +469,8 @@ class MonsterGroupView(athena.LiveElement):
 
     @page.renderer
     def groupieList(self, req, tag):
-        mg = self.constituent.fuckComponentArchitecture()
         pg = tag.patternGenerator("groupieRow")
-        for groupie in mg.groupies:
+        for groupie in self.monsterGroup.groupies:
             groupie.randomize(overwrite=False)
 
             gn = GroupieName(groupie)
@@ -506,16 +505,13 @@ class MonsterGroupView(athena.LiveElement):
 
         Returns a new widget to display by cloning me.
         """
-        cn = self.constituent
-        mg = cn.fuckComponentArchitecture()
-        total = len(list(mg.groupies)) + amount
+        total = len(list(self.monsterGroup.groupies)) + amount
         assert total <= TOO_MANY_GROUPIES
-
 
         from .user import theStore
         for n in range(amount):
             groupie = Groupie()
-            groupie.monsterGroup = mg
+            groupie.monsterGroup = self.monsterGroup
             groupie.randomize()
             theStore.add(groupie)
         theStore.commit()
@@ -550,9 +546,6 @@ class MonsterGroupView(athena.LiveElement):
 
         Returns a new monstergroup widget to display
         """
-        cn = self.constituent
-        mg = cn.fuckComponentArchitecture()
-
         from .user import theStore
         for id in ids:
             groupie = theStore.get(Groupie, id)
@@ -746,9 +739,10 @@ class NPCView(athena.LiveElement):
 
     def __init__(self, constituent):
         self.constituent = constituent
+        self.npc = self.constituent.fuckComponentArchitecture()
         athena.LiveElement.__init__(self)
 
     @page.renderer
     def initialize(self, req, tag):
-        tag.fillSlots('monsterName', self.constituent.name)
+        tag.fillSlots('monsterName', self.npc.name)
         return tag

@@ -8,11 +8,10 @@ from .history import Statblock
 
 from zope.interface import Interface, implements
 
-
-KIND_MONSTERGROUP = u'monsterGroup'
 KIND_NPC = u'npc'
-KIND_STENCIL = u'stencil'
+KIND_MONSTERGROUP = u'monsterGroup'
 KIND_ENCOUNTER = u'encounter'
+TOO_MANY_GROUPIES = 123
 
 class User(object):
     """A User"""
@@ -55,14 +54,14 @@ class Constituent(object):
     An item that can be found in a workspace, i.e. monster group,
     npc, encounter, or stencil
     """
-    __storm_table__ = 'constituent'
+    __storm_table__ = 'workspaceConstituent'
     id = locals.Int(primary=True)
-    name = locals.Unicode() # Alias, or personal name, not monster name
-    otherId = locals.Int() # Reference to some other table (monsterGroup, npc, stencil, encounter) resolved by the adapter
-    kind = locals.Unicode() # is monsterGroup, npc, encounter or stencil
-    userId = locals.Int() # the user owning this
     workspaceId = locals.Int() # the workspace this is found on
     workspace = locals.Reference(workspaceId, Workspace.id)
+    npcId = locals.Int()
+    monsterGroupId = locals.Int()
+    encounterId = locals.Int()
+
     # we need a search-findable form of the data as an attribute (?)
     # image = locals.Unicode()
 
@@ -74,18 +73,16 @@ class Constituent(object):
         goonmill.user.MonsterGroup)
         """
         c = cls()
-        c.kind = KIND_MONSTERGROUP
         c.name = u''
-        c.base = monster.id
         c.workspace = workspace
-        c.userId = workspace.userId
 
         mg = MonsterGroup()
+        mg.stencilId = monster.id
         theStore.add(mg)
         mg.id = locals.AutoReload
-        c.otherId = mg.id
+        c.monsterGroupId = mg.id
         
-        assert count < 123
+        assert count < TOO_MANY_GROUPIES
 
         for n in range(count):
             groupie = Groupie()
@@ -94,20 +91,22 @@ class Constituent(object):
 
         theStore.add(c)
         theStore.commit()
+
+        assert c.fuckComponentArchitecture() is mg
+        assert c.fuckComponentArchitecture().stencilId == monster.id
+
         return c
 
     @classmethod
     def npcKind(cls, monster, workspace):
         c = cls()
-        c.kind = KIND_NPC
         c.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
-        c.base = monster.id
+        c.stencilId = monster.id
         c.workspace = workspace
-        c.userId = workspace.userId
         
         npc = NPC()
         npc.id = locals.AutoReload
-        c.otherId = npc.id
+        c.npcId = npc.id
         theStore.add(npc)
 
         theStore.add(c)
@@ -119,7 +118,7 @@ class Constituent(object):
         Is this the kind of constituent that can appear in the user's
         permanent library?
         """
-        return self.kind not in [KIND_MONSTERGROUP, KIND_ENCOUNTER]
+        return not (self.encounterId or self.monsterGroupId)
 
     def briefDetail(self):
         """
@@ -133,26 +132,43 @@ class Constituent(object):
         Return the inner monster
         """
         kind = self.kind
-        if kind == KIND_MONSTERGROUP:
-            return theStore.get(MonsterGroup, self.otherId)
-        elif kind == KIND_NPC:
-            return theStore.get(NPC, self.otherId)
-        elif kind == KIND_STENCIL:
-            return theStore.get(Stencil, self.otherId)
-        elif kind == KIND_ENCOUNTER:
-            return theStore.get(Encounter, self.otherId)
+        if self.monsterGroupId:
+            return theStore.get(MonsterGroup, self.monsterGroupId)
+        elif self.npcId:
+            return theStore.get(NPC, self.npcId)
+        elif self.encounterId:
+            return theStore.get(Encounter, self.encounterId)
 
     def getStencilBase(self):
         """
         Return the base creature for the stencil
         """
-        if self.kind in [KIND_MONSTERGROUP, KIND_NPC]:
-            return self.fuckComponentArchitecture().getStencilBase()
+        if self.npcId or self.monsterGroupId:
+            o = self.fuckComponentArchitecture()
+            return getStencil(o.stencilId)
         return None
+
+    def kind(self):
+        """
+        Which kind of constituent is this? as string name
+        """
+        if self.npcId:
+            return KIND_NPC
+        elif self.monsterGroupId:
+            return KIND_MONSTERGROUP
+        elif self.encounterId:
+            return KIND_ENCOUNTER
+        assert 0, "Could not identify this kind of monsterGroup"
+
 
     def __repr__(self):
         inner = self.fuckComponentArchitecture()
         return '<Constituent|%s %r at 0x%x>' % (self.id, inner, id(self))
+
+
+def getStencil(id):
+    from .query2 import db
+    return db.lookup(id)
 
 
 Workspace.constituents = locals.ReferenceSet(
@@ -167,37 +183,15 @@ class MonsterGroup(object):
     """
     __storm_table__ = 'monsterGroup'
     id = locals.Int(primary=True)
-    base = locals.Int()
+    stencilId = locals.Int()
     name = locals.Unicode()
 
     def briefDetail(self):
         return unicode(len(list(self.groupies)))
 
-    def getStencilBase(self):
-        from .query2 import db
-        if (self.base < 1000):
-            ret = db.lookup(self.base)
-        else: 
-            ret = theStore.get(Stencil, self.base)
-        return ret
-
     def __repr__(self):
-        base = self.getStencilBase().name
+        base = getStencil(self.stencilId).name
         return '<MonsterGroup|%s of %s at 0x%x>' % (self.id, base, id(self))
-
-
-class Stencil(object):
-    """
-    A monster stencil, used as the base for other monsters
-    """
-    __storm_table__ = 'stencil'
-    id = locals.Int(primary=True)
-
-    def briefDetail(self):
-        return u''
-
-    def __repr__(self):
-        return '<Stencil|%s at 0x%x>' % (self.id, id(self))
 
 
 class Encounter(object):
@@ -206,6 +200,7 @@ class Encounter(object):
     """
     __storm_table__ = 'encounter'
     id = locals.Int(primary=True)
+    name = locals.Unicode()
 
     def briefDetail(self):
         return u''
@@ -222,7 +217,7 @@ class Groupie(object):
     id = locals.Int(primary=True)
     monsterGroupId = locals.Int()
     monsterGroup = locals.Reference(monsterGroupId, MonsterGroup.id)
-    constituent = locals.Reference(monsterGroupId, Constituent.otherId)
+    constituent = locals.Reference(monsterGroupId, Constituent.monsterGroupId)
     hitPoints = locals.Int()
     alignment = locals.Unicode()
     name = locals.Unicode()
@@ -257,7 +252,8 @@ class NPC(object):
     """
     __storm_table__ = 'npc'
     id = locals.Int(primary=True)
-    base = locals.Int()
+    name = locals.Unicode()
+    stencilId = locals.Int()
     classes = locals.Unicode()
     gear = locals.Unicode()
     spells = locals.Unicode()
@@ -265,16 +261,8 @@ class NPC(object):
     def briefDetail(self):
         return self.classes
 
-    def getStencilBase(self):
-        from .query2 import db
-        if (self.base < 1000):
-            ret = db.lookup(self.base)
-        else: 
-            ret = theStore.get(Stencil, self.base)
-        return ret
-
     def __repr__(self):
-        base = self.getStencilBase().name
+        base = getStencil(self.stencilId).name
         return '<NPC|%s of %s at 0x%x>' % (self.id, base, id(self))
 
 
