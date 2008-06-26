@@ -51,6 +51,22 @@
     padding: 10pt;
 }
 
+.messageArea {
+    position: absolute; 
+    right: 2em; 
+    top: 2em; 
+    background-color: white;
+    width: 30em;
+}
+
+.messageArea.contents {
+    padding: 6pt; 
+}
+
+.messageArea span {
+    color: #a87675;
+}
+
 a.warmText:hover {
     color: #555;
     background-color: white;

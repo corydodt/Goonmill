@@ -203,8 +203,8 @@ Goonmill.WarmText.methods(
     }, // }}}
 
     function rollback(self, reason, oldValue, newValue) { // {{{
-        debugger;
-        // TODO - slide out an error message here
+        var message = Goonmill.message("I can't do that because " + reason + ". "
+                + "(changing " + oldValue + " to " + newValue + ")");
         return self.setLocally(oldValue);
     }, // }}}
 
@@ -545,6 +545,7 @@ Goonmill.EventBus.methods(
             if (t.tagName == 'INPUT' && t.type == 'text') return;
 
             // for debugging
+            // FIXME - this isn't working any more
             if (e.keyCode == 68) { // 'd'
                 Goonmill.debugView();
             }
@@ -953,5 +954,18 @@ Goonmill.unspin = function(spinner) {
     spinner.remove();
 }
 
+
+Goonmill.message = function(text, severity) {
+    var span = new Element('span').update(text);
+    span.hide();
+    // TODO - severity
+    var messageArea = document.documentElement.select('.messageArea')[0];
+    $A(messageArea.childNodes).each(function (e) { e.remove() } );
+    messageArea.insert(span);
+    messageArea.addClassName('contents');
+    span.show()
+    Effect.Pulsate(messageArea, {pulses: 2, duration: 0.5});
+    return span;
+}
 
 // vim:set foldmethod=syntax:set smartindent:
