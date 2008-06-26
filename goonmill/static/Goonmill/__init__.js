@@ -192,6 +192,10 @@ Goonmill.WarmText.methods(
             return self.onSubmit(event);
         });
 
+        self.inputNode.observe('blur', function (event) {
+            return self.onSubmit(event);
+        });
+
         /* to make sure quoting and blanks are taken care of nicely, force a
          * call to setLocally now
          */
