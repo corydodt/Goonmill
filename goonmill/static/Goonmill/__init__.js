@@ -375,18 +375,8 @@ Goonmill.ConstituentList = Goonmill.GoonmillWidget.subclass('Goonmill.Constituen
 Goonmill.ConstituentList.methods(
     function __init__(self, node) {
         Goonmill.ConstituentList.upcall(self, '__init__', node);
-        // make all closing x's clickable, and the buttons themselves
-        // clickable
         node.select('.constituent').each(function (cnst) {
-            // closing x
-            cnst.select('.closingX')[0].observe('click', (function (c, event) {
-                self.removeConstituentClicked(event, c);
-            }).curry(cnst));
-
-            // the button itself
-            cnst.observe('click', (function (c, event) {
-                self.constituentClicked(c);
-            }).curry(cnst));
+            self._setEvents(cnst);
         });
 
         // using custom events
@@ -394,6 +384,19 @@ Goonmill.ConstituentList.methods(
             self.updateConstituentDetail(e.memo.id, e.memo.detail);
         });
     }, 
+
+    // make all closing x's clickable, and the buttons themselves clickable
+    function _setEvents(self, constituent) {
+        // closing x
+        constituent.select('.closingX')[0].observe('click', (function (c, event) {
+            self.removeConstituentClicked(event, c);
+        }).curry(constituent));
+
+        // the button itself
+        constituent.observe('click', (function (c, event) {
+            self.constituentClicked(c);
+        }).curry(constituent));
+    },
 
     // put a constituent on the stage
     function constituentClicked(self, node) {
@@ -468,6 +471,7 @@ Goonmill.ConstituentList.methods(
         listItem.select('.constituentName')[0].update(name.truncate(15));
         listItem.select('.constituentDetail')[0].update(detail.truncate(15));
         self.node.insert(listItem);
+        self._setEvents(listItem);
         listItem.select('.closingX')[0].observe('click', function (event) {
             self.removeConstituent(listItem);
         });
