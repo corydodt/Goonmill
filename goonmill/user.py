@@ -73,13 +73,12 @@ class Constituent(object):
         goonmill.user.MonsterGroup)
         """
         c = cls()
-        c.name = u''
         c.workspace = workspace
 
         mg = MonsterGroup()
         mg.stencilId = monster.id
-        theStore.add(mg)
         mg.id = locals.AutoReload
+        theStore.add(mg)
         c.monsterGroupId = mg.id
         
         assert count < TOO_MANY_GROUPIES
@@ -100,17 +99,23 @@ class Constituent(object):
     @classmethod
     def npcKind(cls, monster, workspace):
         c = cls()
-        c.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
-        c.stencilId = monster.id
         c.workspace = workspace
         
         npc = NPC()
+        npc.stencilId = monster.id
         npc.id = locals.AutoReload
-        c.npcId = npc.id
         theStore.add(npc)
+        c.npcId = npc.id
+
+        npc.classes = u'(classes)'
+        npc.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
 
         theStore.add(c)
         theStore.commit()
+        
+        assert c.fuckComponentArchitecture() is npc
+        assert c.fuckComponentArchitecture().stencilId == monster.id
+
         return c
 
     def isLibraryKind(self):
@@ -159,7 +164,6 @@ class Constituent(object):
         elif self.encounterId:
             return KIND_ENCOUNTER
         assert 0, "Could not identify this kind of monsterGroup"
-
 
     def __repr__(self):
         inner = self.fuckComponentArchitecture()

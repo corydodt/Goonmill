@@ -358,7 +358,7 @@ class ConstituentList(athena.LiveElement):
         """
         Tell the client to render an npc in this list
         """
-        name = constituent.getStencilBase().name
+        name = constituent.fuckComponentArchitecture().name
         detail = constituent.briefDetail()
 
         return self.callRemote("addConstituent", 
@@ -412,7 +412,7 @@ class BasicSearch(athena.LiveElement):
         from .query2 import db
         m = db.lookup(stencilId)
         c = Constituent.npcKind(m, self.workspace)
-
+        assert c.fuckComponentArchitecture().stencilId == stencilId
         npcv = NPCView(c)
         npcv.setFragmentParent(self.fragmentParent.eventBus)
 

@@ -7,8 +7,8 @@
 proj.directory-list = [{'dirloc': loc('.'),
                         'excludes': (),
                         'filter': '*',
-                        'include_hidden': False,
-                        'recursive': True,
-                        'watch_for_changes': True}]
+                        'include_hidden': 0,
+                        'recursive': 1,
+                        'watch_for_changes': 1}]
 proj.file-list = [loc('.hgignore')]
 proj.file-type = 'shared'
