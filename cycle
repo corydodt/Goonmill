@@ -1,29 +1,68 @@
 #!/bin/bash
 
-# Run twistd goonmill repeatedly, restarting whenever a source file changes.
+# run twistd goonmill repeatedly, whenever a source file changes
+
+NOTIFY_FILES=('*.py' )
+
+if [ ! -e /var/run/hermes ]; then
+    echo "Creating /var/run/hermes.  Need to use sudo for this."
+    sudo mkdir -p /var/run/hermes
+    sudo chown $(id -un) /var/run/hermes
+fi
+
 echo
 echo ^C to kill.
 echo
 
+running() {
+    ps -p "$1" >/dev/null 2>&1
+    return
+}
+
 killTwistd() {
-    if [ -e goonmill.pid ]; then
-        PID=`cat goonmill.pid`
-        kill $PID
-        echo WAITING ON $PID
-        wait $PID >/dev/null 2>&1
-        echo TWISTD DONE.
+    MAINPID=`cat goonmill.pid 2> /dev/null`
+    if [ -z "$MAINPID" ]; then 
+        return
     fi
+
+    childs=$(pgrep -P $MAINPID)
+    if [ -n "$childs" ]; then 
+        echo "  Killing child PIDs $childs"
+        for child in $childs; do kill $child; done
+    fi
+
+    echo Killing main PID $MAINPID
+    kill $MAINPID
+
+    sleep 1.0
+
+    for pid in $MAINPID $childs; do
+        if running $pid; then
+            echo "  Force-killing pid $pid"
+            kill -9 $pid
+        fi
+    done
 }
 
 # this trap will clean up when someone presses ^C
 trap killTwistd EXIT
 
+# convert NOTIFY_FILES glob list into a file list
+_notifyParameters=("-name" "${NOTIFY_FILES[0]}")
+unset NOTIFY_FILES[0]
+for file in "${NOTIFY_FILES[@]}"; do
+    _notifyParameters=( "${_notifyParameters[@]}" "-o" "-name" "$file" )
+done
+
+_files=$(find . "${_notifyParameters[@]}" )
+
+# set up the command line options we will use
 [ -e ./options.local ] && source ./options.local
+inotifyOptions=${inotifyOptions:--e modify "${_files}"} 
 twistdOptions=${twistdOptions:--n --pidfile goonmill.pid}
 goonmillOptions=${goonmillOptions:---dev}
-inotifyOptions=${inotifyOptions:--e modify $(find . -name '*.py')}
 
-safeTty() {
+safeTTY() {
     tty="`tty`"
     if [ "$tty" == "not a tty" ]; then
         tty=/dev/null
@@ -42,7 +81,7 @@ while true; do
   # Redirect stdin from our tty. If you don't do this, interactive pdb
   # doesn't work.
   echo RUNNING
-  twistd ${twistdOptions} goonmill ${goonmillOptions} <"`safeTty`" &
+  twistd ${twistdOptions} goonmill ${goonmillOptions} <"`safeTTY`" &
   inotifywait ${inotifyOptions}
 done
  
