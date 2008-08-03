@@ -13,3 +13,4 @@
 ^goonmill/user.db$
 ^wingdbstub.py$
 ^goonmill.wpu$
+^goonmill/static/monster$

@@ -169,6 +169,18 @@ class Constituent(object):
         inner = self.fuckComponentArchitecture()
         return '<Constituent|%s %r at 0x%x>' % (self.id, inner, id(self))
 
+    def getImage(self):
+        """
+        Return the image of the most specific inner monster we can find.
+        """
+        if self.encounterId:
+            return None
+
+        m = self.fuckComponentArchitecture()
+        if m.image:
+            return m.image
+
+        return self.getStencilBase().image
 
 def getStencil(id):
     from .query2 import db
@@ -189,6 +201,7 @@ class MonsterGroup(object):
     id = locals.Int(primary=True)
     stencilId = locals.Int()
     name = locals.Unicode()
+    image = locals.Unicode()
 
     def briefDetail(self):
         return unicode(len(list(self.groupies)))

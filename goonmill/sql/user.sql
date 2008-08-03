@@ -28,7 +28,8 @@ CREATE TABLE npc (
     stencilId INTEGER,
     classes longtext,
     gear longtext,
-    spells longtext
+    spells longtext,
+    image longtext
 );
 
 CREATE TABLE encounter (
@@ -39,7 +40,8 @@ CREATE TABLE encounter (
 CREATE TABLE monsterGroup (
     id INTEGER PRIMARY KEY,
     stencilId INTEGER,
-    name longtext
+    name longtext,
+    image longtext
 );
 
 

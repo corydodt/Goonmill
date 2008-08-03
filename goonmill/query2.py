@@ -49,6 +49,7 @@ class Monster(object):
     stat_block = SL.Unicode()
     full_text = SL.Unicode()
     reference = SL.Unicode()
+    image = SL.Unicode()
 
     def __repr__(self):
         return '<%s name=%s>' % (self.__class__.__name__, self.name)

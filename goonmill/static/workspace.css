@@ -199,6 +199,12 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     height: 84px;
     position: relative;
     top: -10px;
+    text-align: center;
+    line-height: 84px;
+}
+
+.imageBox img {
+    vertical-align: middle;
 }
 
 .personalName, .constituentGroupName {

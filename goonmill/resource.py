@@ -7,6 +7,8 @@ import random
 
 from zope.interface import Interface, implements
 
+from PIL import Image
+
 from nevow import rend, url, loaders, athena, static, guard, page
 
 from twisted.cred.portal import Portal
@@ -444,6 +446,48 @@ class WhichNewThing(page.Element):
     docFactory = loaders.xmlfile(RESOURCE('templates/WhichNewThing'))
 
 
+class StaticImage(object):
+    """A managed image class, for finding/creating thumbnails"""
+    def __init__(self, url):
+        self.url = url
+        self.file = RESOURCE(self.url.lstrip("/"))
+
+    def scaledImageSize(self, maxWidth, maxHeight):
+        mw, mh = map(float, [maxWidth, maxHeight])
+        # PIL cannot read all image types, so try/except to punt
+        try:
+            filedata = open(self.file, 'r')
+            original = Image.open(filedata)
+            w, h = original.size
+            scaleW = mw / w
+            scaleH = mh / h
+            if scaleW <= scaleH:
+                return scaleW * w, scaleW * h
+            else:
+                return scaleH * w, scaleH * h
+        except IOError:
+            return 0,0
+
+    def thumbnail(self, maxWidth, maxHeight, ):
+        """
+        Return a string of thumbnail data
+        """
+        # PIL can't thumbnail every identifiable kind of
+        # image, so just punt if it fails to update.
+        try:
+            filedata = open(self.file, 'r')
+            original = Image.open(filedata)
+            thumb = original.copy()
+            thumb.thumbnail((maxWidth,maxHeight), Image.ANTIALIAS)
+            _tempfile = StringIO()
+            thumb.save(_tempfile, 'PNG', optimize=True)
+            _tempfile.seek(0)
+            return _tempfile.read()
+
+        except IOError:
+            pass
+
+
 class MonsterGroupView(athena.LiveElement):
     """
     The view of a monster group in the main page
@@ -464,6 +508,13 @@ class MonsterGroupView(athena.LiveElement):
         gn = GroupName(self.monsterGroup)
         gn.setFragmentParent(self)
         tag.fillSlots('groupName', gn)
+
+        i = StaticImage(self.constituent.getImage())
+        w,h = i.scaledImageSize(64, 64)
+
+        tag.fillSlots("monsterImage", i.url)
+        tag.fillSlots("monsterImageWidth", w)
+        tag.fillSlots("monsterImageHeight", h)
 
         return tag
 
@@ -589,7 +640,7 @@ class GroupieHitPoints(WarmText):
 
 class GroupName(WarmText):
     """
-    Change the hit points on a groupie
+    Display/edit the nickname of a monster group
     """
     docFactory = loaders.xmlfile(RESOURCE('templates/GroupName'))
     def __init__(self, monsterGroup, *a, **kw):
