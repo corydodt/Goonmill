@@ -1,0 +1,169 @@
+diff -r f8f35098b98d goonmill/resource.py
+--- a/goonmill/resource.py	Sat Aug 02 23:30:18 2008 -0700
++++ b/goonmill/resource.py	Sun Aug 03 13:05:22 2008 -0700
+@@ -5,13 +5,15 @@
+ """
+ import random
+ import os
++import urllib
+ 
+ from zope.interface import Interface, implements
+ 
+ from PIL import Image
+ 
+-from nevow import rend, url, loaders, athena, static, guard, page
++from nevow import rend, url, loaders, athena, static, guard, page, inevow
+ 
++from twisted.internet.utils import getProcessOutput
+ from twisted.cred.portal import Portal
+ from twisted.cred.credentials import IAnonymous
+ from twisted.cred.checkers import AllowAnonymousAccess
+@@ -42,6 +44,26 @@
+ 
+     def renderHTTP(self, ctx):
+         return url.root.child("app")
++
++    def child_fontify(self, ctx):
++        return FontifyPage()
++
++
++class FontifyPage(rend.Page):
++    def renderHTTP(self, ctx):
++        req = inevow.IRequest(ctx)
++        args = req.args
++        text = args.get('s')[0]
++        font = args.get('font', ['vinque.ttf'])[0]
++        color = args.get('color', ['black'])[0]
++        font = RESOURCE('static/3p/%s' % (font,))
++        pt = args.get('pt', [56])[0]
++        d = getProcessOutput('/home/cdodt/wc/Goonmill/doc/imagemagick_fonttext.sh', 
++                [font, str(pt), color, text])
++        def _gotImage(s):
++            return static.Data(s, 'image/png')
++        d.addCallback(_gotImage)
++        return d
+ 
+ 
+ class GuardedRoot(rend.Page):
+@@ -249,7 +271,14 @@
+         return (self.defaultText, )
+ 
+ 
+-class WorkspaceTitle(WarmText):
++class WarmTextImage(WarmText):
++    """
++    A text edit control
++    """
++    jsClass = u'Goonmill.WarmTextImage'
++
++
++class WorkspaceTitle(WarmTextImage):
+     """
+     The title of the workspace, at the top
+     """
+@@ -264,7 +293,11 @@
+         ws = self.workspace
+         if ws.name is None:
+             self.setLocally(u'Unnamed Workspace')
+-        tag.fillSlots('value', ws.name)
++        name = urllib.quote_plus(ws.name)
++        value = "s=%s&color=white&fontsize=56" % (name,)
++        unquoted = ws.name
++        tag.fillSlots('value', value)
++        tag.fillSlots('unquoted', unquoted)
+         return tag
+ 
+     def rollback(self, failure, oldValue, newValue):
+diff -r f8f35098b98d goonmill/static/Goonmill/__init__.js
+--- a/goonmill/static/Goonmill/__init__.js	Sat Aug 02 23:30:18 2008 -0700
++++ b/goonmill/static/Goonmill/__init__.js	Sun Aug 03 13:05:22 2008 -0700
+@@ -169,7 +169,7 @@
+         Goonmill.WarmText.upcall(self, '__init__', node);
+         self.defaultText = (defaultText ? defaultText : 'Click to edit');
+ 
+-        if (template === undefined || !template) template = '#{quote_safe_value}';
++        if (template === undefined || !template) template = self.getTemplate();
+ 
+         self.template = new Template(template);
+ 
+@@ -199,7 +199,16 @@
+         /* to make sure quoting and blanks are taken care of nicely, force a
+          * call to setLocally now
+          */
+-        self.setLocally(self.anchor.innerHTML);
++        self.setLocally(self.localText());
++    }, // }}}
++
++    function getTemplate(self) {
++        return "#{quote_safe_value}";
++    },
++
++    // return the displayed text value
++    function localText(self) { // {{{
++        return self.anchor.innerHTML;
+     }, // }}}
+ 
+     function rollback(self, reason, oldValue, newValue) { // {{{
+@@ -226,7 +235,7 @@
+         event.stop();
+         event.preventDefault();
+         self.inputNode.hide();
+-        var original = self.anchor.innerHTML;
++        var original = self.localText();
+         try {
+             return self.clientUpdate(self.inputNode.value);
+         } catch (err) {
+@@ -238,20 +247,37 @@
+     function setLocally(self, value) {
+         if (value) { 
+             var v = Goonmill.quoteSafeString(value);
+-            var hash = {quote_safe_value: v};
++            var hash = {quote_safe_value: v, unquoted_value: value};
+             self.anchor.removeClassName('defaultText');
+         } else {
+             /* put something in so the field will never be 0px wide */
+-            var hash = {quote_safe_value: self.defaultText};
++            var hash = {
++                quote_safe_value: self.defaultText, 
++                unquoted_value: self.defaultText
++            };
+             self.anchor.addClassName('defaultText');
+         }
+-        var original = self.anchor.innerHTML;
++        var original = self.localText();
+         self.inputNode.value = value;
+         var markup = self.template.evaluate(hash);
+         self.anchor.update(markup);
+         Effect.Appear(self.anchor);
+         return original;
+     }
++);
++
++
++Goonmill.WarmTextImage = Goonmill.WarmText.subclass('Goonmill.WarmTextImage');
++Goonmill.WarmTextImage.methods(
++    // return the displayed text value
++    function localText(self) { // {{{
++        return self.anchor.select('img')[0].getAttribute('alt');
++    }, // }}}
++
++    function getTemplate(self) {
++        return '<img src="/fontify?s=#{quote_safe_value}&color=white&fontsize=56" alt="#{unquoted_value}" />';
++    }
++
+ );
+ 
+ 
+diff -r f8f35098b98d goonmill/templates/WorkspaceTitle
+--- a/goonmill/templates/WorkspaceTitle	Sat Aug 02 23:30:18 2008 -0700
++++ b/goonmill/templates/WorkspaceTitle	Sun Aug 03 13:05:22 2008 -0700
+@@ -1,5 +1,7 @@
+ <div xmlns:n="http://nevow.com/ns/nevow/0.1" class=
+   "workspaceTitle" n:render="liveElement"><a name=
+-  "workspaceTitle" class="warmText" n:render="init"><n:slot name=
+-  "value" /></a></div>
++    "workspaceTitle" class="warmText" n:render="init"><img><n:attr name=
++    "src">/fontify?<n:slot name="value" /></n:attr><n:attr name=
++    "alt"><n:slot name="unquoted" /></n:attr></img>
++    </a></div>
+ <!-- vim:set ft=xhtml: -->
