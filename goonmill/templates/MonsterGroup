@@ -8,9 +8,7 @@
         </div>
         <div class="constituentGroupName"><n:slot name="groupName" /></div>
         <div class="imageBox"><img><n:attr name=
-          "src"><n:slot name="monsterImage" /></n:attr><n:attr name=
-          "width"><n:slot name="monsterImageWidth" />px</n:attr><n:attr name=
-          "height"><n:slot name="monsterImageHeight" />px</n:attr></img></div>
+          "src"><n:slot name="monsterImage" /></n:attr></img></div>
       </div>
     </div>
     <div class="x2-2-2 itemMain">

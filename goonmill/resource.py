@@ -4,6 +4,7 @@ The resource structure for Goonmill
 API for building the goonmill page and its fragments.
 """
 import random
+import os
 
 from zope.interface import Interface, implements
 
@@ -468,7 +469,20 @@ class StaticImage(object):
         except IOError:
             return 0,0
 
-    def thumbnail(self, maxWidth, maxHeight, ):
+    def getThumbnailUrl(self, maxWidth, maxHeight):
+        """
+        Return a url to a thumbnail of the specified dimensions.
+        If it already exists in the filesystem, just return it, otherwise
+        create it.
+        """
+        needFilename = "%s_%sx%s" % (self.file, maxWidth, maxHeight)
+        if not os.path.exists(needFilename):
+            thumb = self.thumbnail(maxWidth, maxHeight, needFilename)
+            if thumb is None:
+                return None
+        return '%s_%sx%s' % (self.url, maxWidth, maxHeight)
+
+    def thumbnail(self, maxWidth, maxHeight, outFile=None):
         """
         Return a string of thumbnail data
         """
@@ -479,10 +493,13 @@ class StaticImage(object):
             original = Image.open(filedata)
             thumb = original.copy()
             thumb.thumbnail((maxWidth,maxHeight), Image.ANTIALIAS)
-            _tempfile = StringIO()
+            if outFile is None:
+                _tempfile = StringIO()
+            else:
+                _tempfile = open(outFile, 'w')
             thumb.save(_tempfile, 'PNG', optimize=True)
             _tempfile.seek(0)
-            return _tempfile.read()
+            return _tempfile
 
         except IOError:
             pass
@@ -510,11 +527,9 @@ class MonsterGroupView(athena.LiveElement):
         tag.fillSlots('groupName', gn)
 
         i = StaticImage(self.constituent.getImage())
-        w,h = i.scaledImageSize(64, 64)
+        url = i.getThumbnailUrl(64, 64)
 
-        tag.fillSlots("monsterImage", i.url)
-        tag.fillSlots("monsterImageWidth", w)
-        tag.fillSlots("monsterImageHeight", h)
+        tag.fillSlots("monsterImage", url)
 
         return tag
 
