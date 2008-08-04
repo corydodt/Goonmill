@@ -7,7 +7,8 @@
           <span class="constituentName truncate25"><n:slot name="monsterName" /></span>
         </div>
         <div class="constituentGroupName"><n:slot name="groupName" /></div>
-        <div class="imageBox"><img><n:attr name=
+        <div title="Click to enlarge" class="imageBox"><n:attr name=
+          "rel"><n:slot name="largeUrl" /></n:attr><img><n:attr name=
           "src"><n:slot name="monsterImage" /></n:attr></img></div>
       </div>
     </div>

@@ -633,6 +633,11 @@ Goonmill.MonsterGroup.methods(
         // limits (and raise if not)
         var increaseBy = node.select('[name=increaseBy]')[0];
 
+        var imageBox = node.select('.imageBox')[0];
+        imageBox.observe('click', function (e) {
+            self.imageBoxClicked(imageBox, e);
+        });
+
         var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
             validMessage:''
         });
@@ -740,6 +745,13 @@ Goonmill.MonsterGroup.methods(
         });
     },
 
+    // popup a big version of the image
+    function imageBoxClicked(self, node, event) {
+        var url = node.getAttribute('rel');
+        var img = new Element('img', {'src': url});
+        Goonmill.imageBox(img);
+    },
+
     function randomizeClicked(self, node, event) {
         var checked = self.checked();
         var ids = checked[0];
@@ -842,6 +854,24 @@ var LightboxConfig = function () {
         initialize: function() {},
         beforeClose: function() { throw $break; }
 })}();
+
+
+// display an image
+Goonmill.imageBox = function (node) {
+    if (node.innerHTML === undefined) {
+        node = new Element('span').update(node);
+    }
+
+    // add a closing box always
+    var hr = new Element('hr');
+    var close = new Element('input', {type: 'button', value: 'close'});
+    close.observe('click', function() { Control.Modal.current.close(true) } );
+
+    var contents = $A([node, hr, close]);
+    var m = Goonmill.Modal(contents);
+
+    return m;
+}
 
 
 // display any node or string as a message
