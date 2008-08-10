@@ -544,11 +544,6 @@ Goonmill.EventBus.methods(
             var t = e.element();
             if (t.tagName == 'INPUT' && t.type == 'text') return;
 
-            // for debugging
-            // FIXME - this isn't working any more
-            if (e.keyCode == 68) { // 'd'
-                Goonmill.debugView();
-            }
         });
 
         // watch for incoming widgets, and field them.
@@ -908,12 +903,18 @@ Goonmill.Modal = function (contents, extraOptions) {
         e.style['visibility'] = 'hidden'; 
     });
     
+    // esc to close
+    var escHotkey = new HotKey('esc', function (event) { 
+            Control.Modal.current.close(true); 
+            }, {ctrlKey:false});
+
     // restore embedded stuff when closing the modal
     config.afterClose = function () { $A(embeds).each(function(e) {
         e.style['visibility'] = e.readAttribute('_oldVisibility');
         e.removeAttribute('_oldVisibility');
-        }
-    )};
+        });
+        escHotkey.destroy();
+    };
 
     var modal = new Control.Modal(null, config);
     modal.open();
@@ -997,5 +998,10 @@ Goonmill.message = function(text, severity) {
     Effect.Pulsate(messageArea, {pulses: 2, duration: 0.5});
     return span;
 }
+
+// for debugging, shift+esc = debug
+new HotKey('esc', function (event) {
+        Goonmill.debugView();
+        }, {ctrlKey:false, shiftKey:true});
 
 // vim:set foldmethod=syntax:set smartindent:
