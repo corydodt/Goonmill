@@ -878,9 +878,14 @@ Goonmill.messageBox = function (node) {
     // add a closing box always
     var hr = new Element('hr');
     var close = new Element('input', {type: 'button', value: 'close'});
+    // FIXME - this buttonContainer is duplicated in Goonmill.confirm
+    var buttonContainer = new Element('div');
+    buttonContainer.addClassName('modalButtonBox');
+    buttonContainer.insert(close);
+
     close.observe('click', function() { Control.Modal.current.close(true) } );
 
-    var contents = $A([node, hr, close]);
+    var contents = $A([node, hr, buttonContainer]);
     var m = Goonmill.Modal(contents);
 
     return m;
@@ -931,6 +936,9 @@ Goonmill.confirm = function (message, button1text, button2text) {
     var message = new Element('span').update(message);
     var button1 = new Element('input', {type:'button', value:button1text});
     var button2 = new Element('input', {type:'button', value:button2text});
+    var buttonContainer = new Element('div');
+    buttonContainer.addClassName('modalButtonBox');
+    $A([button1, button2]).each(function (b) { buttonContainer.insert(b) });
 
     var d = new Divmod.Defer.Deferred(); 
     var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1) }).curry(d);
@@ -938,7 +946,7 @@ Goonmill.confirm = function (message, button1text, button2text) {
     button1.observe('click', f1);
     button2.observe('click', f2);
 
-    var contents = $A([message, new Element('hr'), button1, button2]);
+    var contents = $A([message, new Element('hr'), buttonContainer]);
             
     var m = Goonmill.Modal(contents);
 

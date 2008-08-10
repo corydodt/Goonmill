@@ -274,3 +274,7 @@ input[name=increaseBy] {
 *.checkboxCell:hover {
     outline: thin solid #bdbb60;
 }
+
+.modalButtonBox {
+    text-align: right;
+}
