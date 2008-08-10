@@ -4,12 +4,6 @@
 
 NOTIFY_FILES=('*.py' )
 
-if [ ! -e /var/run/hermes ]; then
-    echo "Creating /var/run/hermes.  Need to use sudo for this."
-    sudo mkdir -p /var/run/hermes
-    sudo chown $(id -un) /var/run/hermes
-fi
-
 echo
 echo ^C to kill.
 echo
