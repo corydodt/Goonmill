@@ -953,7 +953,7 @@ Goonmill.debugView = function () {
         var n = w.node;
         var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
         return [(new Element('dt')).update(dtText),
-                (new Element('dd')).update(n.textContent)];
+                (new Element('dd')).update(n.textContent.truncate(60))];
     }).flatten();
 
     var dl = new Element('dl');
