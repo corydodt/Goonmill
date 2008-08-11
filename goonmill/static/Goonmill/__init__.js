@@ -538,14 +538,6 @@ Goonmill.EventBus.methods(
     function __init__(self, node) {
         Goonmill.EventBus.upcall(self, '__init__', node);
 
-        // keyboard shortcuts!
-        document.observe('keypress', function (e) {
-            // ignore keypresses that take place in input[type=text]
-            var t = e.element();
-            if (t.tagName == 'INPUT' && t.type == 'text') return;
-
-        });
-
         // watch for incoming widgets, and field them.
         document.observe('Goonmill:newNPC', function (e) {
             self.showConstituent(e.memo.npc);
@@ -565,9 +557,7 @@ Goonmill.EventBus.methods(
 
     // display a constituent on the stage
     function showConstituent(self, wi) {
-        // before showing a new one, remove all children of this event bus,
-        // which should only be the ItemViews (at present..)
-        self.childWidgets.each(function (w) { w.detach() } );
+        self.hideConstituent();
         var d = self.addChildWidgetFromWidgetInfo(wi);
         return null;
     },
@@ -575,13 +565,14 @@ Goonmill.EventBus.methods(
     // clean up the stage when a constituent is there that was just removed
     function hideConstituent(self, id) {
         self.childWidgets.each(function (w) {
-            if (w.constituentId == id) {
-                w.detach();
+            if ((id !== undefined) && (id != w.constituentId))
+                return;
 
-                var blank = document.body.select(
-                    '.offstage .itemView')[0].cloneNode(true);
-                w.node.replace(blank);
-            }
+            w.detach();
+
+            var blank = document.body.select(
+                '.offstage .itemView')[0].cloneNode(true);
+            w.node.replace(blank);
         });
     }
 );
