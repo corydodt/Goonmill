@@ -316,13 +316,10 @@ Goonmill.BasicSearch.methods(
             for (var n=0; n<hits.length; n++) {
                 var hit = hits[n];
                 var monsterId = hit[1];
-                var anc = new Element('a', {href:'#' + n, rev: monsterId});
-                anc.addClassName('hit');
-                var name = new Element('span').update(hit[0]);
-                name.addClassName('hitName');
+                var anc = new Element('a', {href:'#'+n, rev:monsterId, 'class':'hit'});
+                var name = new Element('span', {'class':'hitName'}).update(hit[0]);
 
-                var sub = new Element('sub');
-                sub.update(' ' + hit[2] + '%');
+                var sub = new Element('sub').update(' ' + hit[2] + '%');
 
                 anc.hide()
                 anc.insert(name);
@@ -551,7 +548,8 @@ Goonmill.EventBus.methods(
         });
 
         document.observe('Goonmill:removedConstituent', function (e) {
-            self.hideConstituent(e.memo.id);
+            var d = self.hideConstituent(e.memo.id);
+            return d;
         });
     },
 
@@ -567,9 +565,9 @@ Goonmill.EventBus.methods(
         self.childWidgets.each(function (w) {
             if ((id !== undefined) && (id != w.constituentId))
                 return;
-
+ 
             w.detach();
-
+ 
             var blank = document.body.select(
                 '.offstage .itemView')[0].cloneNode(true);
             w.node.replace(blank);
@@ -845,7 +843,7 @@ var LightboxConfig = function () {
 // display an image
 Goonmill.imageBox = function (node) {
     if (node.innerHTML === undefined) {
-        node = new Element('span').update(node);
+        var node = new Element('span').update(node);
     }
 
     // add a closing box always
@@ -863,15 +861,14 @@ Goonmill.imageBox = function (node) {
 // display any node or string as a message
 Goonmill.messageBox = function (node) {
     if (node.innerHTML === undefined) {
-        node = new Element('span').update(node);
+        var node = new Element('span').update(node);
     }
 
     // add a closing box always
     var hr = new Element('hr');
     var close = new Element('input', {type: 'button', value: 'close'});
     // FIXME - this buttonContainer is duplicated in Goonmill.confirm
-    var buttonContainer = new Element('div');
-    buttonContainer.addClassName('modalButtonBox');
+    var buttonContainer = new Element('div', {'class': 'modalButtonBox'});
     buttonContainer.insert(close);
 
     close.observe('click', function() { Control.Modal.current.close(true) } );
@@ -927,8 +924,7 @@ Goonmill.confirm = function (message, button1text, button2text) {
     var message = new Element('span').update(message);
     var button1 = new Element('input', {type:'button', value:button1text});
     var button2 = new Element('input', {type:'button', value:button2text});
-    var buttonContainer = new Element('div');
-    buttonContainer.addClassName('modalButtonBox');
+    var buttonContainer = new Element('div', {'class':'modalButtonBox'});
     $A([button1, button2]).each(function (b) { buttonContainer.insert(b) });
 
     var d = new Divmod.Defer.Deferred(); 
