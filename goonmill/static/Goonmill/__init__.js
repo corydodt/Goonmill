@@ -1,7 +1,21 @@
 // import Nevow.Athena
 // import Divmod.Defer
 
+
 var Widget = Nevow.Athena.Widget;
+// monkey patch a bug with detach not cleaning up properly
+// see: http://divmod.org/trac/ticket/2678
+Widget.method('_athenaDetachClient', function (self) {
+    var l = self.childWidgets.length;
+    for (var i = l-1; i >= 0; --i) {
+        self.childWidgets[i]._athenaDetachClient();
+    }
+    if (self.widgetParent !== null) {
+        self.widgetParent.removeChildWidget(self);
+    }
+    delete Nevow.Athena.Widget._athenaWidgets[self.objectID];
+    self.detached();
+});
 
 // attach certain automatic behavior to every widget, such as checking for
 // behavior-oriented class names and applying those behaviors
@@ -562,16 +576,24 @@ Goonmill.EventBus.methods(
 
     // clean up the stage when a constituent is there that was just removed
     function hideConstituent(self, id) {
-        self.childWidgets.each(function (w) {
-            if ((id !== undefined) && (id != w.constituentId))
-                return;
+        if (self.childWidgets.length > 1) {
+            debugger;
+        }
+        // get the widget currently on the stage
+        var w = self.childWidgets[0];
+
+        // nothing on the stage -> nothing to do
+        if (w === undefined) return;
  
-            w.detach();
- 
-            var blank = document.body.select(
-                '.offstage .itemView')[0].cloneNode(true);
-            w.node.replace(blank);
-        });
+        // id undefined -> don't check id. if we must check id, do nothing
+        // IF the id on the stage is not the id we're trying to hide
+        if ((id !== undefined) && (id == w.constituentId)) return;
+
+        w.detach();
+
+        var blank = document.body.select(
+            '.offstage .itemView')[0].cloneNode(true);
+        w.node.replace(blank);
     }
 );
 
