@@ -2,11 +2,13 @@ from playtools import sparqly as S
 
 from rdflib.Namespace import Namespace as NS
 
-fam = NS('http://thesoftworld.com/2007/family.n3#')
-char = NS('http://thesoftworld.com/2007/characteristic.n3#')
-dice = NS('http://thesoftworld.com/2007/dice.n3#')
-pcclass = NS('http://thesoftworld.com/2007/pcclass.n3#')
-prop = NS('http://thesoftworld.com/2007/property.n3#')
+from goonmill.util import RESOURCE as R2
+
+FAM = NS('http://thesoftworld.com/2007/family.n3#')
+CHAR = NS('http://thesoftworld.com/2007/characteristic.n3#')
+DICE = NS('http://thesoftworld.com/2007/dice.n3#')
+PCCLASS = NS('http://thesoftworld.com/2007/pcclass.n3#')
+PROP = NS('http://thesoftworld.com/2007/property.n3#')
 
 class SpecialArmorClass(S.SparqItem):
     """Permanent, racial modifier to armor class"""
@@ -219,9 +221,9 @@ if __name__ == '__main__': # {{{
         #
 
 
-    formatFamily(fam.devil)
-    formatFamily(fam.ooze)
-    formatFamily(fam.undead)
-    formatFamily(fam.construct)
-    formatFamily(fam.fey)
+    formatFamily(FAM.devil)
+    formatFamily(FAM.ooze)
+    formatFamily(FAM.undead)
+    formatFamily(FAM.construct)
+    formatFamily(FAM.fey)
 # }}}
