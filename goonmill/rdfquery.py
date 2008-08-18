@@ -1,14 +1,19 @@
+from twisted.python import log
+
 from playtools import sparqly as S
 
 from rdflib.Namespace import Namespace as NS
 
-from goonmill.util import RESOURCE as R2
+from goonmill.util import RESOURCE
 
 FAM = NS('http://thesoftworld.com/2007/family.n3#')
 CHAR = NS('http://thesoftworld.com/2007/characteristic.n3#')
 DICE = NS('http://thesoftworld.com/2007/dice.n3#')
 PCCLASS = NS('http://thesoftworld.com/2007/pcclass.n3#')
 PROP = NS('http://thesoftworld.com/2007/property.n3#')
+
+DB_LOCATION = RESOURCE('rdflib.db')
+DB_CONFIG = RESOURCE('tripledb.n3')
 
 class SpecialArmorClass(S.SparqItem):
     """Permanent, racial modifier to armor class"""
@@ -93,7 +98,8 @@ def needDatabase(f):
     """
     def inner(*a, **kw):
         if db is None:
-            bootstrapDatabase()
+            log.msg("Opening rdf database", system="rdfquery")
+            openDatabase()
         return f(*a, **kw)
     return inner
 
@@ -154,14 +160,14 @@ class SRDTriplesDatabase(S.TriplesDatabase):
 
 db = None
 
-def bootstrapDatabase():
+def openDatabase():
     """
-    Load the database. Has the side-effect of making the db available at the
+    Open the database. Has the side-effect of making the db available at the
     module level.
     """
-    from goonmill.util import RESOURCE as R2
     global db
-    db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(R2('tripledb.n3')))
+    db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(DB_CONFIG))
+    db.open(DB_LOCATION)
     return db
 
 
