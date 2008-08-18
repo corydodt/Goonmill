@@ -51,7 +51,7 @@ class Statblock(object):
 
     @classmethod
     def fromMonster(cls, monster):
-        sb = Statblock()
+        sb = cls()
         sb.id = monster.id
         sb.monster = monster
         sb.initStats()
