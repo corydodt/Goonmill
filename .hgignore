@@ -14,3 +14,4 @@
 ^wingdbstub.py$
 ^goonmill.wpu$
 ^goonmill/static/monster$
+^goonmill/rdflib\.db.*$
