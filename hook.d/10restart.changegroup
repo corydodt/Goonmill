@@ -1,2 +1,2 @@
-make goonmill-stop
-make goonmill-start
+make goonmill-stop 1>&2
+make goonmill-start 1>&2
