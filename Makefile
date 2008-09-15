@@ -9,7 +9,10 @@ stop:
 
 goonmill-start:
 	echo Starting goonmill
-	twistd --pid goonmill.pid goonmill --dev
+	if [ `id -u` -eq 0 ]; then \
+		twistd --umask 002 -u cdodt --pid goonmill.pid goonmill --dev; \
+		else \
+		twistd --umask 002 --pid goonmill.pid goonmill --dev; fi
 
 goonmill-stop:
 	echo Stopping goonmill

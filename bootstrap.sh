@@ -1,6 +1,8 @@
 #!/bin/bash
 ## Bootstrap setup for goonmill
 
+umask 002
+
 cat <<EOF
 :: This script will check your environment to make sure Goonmill is
 :: ready to run, and do any one-time setup steps necessary.
@@ -63,6 +65,7 @@ userdb=goonmill/user.db
 if [ ! -r "$userdb" ]; then
     sqlite3 -init goonmill/sql/user.sql $userdb '.exit' || exit 1
     sqlite3 -init goonmill/sql/dummy.sql $userdb '.exit' || exit 1
+    chmod 664 $userdb
 else
     echo "** ${userdb} already exists, not willing to overwrite it!"
     echo ::
