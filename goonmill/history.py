@@ -182,7 +182,7 @@ class Statblock(object):
         s = self.monster.alignment
 
         if s is None:
-            return 'None'
+            return u'None'
 
         matched = self.alignmentRx.match(s)
         if matched is not None:
@@ -203,15 +203,15 @@ class Statblock(object):
 
     def formatSkills(self):
         if self.skills == {}:
-            return '-'
-        return ', '.join(sorted(self.skills.values()))
+            return u'-'
+        return u', '.join(sorted(self.skills.values()))
 
     def parseSaves(self):
         return parseSaves(self.monster.saves)
 
     def formatFeats(self, callable):
         featList = callable()
-        return ', '.join([f.name for f in featList])
+        return u', '.join([f.name for f in featList])
 
     def acFeats(self):
         """List of feats that can appear next to AC"""
@@ -259,7 +259,7 @@ class Statblock(object):
             if n == -1:
                 rolled[n] = 'Special'
 
-        return ', '.join(map(str, rolled))
+        return u', '.join(map(str, rolled))
 
     def singleHitPoints(self):
         """
@@ -289,7 +289,7 @@ class Statblock(object):
             for l in f.languages:
                 ret.add(l.label)
 
-        return ', '.join(sorted(ret)) or '-'
+        return u', '.join(sorted(ret)) or u'-'
 
     def resistances(self):
         """Return the creature's notable resistances"""
@@ -311,7 +311,7 @@ class Statblock(object):
         if 'Spell' in ret: del ret['Spell']
 
         if len(ret) > 0:
-            return ', '.join(sorted(ret.values()))
+            return u', '.join(sorted(ret.values()))
         return None
 
     def immunities(self):
@@ -329,7 +329,7 @@ class Statblock(object):
                 ret[q.what.title()] = q.what
 
         if len(ret) > 0:
-            return ', '.join(sorted(ret.values()))
+            return u', '.join(sorted(ret.values()))
         return None
 
     def vulnerabilities(self):
@@ -371,8 +371,8 @@ class Statblock(object):
                     ret[q.name.title()] = q.name
 
         if len(ret) > 0:
-            return ', '.join(sorted(ret.values()))
-        return '-'
+            return u', '.join(sorted(ret.values()))
+        return u'-'
 
     def spellResistance(self):
         """Return the creature's spell resistance, if any"""
@@ -412,7 +412,7 @@ class Statblock(object):
             if qname in all:
                 ret.append(all[qname].label)
 
-        return ', '.join(sorted(ret)) or None
+        return u', '.join(sorted(ret)) or None
 
     def attackGroups(self):
         """
