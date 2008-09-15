@@ -169,6 +169,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 .itemMain {
+    overflow: auto;
 }
 
 .eventBus {
@@ -199,6 +200,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     height: 84px;
     position: relative;
     top: -10px;
+    right: 15px;
     text-align: center;
     line-height: 84px;
 }
@@ -227,8 +229,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     padding-left: 26px;
     padding-right: 10px;
     position: absolute;
-    right: 72px;
-    top: -8px;
+    right: 87px;
+    /* top: -8px; */
 }
 
 .deleteChecked {

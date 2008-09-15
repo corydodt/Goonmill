@@ -70,3 +70,19 @@ else
     echo ::
 fi
 
+tripledb=goonmill/rdflib.db
+if [ ! -r "$tripledb" ]; then
+    ptstore create $tripledb
+    ns=("--n3 http://www.w3.org/2000/01/rdf-schema#"
+        "--n3 http://goonmill.org/2007/family.n3#"
+        "--n3 http://goonmill.org/2007/characteristic.n3#"
+        "--n3 http://goonmill.org/2007/property.n3#"
+        )
+    ptstore pull --verbose ${ns[@]} $tripledb || exit 1
+else
+    echo "** ${tripledb} already exists, not willing to overwrite it!"
+    echo ::
+    echo :: If you have already run bootstrap.sh once, this is not an error.
+    echo ::
+fi
+

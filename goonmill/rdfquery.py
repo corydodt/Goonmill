@@ -6,14 +6,13 @@ from rdflib.Namespace import Namespace as NS
 
 from goonmill.util import RESOURCE
 
-FAM = NS('http://thesoftworld.com/2007/family.n3#')
-CHAR = NS('http://thesoftworld.com/2007/characteristic.n3#')
-DICE = NS('http://thesoftworld.com/2007/dice.n3#')
-PCCLASS = NS('http://thesoftworld.com/2007/pcclass.n3#')
-PROP = NS('http://thesoftworld.com/2007/property.n3#')
+FAM = NS('http://goonmill.org/2007/family.n3#')
+CHAR = NS('http://goonmill.org/2007/characteristic.n3#')
+DICE = NS('http://goonmill.org/2007/dice.n3#')
+PCCLASS = NS('http://goonmill.org/2007/pcclass.n3#')
+PROP = NS('http://goonmill.org/2007/property.n3#')
 
 DB_LOCATION = RESOURCE('rdflib.db')
-DB_CONFIG = RESOURCE('tripledb.n3')
 
 class SpecialArmorClass(S.SparqItem):
     """Permanent, racial modifier to armor class"""
@@ -166,8 +165,9 @@ def openDatabase():
     module level.
     """
     global db
-    db = SRDTriplesDatabase(**S.bootstrapDatabaseConfig(DB_CONFIG))
+    db = SRDTriplesDatabase('#')
     db.open(DB_LOCATION)
+
     return db
 
 
@@ -195,6 +195,7 @@ if __name__ == '__main__': # {{{
     def formatComment(c):
         return '\n      '.join(text.greedyWrap(c))
 
+    @needDatabase
     def formatFamily(key):
         fam = Family(db=db, key=key)
 
