@@ -288,3 +288,9 @@ dt {
 
 dd {
 }
+
+.template {
+    /* please don't put any rules in here.
+     * this class is reserved.
+     */
+}
