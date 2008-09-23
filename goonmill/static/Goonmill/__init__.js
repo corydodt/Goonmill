@@ -346,9 +346,9 @@ Goonmill.BasicSearch.methods(
                 anc.insert(sub);
 
                 // closures in javascript, feh
-                anc.observe('click', (function (anc, monsterId, event) { 
+                anc.observe('click', function (anc, monsterId, event) { 
                         self.onClickedHit(event, anc, monsterId);
-                }).curry(anc, monsterId));
+                }.curry(anc, monsterId));
 
                 self.hitContainer.insert(anc);
                 Effect.SlideDown(anc);
@@ -410,14 +410,14 @@ Goonmill.ConstituentList.methods(
     // make all closing x's clickable, and the buttons themselves clickable
     function _setEvents(self, constituent) {
         // closing x
-        constituent.select('.closingX')[0].observe('click', (function (c, event) {
+        constituent.select('.closingX')[0].observe('click', function (c, event) {
             self.removeConstituentClicked(event, c);
-        }).curry(constituent));
+        }.curry(constituent));
 
         // the button itself
-        constituent.observe('click', (function (c, event) {
+        constituent.observe('click', function (c, event) {
             self.constituentClicked(c);
-        }).curry(constituent));
+        }.curry(constituent));
     },
 
     // put a constituent on the stage
@@ -476,7 +476,7 @@ Goonmill.ConstituentList.methods(
                 var id = parseInt(node.readAttribute('rel'), 10);
                 var d = self.callRemote('removeConstituent', id);
                 d.addCallback(function (r) {
-                    Effect.Fade(node, {afterFinish: (function(n) { n.remove(); }).curry(node)});
+                    Effect.Fade(node, {afterFinish: function(n) { n.remove(); }.curry(node)});
                     document.fire('Goonmill:removedConstituent', {id:id});
                 });
                 return d;
@@ -627,9 +627,9 @@ Goonmill.MonsterGroup.methods(
         self.constituentId = constituentId;
 
         node.select('.deleteChecked').each(function (n) {
-            n.observe('click', (function (nn, e) {
+            n.observe('click', function (nn, e) {
                 self.deleteClicked(nn, e);
-            }).curry(n) );
+            }.curry(n) );
         });
 
         var toggleAll = node.select('[name=toggleAll]')[0];
@@ -722,7 +722,7 @@ Goonmill.MonsterGroup.methods(
 
         var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
 
-        d.addCallback((function (checkedRows, count) {
+        d.addCallback(function (checkedRows, count) {
             Goonmill.unspin(spinner);
 
             if (count != checkedRows.length) { 
@@ -737,7 +737,7 @@ Goonmill.MonsterGroup.methods(
             });
 
             return null;
-        }).curry(checkedRows));
+        }.curry(checkedRows));
 
         return d;
     },
@@ -822,8 +822,8 @@ Goonmill.NPC.methods(
 // display the dialog that disambiguates monster groups and npcs
 Goonmill.whichNewThing = function(name) {
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1); }).curry(d);
-    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2); }).curry(d);
+    var f1 = function(d) { Control.Modal.current.close(true); d.callback(1); }.curry(d);
+    var f2 = function(d) { Control.Modal.current.close(true); d.callback(2); }.curry(d);
 
     var tmpl = document.documentElement.select('.whichNewThing')[0];
     var clone = tmpl.cloneNode(true);
@@ -960,8 +960,8 @@ Goonmill.confirm = function (message, button1text, button2text) {
     $A([button1, button2]).each(function (b) { buttonContainer.insert(b); });
 
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = (function(d) { Control.Modal.current.close(true); d.callback(1); }).curry(d);
-    var f2 = (function(d) { Control.Modal.current.close(true); d.callback(2); }).curry(d);
+    var f1 = function(d) { Control.Modal.current.close(true); d.callback(1); }.curry(d);
+    var f2 = function(d) { Control.Modal.current.close(true); d.callback(2); }.curry(d);
     button1.observe('click', f1);
     button2.observe('click', f2);
 
@@ -980,8 +980,8 @@ Goonmill.debugView = function () {
     var printNodes = toPrint.map(function (w) {
         var n = w.node;
         var dtText = n.readAttribute('class') + ' (' + n.identify() + ')';
-        return [(new Element('dt')).update(dtText),
-                (new Element('dd')).update(n.textContent.truncate(60))];
+        return [new Element('dt').update(dtText),
+                new Element('dd').update(n.textContent.truncate(60))];
     }).flatten();
 
     var dl = new Element('dl');
