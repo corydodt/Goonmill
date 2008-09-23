@@ -2,10 +2,11 @@
   "constituentList" n:render="liveElement">
 
   <!-- the platonic ideal constituent - for use by addStencil, addNPC etc. -->
-  <div style="display:none" class="template constituent kind-#{kind}" rel="#{constituentId}">
-    <span class="closingX" title="#{closingXTitle}"></span>
-    <span class="constituentName">#{constituentName}</span>
-    <span class="constituentDetail">#{constituentDetail}</span>
+  <div style="display:none" class="template constituent" rel="REL"
+    jseval="$(this).addClassName('kind-'+kind)" jsvalues="rel:rel">
+    <span class="closingX" title="TITLE" jsvalues="title:title"></span>
+    <span class="constituentName" jscontent="name.truncate(15)">NAME</span>
+    <span class="constituentDetail" jscontent="detail.truncate(15)">DETAIL</span>
     <div style="float: left; clear: both;" />
   </div>
 

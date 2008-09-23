@@ -410,14 +410,14 @@ Goonmill.ConstituentList.methods(
     // make all closing x's clickable, and the buttons themselves clickable
     function _setEvents(self, constituent) {
         // closing x
-        constituent.select('.closingX')[0].observe('click', function (c, event) {
-            self.removeConstituentClicked(event, c);
-        }.curry(constituent));
+        constituent.select('.closingX')[0].observe('click', function (event) {
+            self.removeConstituentClicked(event, constituent);
+        });
 
         // the button itself
-        constituent.observe('click', function (c, event) {
-            self.constituentClicked(c);
-        }.curry(constituent));
+        constituent.observe('click', function (event) {
+            self.constituentClicked(constituent);
+        });
     },
 
     // put a constituent on the stage
@@ -450,33 +450,30 @@ Goonmill.ConstituentList.methods(
 
         if (node.hasClassName('kind-monsterGroup')) { 
             message = 'Delete the monster group #{name}, with #{detail} creatures?';
-            message = message.interpolate(args);
             button1 = 'delete';
         } else if (node.hasClassName('kind-encounter')) {
             message = 'Delete the encounter #{name}, with #{detail} creatures?';
-            message = message.interpolate(args);
             button1 = 'delete';
         } else if (node.hasClassName('kind-stencil')) {
             message = 'Remove stencil for #{name} from this workspace? (#{name} will remain in your user library.)';
-            message = message.interpolate(args);
             button1 = 'remove';
         } else if (node.hasClassName('kind-npc')) {
             message = 'Remove NPC named #{name} from this workspace? (#{name} will remain in your user library.)';
-            message = message.interpolate(args);
             button1 = 'remove';
         } else {
             message = 'ONO XX';
             button1 = 'ONO';
         }
+        message = message.interpolate(args);
 
 
         var d = Goonmill.confirm(message, button1, 'whoops no');
-        d.addCallback(function (button) {
+        d.addCallback(function (button) { 
             if (button == 1) {
                 var id = parseInt(node.readAttribute('rel'), 10);
                 var d = self.callRemote('removeConstituent', id);
                 d.addCallback(function (r) {
-                    Effect.Fade(node, {afterFinish: function(n) { n.remove(); }.curry(node)});
+                    Effect.Fade(node, {afterFinish: function() { node.remove(); }});
                     document.fire('Goonmill:removedConstituent', {id:id});
                 });
                 return d;
@@ -487,12 +484,10 @@ Goonmill.ConstituentList.methods(
     // put a new constituent into the list
     function addConstituent(self, kind, id, name, detail) {
         var listItem = self.node.select('.template')[0].cloneNode(true);
-        listItem.removeClassName('template');
-        listItem.className = listItem.className.interpolate({kind: kind});
-        listItem.setAttribute('rel', id);
-        listItem.select('.closingX')[0].setAttribute('title', 'FIXME'); // FIXME
-        listItem.select('.constituentName')[0].update(name.truncate(15));
-        listItem.select('.constituentDetail')[0].update(detail.truncate(15));
+        var ctx = new JsEvalContext({'title':'FIXME', 'name':name, 'rel':id,
+                'detail':detail, 'kind':kind
+        });
+        jstProcess(ctx, listItem);
         self.node.insert(listItem);
         self._setEvents(listItem);
         listItem.select('.closingX')[0].observe('click', function (event) {
@@ -722,7 +717,7 @@ Goonmill.MonsterGroup.methods(
 
         var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
 
-        d.addCallback(function (checkedRows, count) {
+        d.addCallback(function (count) {
             Goonmill.unspin(spinner);
 
             if (count != checkedRows.length) { 
@@ -737,7 +732,7 @@ Goonmill.MonsterGroup.methods(
             });
 
             return null;
-        }.curry(checkedRows));
+        });
 
         return d;
     },
@@ -822,8 +817,8 @@ Goonmill.NPC.methods(
 // display the dialog that disambiguates monster groups and npcs
 Goonmill.whichNewThing = function(name) {
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = function(d) { Control.Modal.current.close(true); d.callback(1); }.curry(d);
-    var f2 = function(d) { Control.Modal.current.close(true); d.callback(2); }.curry(d);
+    var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
+    var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
 
     var tmpl = document.documentElement.select('.whichNewThing')[0];
     var clone = tmpl.cloneNode(true);
@@ -960,8 +955,8 @@ Goonmill.confirm = function (message, button1text, button2text) {
     $A([button1, button2]).each(function (b) { buttonContainer.insert(b); });
 
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = function(d) { Control.Modal.current.close(true); d.callback(1); }.curry(d);
-    var f2 = function(d) { Control.Modal.current.close(true); d.callback(2); }.curry(d);
+    var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
+    var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
     button1.observe('click', f1);
     button2.observe('click', f2);
 
