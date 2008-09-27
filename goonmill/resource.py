@@ -610,7 +610,7 @@ class MonsterGroupView(athena.LiveElement):
         fill('ac', get('armor_class'))
         fill('specialAC', get('specialAC'))
         fill('acFeats', get('acFeats'))
-        fill('hp', 'See grid.')
+        # fill('hp', 'See grid.')
         fill('hitDice', get('hitDice'))
         fill('fastHealing', get('fastHealing'))
         fill('regeneration', get('regeneration'))
@@ -638,7 +638,7 @@ class MonsterGroupView(athena.LiveElement):
         fill('specialActions', get('specialActions'))
         ## gear TODO
         fill('casterLevel', get('casterLevel'))
-        fill('spells', 'See grid.')
+        # fill('spells', 'See grid.')
         ## spellLikeAbilities - see renderer
 
         # skills, abilities, feats block
@@ -647,7 +647,7 @@ class MonsterGroupView(athena.LiveElement):
         fill('feats', get('feats') or '-')
         fill('skills', get('skills'))
         ## possessions TODO
-        fill('spellbook', 'See grid.')
+        # fill('spellbook', 'See grid.')
 
         # ability detail drilldown block
         ## fullAbilities - see renderer

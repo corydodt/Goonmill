@@ -98,7 +98,8 @@
         name="specialAC" /></span><span n:render=
         "acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
 
-    <p>hp&#xA0;<strong><n:slot name="hp"/></strong> HD <strong><n:slot name=
+    <p>hp&#xA0;<strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+          href="#">grid</a></strong>&#xA0;&#xA0;HD <strong><n:slot name=
         "hitDice" /></strong> 
       <span n:render="fastHealing">; fast healing <strong><n:slot name=
         "fastHealing" /></strong></span>
@@ -166,11 +167,12 @@
 
     <p title=
     "gear that can be used as a combat action (not weapons)">Combat
-      Gear <strong>See grid.</strong></p>
+      Gear <strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+          href="#">grid</a>.</strong></p>
 
     <p n:render="spells">Spells <strong>(CL <n:slot name=
-      "casterLevel" />) <n:slot name=
-      "spells" /></strong></p>
+      "casterLevel" />) See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+          href="#">grid</a>.</strong></p>
 
     <p n:render="spellLikeAbilities" />
     </div>
@@ -185,10 +187,11 @@
 
     <p>Skills&#xA0;<strong><n:slot name="skills" /></strong></p>
 
-    <p>Possessions <strong>See grid.</strong></p>
+    <p>Possessions <strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+          href="#">grid</a>.</strong></p>
 
-    <p n:render="spells"><strong>Spellbook</strong>&#xA0;<n:slot name=
-      "spellbook" /></p>
+    <p n:render="spells">Spellbook&#xA0;<strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+        href="#">grid</a>.</strong></p>
     </div>
     
     <!-- ability detail drilldown block -->

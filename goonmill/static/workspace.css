@@ -222,6 +222,8 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     display: none;
 }
 
+
+
 .printButton {
     background-image: url(/static/printer.png);
     background-repeat: no-repeat;
@@ -235,17 +237,43 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 
 .statblockTab {
     background-image: url(/static/report.png);
-    background-repeat: no-repeat;
-    padding-left: 16px;
-    padding-right: 10px;
 }
 
 .gridTab {
     background-image: url(/static/table__pencil.png);
+}
+
+.tabHandle:hover {
+    text-decoration: underline;
+}
+
+.tabHandle {
+    text-decoration: none;
     background-repeat: no-repeat;
     padding-left: 18px;
-    padding-right: 10px;
 }
+
+.monsterGroupTabs .tabHandle {
+    margin-right: 15px;
+}
+
+.monsterGroupTabs {
+    width: 98%;
+    margin-bottom: 12px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid black;
+}
+
+.tab {
+    display:none;
+    width: 98%;
+}
+
+.tab.tabSelected {
+    display:block;
+}
+
+
 
 
 .deleteChecked {
@@ -316,30 +344,6 @@ dd {
 
 
 .statblock { border-bottom: thin solid black; }
-
-.tabHandle:hover {
-    text-decoration: underline;
-}
-
-.tabHandle {
-    text-decoration: none;
-}
-
-.monsterGroupTabs {
-    width: 98%;
-    margin-bottom: 12px;
-    padding-bottom: 2px;
-    border-bottom: 2px solid black;
-}
-
-.tab {
-    display:none;
-    width: 98%;
-}
-
-.tab.tabSelected {
-    display:block;
-}
 
 .statblock p {
     margin: 0px;
