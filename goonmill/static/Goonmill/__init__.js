@@ -776,6 +776,7 @@ Goonmill.MonsterGroup.methods(
         var url = node.getAttribute('rel');
         var div = new Element('div');
         div.addClassName('modalImage');
+        div.addClassName('imageBox');
         var img = new Element('img', {'src': url});
         div.insert(img);
         Goonmill.imageBox(div);

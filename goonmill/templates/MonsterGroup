@@ -8,7 +8,7 @@
     <span class="constituentName truncate25"><n:slot name="monsterName" /></span>
     </div>
     <div class="constituentGroupName"><n:slot name="groupName" /></div>
-    <div title="Click to enlarge" class="imageBox"><n:attr name=
+    <div title="Click to enlarge" class="smallImageBox imageBox"><n:attr name=
       "rel"><n:slot name="largeUrl" /></n:attr><img><n:attr name=
       "src"><n:slot name="monsterImage" /></n:attr></img></div>
     </div>
@@ -62,7 +62,7 @@
 
     <div class="x2-2-2-3 monsterGroupStatblock tab">
     <div class="statblock" n:render="sections">
-    <div n:render="statblockImage" class="statblockImage"><img><n:attr name=
+    <div n:render="statblockImage" class="imageBox statblockImage"><img><n:attr name=
       "src"><n:slot name="image128" /></n:attr></img></div>
     <!-- basic information -->
     <div class="challengeRating">CR <strong><n:slot

@@ -193,7 +193,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 /* whichNewThing dialog */     font-family: serif;
 /* whichNewThing dialog */ }
 
-.imageBox {
+.smallImageBox {
     background-image: url(/static/image-frame.png);
     float: right;
     width: 80px;
@@ -201,8 +201,11 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     position: relative;
     top: -10px;
     right: 15px;
-    text-align: center;
     line-height: 84px;
+}
+
+.imageBox {
+    text-align: center;
 }
 
 .imageBox img {
@@ -357,20 +360,10 @@ dd {
     width: 128px;
     height: 128px;
     line-height: 128px;
-    text-align: center;
-}
-
-.statblockImage img {
-    vertical-align: middle;
 }
 
 .modalImage { 
     width: 384px;
     height: 384px;
     line-height: 384px;
-    text-align: center;
-}
-
-.modalImage img {
-    vertical-align: middle;
 }
