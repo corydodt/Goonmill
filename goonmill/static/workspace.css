@@ -233,6 +233,21 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     /* top: -8px; */
 }
 
+.statblockTab {
+    background-image: url(/static/report.png);
+    background-repeat: no-repeat;
+    padding-left: 16px;
+    padding-right: 10px;
+}
+
+.gridTab {
+    background-image: url(/static/table__pencil.png);
+    background-repeat: no-repeat;
+    padding-left: 18px;
+    padding-right: 10px;
+}
+
+
 .deleteChecked {
     float: left;
 }
@@ -293,4 +308,39 @@ dd {
     /* please don't put any rules in here.
      * this class is reserved.
      */
+}
+
+.TODO {
+    background-color: yellow;
+}
+
+
+.statblock { border-bottom: thin solid black; }
+
+.tabHandle:hover {
+    text-decoration: underline;
+}
+
+.tabHandle {
+    text-decoration: none;
+}
+
+.monsterGroupTabs {
+    width: 98%;
+    margin-bottom: 12px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid black;
+}
+
+.tab {
+    display:none;
+    width: 98%;
+}
+
+.tab.tabSelected {
+    display:block;
+}
+
+.statblock p {
+    margin: 0px;
 }

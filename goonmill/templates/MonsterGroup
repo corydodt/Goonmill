@@ -1,58 +1,203 @@
 <div class="x2-2 itemView" xmlns:n="http://nevow.com/ns/nevow/0.1"
   n:render="liveElement">
   <n:invisible n:render="initialize">
+
     <div class="x2-2-1">
-      <div class="x2-2-1x itemHeader">
-        <div class="constituent kind-monsterGroup">
-          <span class="constituentName truncate25"><n:slot name="monsterName" /></span>
-        </div>
-        <div class="constituentGroupName"><n:slot name="groupName" /></div>
-        <div title="Click to enlarge" class="imageBox"><n:attr name=
-          "rel"><n:slot name="largeUrl" /></n:attr><img><n:attr name=
-          "src"><n:slot name="monsterImage" /></n:attr></img></div>
-      </div>
+    <div class="x2-2-1x itemHeader">
+    <div class="constituent kind-monsterGroup">
+    <span class="constituentName truncate25"><n:slot name="monsterName" /></span>
     </div>
+    <div class="constituentGroupName"><n:slot name="groupName" /></div>
+    <div title="Click to enlarge" class="imageBox"><n:attr name=
+      "rel"><n:slot name="largeUrl" /></n:attr><img><n:attr name=
+      "src"><n:slot name="monsterImage" /></n:attr></img></div>
+    </div>
+    </div><!-- end header stripe -->
+
     <div class="x2-2-2 itemMain">
 
-      <input class="deleteChecked" type="button" value="Delete Checked..." />
-      <a class="printButton" href="#">Print</a>
+    <div class="x2-2-2-1 monsterGroupTabs">
+    <a title="Editable grid" class="tabHandle gridTab" rel=
+      "monsterGroupGrid" href="#">Grid</a>
+    <a title="Detailed statblock" class="tabHandle statblockTab" rel=
+      "monsterGroupStatblock" href="#">Statblock</a>
+    <a class="printButton" href="#">Print</a>
+    </div><!-- end tab controls -->
 
-      <table class="groupieTable">
-        <thead>
-          <tr>
-            <td class="checkboxCell"><input name="toggleAll" type="checkbox" /></td>
-            <td><img class="randomize" src="/static/d20.png" title=
-              "Reroll all checked" alt="Reroll all checked" /></td>
-            <td>Hit Points</td>
-            <td>Alignment</td>
-            <td>Treasure/Gear</td>
-            <td>Spells</td>
-            <td>Individual's name</td>
-          </tr>
-        </thead>
-        <tbody n:render="groupieList">
-          <tr class="groupieRow" n:pattern="groupieRow"><n:attr name=
-            "rel"><n:slot name="groupieId" /></n:attr>
-            <td class="checkboxCell"><input name='selectGroupie' type="checkbox" /></td>
-            <td class="blankCell" />
-            <td><n:slot name="hitPoints" /></td>
-            <td><n:slot name="alignment" /></td>
-            <td><n:slot name="gear" /></td>
-            <td><n:slot name="spells" /></td>
-            <td><n:slot name="personalName" /></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="x2-2-2-2 monsterGroupGrid tab tabSelected">
+    <input class="deleteChecked" type="button" value="Delete Checked..." />
+    <table class="groupieTable">
+    <thead>
+    <tr>
+    <td class="checkboxCell"><input name="toggleAll" type="checkbox" /></td>
+    <td><img class="randomize" src="/static/d20.png" title=
+      "Reroll all checked" alt="Reroll all checked" /></td>
+    <td>Hit Points</td>
+    <td>Alignment</td>
+    <td>Treasure/Gear</td>
+    <td n:render="spells">Spells</td>
+    <td>Individual's name</td>
+    </tr>
+    </thead>
+    <tbody n:render="groupieList">
+    <tr class="groupieRow" n:pattern="groupieRow"><n:attr name=
+      "rel"><n:slot name="groupieId" /></n:attr>
+    <td class="checkboxCell"><input name='selectGroupie' type="checkbox" /></td>
+    <td class="blankCell" />
+    <td><n:slot name="hitPoints" /></td>
+    <td><n:slot name="alignment" /></td>
+    <td><n:slot name="gear" /></td>
+    <td n:render="spells"><n:slot name="spells" /></td>
+    <td><n:slot name="personalName" /></td>
+    </tr>
+    </tbody>
+    </table>
+    <input class="deleteChecked" type="button" value="Delete Checked..." />
+    <form name="increaseBy">
+    <span>Increase group by:</span>
+    <input type="text" name="increaseByAmount" value="1" />
+    <input type="submit" value="Add Creature(s)" />
+    </form>
+    </div><!-- end groupie table -->
 
-      <input class="deleteChecked" type="button" value="Delete Checked..." />
+    <div class="x2-2-2-3 monsterGroupStatblock tab">
+    <div class="statblock" n:render="sections">
+    <!-- basic information -->
+    <div class="challengeRating">CR <strong><n:slot
+        name="challengeRating"/></strong></div>
+    <p n:render="npcStats">
+    <n:slot name="gender"/>
+    <n:slot name="race"/>
+    <n:slot name="class"/>
+    <n:slot name="level"/>
+    </p>
+    <p><strong>
+    <n:slot name="alignment"/>
+    <n:slot name="size"/>
+    <n:slot name="creatureType"/>
+    <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
+    </strong></p>
 
-      <form name="increaseBy">
-        <span>Increase group by:</span>
-        <input type="text" name="increaseByAmount" value="1" />
-        <input type="submit" value="Add Creature(s)" />
-      </form>
+    <p>Init&#xA0;<strong><n:slot name=
+      "initiative"/></strong>; <span>Senses <strong><n:slot name=
+      "senses" /></strong></span>; Listen <strong><n:slot name=
+      "listen" /></strong>, Spot <strong><n:slot name="spot" /></strong></p>
 
+    <p n:render="aura">Aura&#xA0;<strong><n:slot name="aura" /></strong></p>
+
+    <p>Languages&#xA0;<strong><n:slot name="languages"/></strong></p>
+
+    <!-- defense block -->
+    <div class="statblock">
+    <p>AC&#xA0;<strong><n:slot name="ac" /></strong><span n:render=
+        "specialAC"
+        title=
+        "mods to AC, see e.g. cyclonic ravager deflecting winds">; <n:slot
+        name="specialAC" /></span><span n:render=
+        "acFeats">;&#xA0;<n:slot name="acFeats" /></span></p>
+
+    <p>hp&#xA0;<strong><n:slot name="hp"/></strong> HD <strong><n:slot name=
+        "hitDice" /></strong> 
+      <span n:render="fastHealing">; fast healing <strong><n:slot name=
+        "fastHealing" /></strong></span>
+      <span n:render="regeneration">; regeneration <strong><n:slot name=
+        "regeneration" /></strong></span>
+      <span n:render="damageReduction">DR <strong><n:slot name=
+        "damageReduction" /></strong></span></p>
+
+    <p n:render="immunities">Immune&#xA0;<strong><n:slot name=
+      "immunities" /></strong></p>
+
+    <p><span n:render=
+      "resistances">Resist&#xA0;<strong><n:slot name=
+        "resistances" /></strong>
+      </span><span n:render="spellResistance">SR <strong><n:slot name=
+        "spellResistance" /></strong></span></p>
+
+    <p>Fort <strong><n:slot name="fort" /></strong>, 
+      Ref <strong><n:slot name="ref" /></strong>, 
+      Will <strong><n:slot name="will" /></strong></p>
+
+    <p n:render="vulnerabilities">Weakness
+      <span n:pattern="vulnerability"><strong>vulnerability to <n:slot name=
+        "attackEffect" /></strong></span>
+    </p>
     </div>
+
+    <!-- attack block -->
+    <div class="statblock">
+      <p>Spd&#xA0;<strong><n:slot name="speed"/> <span n:render=
+          "speedFeats">;&#xA0;<n:slot name="speedFeats" /></span></strong></p>
+
+    <span n:render="meleeAttacks">
+      <p n:pattern="meleeAttack">Melee&#xA0;<strong><n:slot name=
+        "value" /></strong></p>
+    </span>
+
+    <span n:render="rangedAttacks">
+        <p n:pattern="rangedAttack">Ranged&#xA0;<strong><n:slot name=
+          "value" /><span n:render=
+          "rangedAttackFeats">; <n:slot name=
+          "rangedAttackFeats" /></span></strong></p>
+    </span>
+
+    <p n:render="space">Space&#xA0;<strong><n:slot name="space"/></strong>;
+      Reach&#xA0;<strong><n:slot name="reach"/></strong></p>
+
+    <p>Base Atk&#xA0;<strong><n:slot name=
+        "baseAttack"/></strong>; Grp&#xA0;<strong><n:slot name=
+        "grapple" /></strong></p>
+
+    <p><span title=
+      "offensive action or modifies a standard attack">Atk Options</span> 
+      <strong><n:slot name=
+        "attackOptions" /><span n:render=
+        "attackOptionFeats">;&#xA0;<n:slot name=
+        "attackOptionFeats" />
+        <!-- TODO metamagic feats (if the creature casts spontaneously) --> 
+        </span></strong>
+    </p>
+
+    <p n:render="specialActions" title=
+        "something it can do besides attack">Special Actions
+        <strong><n:slot name="specialActions" /></strong></p>
+
+    <p title=
+    "gear that can be used as a combat action (not weapons)">Combat
+      Gear <strong>See grid.</strong></p>
+
+    <p n:render="spells">Spells <strong>(CL <n:slot name=
+      "casterLevel" />) <n:slot name=
+      "spells" /></strong></p>
+
+    <p n:render="spellLikeAbilities" />
+    </div>
+
+    <!-- skills, abilities and feats block -->
+    <div class="statblock">
+    <p>Abilities&#xA0;<strong><n:slot name="abilities"/></strong></p>
+
+    <p>SQ&#xA0;<strong><n:slot name="specialQualities"/></strong></p>
+
+    <p>Feats&#xA0;<strong><n:slot name="feats" /></strong></p>
+
+    <p>Skills&#xA0;<strong><n:slot name="skills" /></strong></p>
+
+    <p>Possessions <strong>See grid.</strong></p>
+
+    <p n:render="spells"><strong>Spellbook</strong>&#xA0;<n:slot name=
+      "spellbook" /></p>
+    </div>
+    
+    <!-- ability detail drilldown block -->
+    <div class="statblock" n:render='fullAbilities' />
+
+
+    </div><!-- end statblock -->
+
+    </div><!-- end tab -->
+    </div><!-- end main box -->
+
   </n:invisible>
 </div>
 <!-- vim:set ft=html: -->

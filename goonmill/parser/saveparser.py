@@ -72,7 +72,7 @@ class SaveStat(object):
                 splat = '*'
 
             if self.qualifier:
-                qual = ' (%s)' % (self.qualifier,)
+                qual = ' %s' % (self.qualifier,)
 
             if self.bonus:
                 return '%+d%s%s' % (self.bonus, splat, qual)

@@ -647,6 +647,12 @@ Goonmill.MonsterGroup.methods(
             self.imageBoxClicked(imageBox, e);
         });
 
+        node.select('.tabHandle').each(function (n) {
+            n.observe('click', function (nn, e) {
+                self.tabHandleClicked(nn, e);
+            }.curry(n));
+        });
+
         var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
             validMessage:''
         });
@@ -703,6 +709,16 @@ Goonmill.MonsterGroup.methods(
         }).filter(Prototype.K);
 
         return [ids, checkedRows];
+    },
+
+    // hide other tabs
+    function tabHandleClicked(self, tabHandle) {
+        var which = tabHandle.getAttribute('rel');
+        var n = self.node;
+        n.select('.tab').each(function (tab) {
+            tab.removeClassName('tabSelected');
+        });
+        n.select('.' + which)[0].addClassName('tabSelected');
     },
 
     // tell the server to remove the groupies that were checked

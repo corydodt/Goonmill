@@ -10,7 +10,7 @@ from zope.interface import Interface, implements
 
 from PIL import Image
 
-from nevow import rend, url, loaders, athena, static, guard, page
+from nevow import rend, url, loaders, athena, static, guard, page, tags as T
 
 from twisted.cred.portal import Portal
 from twisted.cred.credentials import IAnonymous
@@ -20,6 +20,7 @@ from .util import RESOURCE
 from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
 from . import search
+from .history import Statblock
 
 
 class Root(rend.Page):
@@ -517,10 +518,18 @@ class MonsterGroupView(athena.LiveElement):
         self.monsterGroup = self.constituent.fuckComponentArchitecture()
         athena.LiveElement.__init__(self)
 
+    def getInitialArguments(self):
+        return [self.constituent.id]
+
     @page.renderer
     def initialize(self, req, tag):
-        name = self.constituent.getStencilBase().name
-        tag.fillSlots('monsterName', name)
+        """
+        Render the entire box where the two monster group tabs are sited
+        """
+        base = self.constituent.getStencilBase()
+        self.statblock = Statblock.fromMonster(base)
+
+        tag.fillSlots('monsterName', base.name)
 
         gn = GroupName(self.monsterGroup)
         gn.setFragmentParent(self)
@@ -538,6 +547,9 @@ class MonsterGroupView(athena.LiveElement):
 
     @page.renderer
     def groupieList(self, req, tag):
+        """
+        Render the grid of monster groupies
+        """
         pg = tag.patternGenerator("groupieRow")
         for groupie in self.monsterGroup.groupies:
             groupie.randomize(overwrite=False)
@@ -566,6 +578,240 @@ class MonsterGroupView(athena.LiveElement):
             pat.fillSlots('groupieId', groupie.id)
             tag[pat]
         return tag
+
+    @page.renderer
+    def sections(self, req, tag):
+        get = self.statblock.get
+        fill = tag.fillSlots
+        fill("challengeRating", get('challenge_rating'))
+        fill("gender", 'GENDER')
+        fill("race", 'RACE')
+        fill("class", 'CLASS')
+        fill("level", 'LEVEL')
+        fill("alignment", get('alignment'))
+        fill("size", get('size'))
+        fill("creatureType", get('type'))
+        fill("initiative", get('initiative'))
+        fill("senses", get('senses'))
+        fill("listen", get('listen'))
+        fill("spot", get('spot'))
+        fill("subtype", get('descriptor'))
+        fill("languages", get('languages'))
+        fill("aura", get('aura'))
+        # defense block
+        fill('ac', get('armor_class'))
+        fill('specialAC', get('specialAC'))
+        fill('acFeats', get('acFeats'))
+        fill('hp', 'See grid.')
+        fill('hitDice', get('hitDice'))
+        fill('fastHealing', get('fastHealing'))
+        fill('regeneration', get('regeneration'))
+        fill('damageReduction', get('damageReduction'))
+        fill('immunities', get('immunities'))
+        fill('resistances', get('resistances'))
+        fill('spellResistance', get('spellResistance'))
+        fill('fort', get('fort'))
+        fill('ref', get('ref'))
+        fill('will', get('will'))
+        ## vulnerabilities - see renderer
+
+        # attack block
+        fill('speed', get('speed'))
+        fill('speedFeats', get('speedFeats'))
+        ## meleeAttacks - see renderer
+        ## rangedAttacks - see renderer
+        fill('rangedAttackFeats', get('rangedAttackFeats'))
+        fill('space', get('space'))
+        fill('reach', get('reach'))
+        fill('baseAttack', get('base_attack'))
+        fill('grapple', get('grapple'))
+        fill('attackOptionFeats', get('attackOptionFeats'))
+        fill('attackOptions', get('special_attacks') or '-')
+        fill('specialActions', get('specialActions'))
+        ## gear TODO
+        fill('casterLevel', get('casterLevel'))
+        fill('spells', 'See grid.')
+        ## spellLikeAbilities - see renderer
+
+        # skills, abilities, feats block
+        fill('abilities', get('abilities'))
+        fill('specialQualities', get('special_qualities'))
+        fill('feats', get('feats') or '-')
+        fill('skills', get('skills'))
+        ## possessions TODO
+        fill('spellbook', 'See grid.')
+
+        # ability detail drilldown block
+        ## fullAbilities - see renderer
+
+
+        return tag
+
+    @page.renderer
+    def npcStats(self, req, tag):
+        return [] # disabled for now - only available in NPC
+
+    @page.renderer
+    def subtype(self, req, tag):
+        if self.statblock.get('descriptor'):
+            return tag
+        return ''
+
+    @page.renderer
+    def aura(self, req, tag):
+        if self.statblock.get('aura'):
+            return tag
+        return ''
+
+    @page.renderer
+    def immunities(self, req, tag):
+        if self.statblock.get('immunities'):
+            return tag
+        return ''
+
+    @page.renderer
+    def specialAC(self, req, tag):
+        if self.statblock.get('specialAC'):
+            return tag
+        return ''
+
+    @page.renderer
+    def acFeats(self, req, tag):
+        feats = self.statblock.acFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    @page.renderer
+    def fastHealing(self, req, tag):
+        if self.statblock.get('fastHealing'):
+            return tag
+        return ''
+
+    @page.renderer
+    def regeneration(self, req, tag):
+        if self.statblock.get('regeneration'):
+            return tag
+        return ''
+
+    @page.renderer
+    def damageReduction(self, req, tag):
+        if self.statblock.get('damageReduction'):
+            return tag
+        return ''
+
+    @page.renderer
+    def resistances(self, req, tag):
+        if self.statblock.get('resistances'):
+            return tag
+        return ''
+
+    @page.renderer
+    def vulnerabilities(self, req, tag):
+        vulns = self.statblock.get('vulnerabilities')
+        if not vulns:
+            return ''
+
+        content = []
+        pg = tag.patternGenerator('vulnerability')
+        for n, vuln in enumerate(vulns):
+            if n < len(vulns) - 1:
+                vuln = vuln + ', '
+            content.append(pg().fillSlots('attackEffect', vuln))
+
+        return tag[content]
+
+    @page.renderer
+    def spellResistance(self, req, tag):
+        if self.statblock.get('spellResistance'):
+            return tag
+        return ''
+
+    @page.renderer
+    def speedFeats(self, req, tag):
+        feats = self.statblock.speedFeats()
+        if len(feats) > 0:
+            return tag
+        return ''
+
+    @page.renderer
+    def meleeAttacks(self, req, tag):
+        groups = self.statblock.get('attackGroups')['melee']
+        content = []
+        pg = tag.patternGenerator('meleeAttack')
+        for group in groups:
+            content.append(pg().fillSlots('value', group))
+
+        return tag[content]
+
+    @page.renderer
+    def rangedAttacks(self, req, tag):
+        groups = self.statblock.get('attackGroups')['ranged']
+        content = []
+        pg = tag.patternGenerator('rangedAttack')
+        for group in groups:
+            content.append(pg().fillSlots('value', group.capitalize()))
+
+        return tag[content]
+
+    @page.renderer
+    def rangedAttackFeats(self, req, tag):
+        feats = self.statblock.rangedAttackFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    @page.renderer
+    def space(self, req, tag):
+        g = self.statblock.get
+        # don't need to print anything if this is just a typical Medium
+        # monster
+        space = g('space')
+        reach = g('reach')
+        if space == u'5 ft.' and reach == u'5 ft.' and g('size') == u'Medium':
+            return ''
+
+        return tag
+
+    @page.renderer
+    def attackOptionFeats(self, req, tag):
+        feats = self.statblock.attackOptionFeats()
+        if len(feats) > 0:
+            return tag
+
+        return ''
+
+    @page.renderer
+    def specialActions(self, req, tag):
+        if self.statblock.get('specialActions'):
+            return tag
+        return ''
+
+    @page.renderer
+    def spells(self, req, tag):
+        if self.statblock.get('casterLevel'):
+            return tag
+        return ''
+
+    @page.renderer
+    def spellLikeAbilities(self, req, tag):
+        spellLikes = self.statblock.get('spellLikeAbilities')
+        if spellLikes:
+            return tag[[T.xml(s) for s in spellLikes]]
+
+        return ''
+
+    @page.renderer
+    def fullAbilities(self, req, tag):
+        fulls = self.statblock.get('fullAbilities')
+        if fulls:
+            return tag[[T.xml(f) for f in fulls]]
+
+        return ''
+
+    # --
 
     @athena.expose
     def increaseGroupies(self, amount):
@@ -604,9 +850,6 @@ class MonsterGroupView(athena.LiveElement):
         theStore.commit()
 
         return len(ids)
-
-    def getInitialArguments(self):
-        return [self.constituent.id]
 
     @athena.expose
     def randomizeChecked(self, ids):
