@@ -774,8 +774,11 @@ Goonmill.MonsterGroup.methods(
     // popup a big version of the image
     function imageBoxClicked(self, node, event) {
         var url = node.getAttribute('rel');
+        var div = new Element('div');
+        div.addClassName('modalImage');
         var img = new Element('img', {'src': url});
-        Goonmill.imageBox(img);
+        div.insert(img);
+        Goonmill.imageBox(div);
     },
 
     function randomizeClicked(self, node, event) {

@@ -364,3 +364,13 @@ dd {
     vertical-align: middle;
 }
 
+.modalImage { 
+    width: 384px;
+    height: 384px;
+    line-height: 384px;
+    text-align: center;
+}
+
+.modalImage img {
+    vertical-align: middle;
+}
