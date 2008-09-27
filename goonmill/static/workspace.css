@@ -350,4 +350,13 @@ dd {
     padding: 4px;
     border: thin solid black;
     background-color: white;
+    width: 128px;
+    height: 128px;
+    line-height: 128px;
+    text-align: center;
 }
+
+.statblockImage img {
+    vertical-align: middle;
+}
+
