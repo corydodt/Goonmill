@@ -540,9 +540,17 @@ class MonsterGroupView(athena.LiveElement):
         url384 = i.getThumbnailUrl(384, 384)
 
         tag.fillSlots("monsterImage", url64)
-
         tag.fillSlots("largeUrl", url384)
 
+        return tag
+
+    @page.renderer
+    def statblockImage(self, req, tag):
+        i = StaticImage(self.constituent.getImage())
+        url128 = i.getThumbnailUrl(128, 128)
+        if url128 is None:
+            return []
+        tag.fillSlots("image128", url128)
         return tag
 
     @page.renderer

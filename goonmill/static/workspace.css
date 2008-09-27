@@ -344,3 +344,10 @@ dd {
 .statblock p {
     margin: 0px;
 }
+
+.statblockImage {
+    float: right;
+    padding: 4px;
+    border: thin solid black;
+    background-color: white;
+}

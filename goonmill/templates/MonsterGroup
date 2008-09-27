@@ -62,6 +62,8 @@
 
     <div class="x2-2-2-3 monsterGroupStatblock tab">
     <div class="statblock" n:render="sections">
+    <div n:render="statblockImage" class="statblockImage"><img><n:attr name=
+      "src"><n:slot name="image128" /></n:attr></img></div>
     <!-- basic information -->
     <div class="challengeRating">CR <strong><n:slot
         name="challengeRating"/></strong></div>
