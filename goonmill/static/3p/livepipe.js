@@ -154,7 +154,9 @@ Object.extend(Event, (function() {
 					return false;
 
 			Event.extend(event);
-			handler.call(element, event);
+            // this raises an error when a page is reloading, which is
+            // annoying - CDD
+			if (handler !== undefined) { handler.call(element, event); }
 		};
 		
 		//begin extension
