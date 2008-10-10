@@ -51,16 +51,6 @@ fi
 
 echo "Done."
 
-config=goonmill/tripledb.n3
-if [ ! -r "$config" ]; then
-    cp -v "$config".sample "$config" || exit 1
-else
-    echo "** ${config} already exists, not willing to overwrite it!"
-    echo ::
-    echo :: If you have already run bootstrap.sh once, this is not an error.
-    echo ::
-fi
-
 userdb=goonmill/user.db
 if [ ! -r "$userdb" ]; then
     sqlite3 -init goonmill/sql/user.sql $userdb '.exit' || exit 1
@@ -84,6 +74,16 @@ if [ ! -r "$tripledb" ]; then
     ptstore pull --verbose ${ns[@]} $tripledb || exit 1
 else
     echo "** ${tripledb} already exists, not willing to overwrite it!"
+    echo ::
+    echo :: If you have already run bootstrap.sh once, this is not an error.
+    echo ::
+fi
+
+luceneindex=goonmill/lucene-data/segments.gen
+if [ ! -r "$luceneindex" ]; then
+    python goonmill/search.py --build-index
+else
+    echo "** ${luceneindex} already exists, not willing to overwrite it!"
     echo ::
     echo :: If you have already run bootstrap.sh once, this is not an error.
     echo ::
