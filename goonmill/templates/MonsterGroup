@@ -21,7 +21,8 @@
       "monsterGroupGrid" href="#">Grid</a>
     <a title="Detailed statblock" class="tabHandle statblockTab" rel=
       "monsterGroupStatblock" href="#">Statblock</a>
-    <a class="printButton" href="#">Print</a>
+    <a class="printButton"><n:attr name=
+      "href"><n:slot name="printUrl" /></n:attr>Print</a>
     </div><!-- end tab controls -->
 
     <div class="x2-2-2-2 monsterGroupGrid tab tabSelected">
@@ -50,6 +51,8 @@
     <td n:render="spells"><n:slot name="spells" /></td>
     <td><n:slot name="personalName" /></td>
     </tr>
+    <tr class="notesRow" n:pattern="notesRow"><td
+        colspan="7">Notes:</td></tr>
     </tbody>
     </table>
     <input class="deleteChecked" type="button" value="Delete Checked..." />
@@ -65,8 +68,8 @@
     <div n:render="statblockImage" class="imageBox statblockImage"><img><n:attr name=
       "src"><n:slot name="image128" /></n:attr></img></div>
     <!-- basic information -->
-    <div class="challengeRating">CR <strong><n:slot
-        name="challengeRating"/></strong></div>
+    <div class="challengeRating">CR <strong><n:slot name=
+        "challengeRating"/></strong></div>
     <p n:render="npcStats">
     <n:slot name="gender"/>
     <n:slot name="race"/>

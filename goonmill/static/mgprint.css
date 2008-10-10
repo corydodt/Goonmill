@@ -1,0 +1,146 @@
+body {font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;
+    padding: 30px;
+}
+
+.randomize { display: none; }
+
+.statblock { border-bottom: thin solid black; }
+
+.statblock p {
+    margin: 0px;
+}
+
+td, tr {
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+.statblockImage {
+    float: right;
+    padding: 4px;
+    border: thin solid black;
+    background-color: white;
+    width: 128px;
+    height: 128px;
+    line-height: 128px;
+}
+
+.itemView {
+}
+
+.itemHeader .constituent {
+    float: left;
+    font-size: 30px;
+}
+
+.itemMain {
+    overflow: auto;
+    clear: both;
+}
+
+.smallImageBox {
+    display: none;
+}
+
+.imageBox {
+    text-align: center;
+}
+
+.imageBox img {
+    vertical-align: middle;
+}
+
+.personalName, .constituentGroupName {
+    float: left;
+    font-family: "Arial Black";
+    font-size: 16px;
+    margin-left: 20px;
+
+    position: relative;
+    height: 37px;
+    width: 200px;
+}
+
+div.constituentGroupName-1 {
+}
+
+div.groupName {
+    position: absolute;
+    bottom: 0px;
+}
+
+.groupName a {
+}
+
+.printButton {
+    display: none;
+}
+
+.statblockTab {
+}
+
+.gridTab {
+}
+
+a.tabHandle {
+    text-decoration: none;
+    color: black;
+}
+
+.tabHandle:hover {
+}
+
+.tabHandle {
+}
+
+.monsterGroupTabs .tabHandle {
+}
+
+.monsterGroupTabs {
+    display: none;
+}
+
+.tab {
+    width: 98%;
+}
+
+.tab.tabSelected {
+}
+
+
+.groupieTable {
+    clear: left;
+    margin-top: 10px;
+}
+
+.groupieTable thead {
+    font-family: "arial black";
+    font-size: 10pt;
+}
+
+.groupieTable td {
+    border: 0px;
+    font-size: 10pt;
+    vertical-align: top;
+    line-height: 30px;
+}
+
+form[name=increaseBy] {
+    display: none;
+}
+
+input {
+    display: none;
+}
+
+.defaultText {
+    display: none;
+}
+
+.constituentGroupName {
+    font-style: italic;
+}
+
+.notesRow {
+    border-bottom: thin solid black;
+}

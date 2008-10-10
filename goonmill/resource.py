@@ -103,6 +103,33 @@ def guardedWrapper(realm, checkers):
     return wrap
 
 
+class MonsterGroupPrintPage(athena.LivePage):
+    """
+    Print stylesheet view of a monster group.
+    """
+    docFactory = loaders.xmlfile(RESOURCE('templates/mgprint.xhtml'))
+    addSlash = 1
+
+    def __init__(self, *a, **kw):
+        self.constituent = None
+        self.constituentId = None
+        return athena.LivePage.__init__(self, *a, **kw)
+
+    def locateChild(self, ctx, segs):
+        if self.constituentId is None:
+            self.constituentId = int(segs[0])
+            return self, segs[1:]
+        return athena.LivePage.locateChild(self, ctx, segs)
+
+    def render_workspace(self, ctx, data):
+        if self.constituent is None:
+            from .user import theStore
+            c = theStore.get(Constituent, self.constituentId)
+            self.constituent = c
+        view = MonsterGroupView(self.constituent, forPrint=True)
+        view.setFragmentParent(self)
+        return ctx.tag[view]
+
 class WorkspacePage(athena.LivePage):
     """
     The entire workspace area, where the user spends most of his time
@@ -114,6 +141,9 @@ class WorkspacePage(athena.LivePage):
         self.workspace = workspace
         self.user = user
         athena.LivePage.__init__(self, *a, **kw)
+
+    def child_printMonsterGroup(self, ctx):
+        return MonsterGroupPrintPage()
 
     def render_workspace(self, ctx, data):
         eb = EventBus()
@@ -513,9 +543,10 @@ class MonsterGroupView(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/MonsterGroup'))
     jsClass = u"Goonmill.MonsterGroup"
 
-    def __init__(self, constituent):
+    def __init__(self, constituent, forPrint=False):
         self.constituent = constituent
         self.monsterGroup = self.constituent.fuckComponentArchitecture()
+        self.forPrint = forPrint
         athena.LiveElement.__init__(self)
 
     def getInitialArguments(self):
@@ -542,6 +573,9 @@ class MonsterGroupView(athena.LiveElement):
         tag.fillSlots("monsterImage", url64)
         tag.fillSlots("largeUrl", url384)
 
+        urlPrint = "printMonsterGroup/%s" % (self.constituent.id,)
+        tag.fillSlots("printUrl", urlPrint)
+
         return tag
 
     @page.renderer
@@ -559,6 +593,7 @@ class MonsterGroupView(athena.LiveElement):
         Render the grid of monster groupies
         """
         pg = tag.patternGenerator("groupieRow")
+        pg2 = tag.patternGenerator("notesRow")
         for groupie in self.monsterGroup.groupies:
             groupie.randomize(overwrite=False)
 
@@ -585,6 +620,10 @@ class MonsterGroupView(athena.LiveElement):
             pat.fillSlots('personalName', gn)
             pat.fillSlots('groupieId', groupie.id)
             tag[pat]
+
+            if self.forPrint:
+                tag[pg2()]
+
         return tag
 
     @page.renderer

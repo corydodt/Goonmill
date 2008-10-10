@@ -225,8 +225,6 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     display: none;
 }
 
-
-
 .printButton {
     background-image: url(/static/printer.png);
     background-repeat: no-repeat;
@@ -296,6 +294,10 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 .groupieTable td {
     border: 0px;
     font-size: 10pt;
+}
+
+.groupieTable .blankCell {
+    width: 60px;
 }
 
 form[name=increaseBy] {

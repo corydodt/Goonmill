@@ -621,6 +621,13 @@ Goonmill.MonsterGroup.methods(
         Goonmill.MonsterGroup.upcall(self, '__init__', node);
         self.constituentId = constituentId;
 
+        var printButton = $$('.printButton')[0];
+        printButton.observe('click', function (e) {
+            e.stop();
+            e.preventDefault();
+            return self.printWindow();
+        });
+
         node.select('.deleteChecked').each(function (n) {
             n.observe('click', function (nn, e) {
                 self.deleteClicked(nn, e);
@@ -653,22 +660,24 @@ Goonmill.MonsterGroup.methods(
             }.curry(n));
         });
 
-        var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
-            validMessage:''
-        });
-        increaseValid.add(Validate.Presence);
-        increaseValid.add(Validate.Numericality, {
-            onlyInteger: true, minimum: 1, maximum: 123
-        });
+        if (window.LiveValidation) {
+            var increaseValid = new LiveValidation(increaseBy.increaseByAmount, {
+                validMessage:''
+            });
+            increaseValid.add(Validate.Presence);
+            increaseValid.add(Validate.Numericality, {
+                onlyInteger: true, minimum: 1, maximum: 123
+            });
 
-        increaseBy.observe('submit', function (e) { 
-            // we have to manually validate the form to block submittal, since
-            // we are overriding the default submit behavior.  LiveValidation
-            // only attempts to block the default submit behavior.
-            if (LiveValidation.massValidate([increaseValid])) {
-                return self.onIncreaseBySubmit(e);
-            }
-        });
+            increaseBy.observe('submit', function (e) { 
+                // we have to manually validate the form to block submittal, since
+                // we are overriding the default submit behavior.  LiveValidation
+                // only attempts to block the default submit behavior.
+                if (LiveValidation.massValidate([increaseValid])) {
+                    return self.onIncreaseBySubmit(e);
+                }
+            });
+        }
 
         // whenever this displays, fix the constituent list to match it
         document.fire('Goonmill:constituentDetailUpdate', {
@@ -677,6 +686,13 @@ Goonmill.MonsterGroup.methods(
         });
 
         self.fixDeleteButtons();
+    },
+
+    function printWindow(self) {
+        var url, w2;
+        url = 'printMonsterGroup/' + self.constituentId;
+        w2 = window.open(url,'Print View','width=700,height=600,directories=no,location=no,menubar=no,toolbar=no,scrollbars=yes');
+        return false;
     },
 
     // ask the server to increase groupies.
@@ -1041,9 +1057,11 @@ Goonmill.message = function(text, severity) {
     return span;
 };
 
-// for debugging, shift+esc = debug
-var _ignored = new HotKey('esc', function (event) {
-        Goonmill.debugView();
-        }, {ctrlKey:false, shiftKey:true});
+if (window.HotKey) {
+    // for debugging, shift+esc = debug
+    var _ignored = new HotKey('esc', function (event) {
+            Goonmill.debugView();
+            }, {ctrlKey:false, shiftKey:true});
+}
 
 // vim:set foldmethod=syntax:set smartindent:
