@@ -982,17 +982,13 @@ Goonmill.Modal = function (contents, extraOptions) {
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
     var meat = document.body.select('.offstage .confirm')[0].cloneNode(true);
-    var ctx = new JsEvalContext({'message':message, 
-            'button1text': button1text, 'button2text': button2text})
-    jstProcess(ctx, meat);
-
-    var buttons = meat.select('input');
-
     var d = new Divmod.Defer.Deferred(); 
-    var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
-    var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
-    buttons[0].observe('click', f1);
-    buttons[1].observe('click', f2);
+    var ctx = new JsEvalContext({'message':message, 
+            'button1text': button1text, 'button2text': button2text,
+            'f1': function() { Control.Modal.current.close(true); d.callback(1); },
+            'f2': function() { Control.Modal.current.close(true); d.callback(2); }
+    });
+    jstProcess(ctx, meat);
 
     var m = Goonmill.Modal(meat);
 

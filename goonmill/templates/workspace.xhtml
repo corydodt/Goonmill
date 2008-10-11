@@ -105,8 +105,10 @@
         <span jscontent="message"></span>
         <hr />
         <div class="modalButtonBox">
-          <input type="button" jsvalues="value:button1text" />
-          <input type="button" jsvalues="value:button2text" />
+          <input type="button" jsvalues="value:button1text"
+            jseval="this.observe('click', f1)"/>
+          <input type="button" jsvalues="value:button2text"
+            jseval="this.observe('click', f2)"/>
         </div>
       </div>
 
