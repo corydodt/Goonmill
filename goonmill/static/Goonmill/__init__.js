@@ -901,7 +901,7 @@ Goonmill.imageBox = function (url) {
 
     var close = ctx.getVariable('$close');
     close.observe('click', function() { Control.Modal.current.close(true); } );
-    var m = Goonmill.Modal(node);
+    var m = Goonmill.Modal(meat);
 
     return m;
 };

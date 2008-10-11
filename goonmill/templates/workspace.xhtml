@@ -116,7 +116,7 @@
       </div>
 
       <!-- blank Goonmill.messageBox -->
-      <div class="messageBoxMeat modalButtonBox">
+      <div class="messageBoxMeat">
         <span jsvalues="$container:this" />
         <hr />
         <div class="modalButtonBox"><input type="button" value=
@@ -129,7 +129,9 @@
           <img jsvalues="src:url" />
         </div>
         <hr />
-        <input type="button" value="close" jsvalues="$close:this" />
+        <div class="modalButtonBox">
+          <input type="button" value="close" jsvalues="$close:this" />
+        </div>
       </div>
 
       <!-- Goonmill.confirm -->
