@@ -130,6 +130,7 @@ class MonsterGroupPrintPage(athena.LivePage):
         view.setFragmentParent(self)
         return ctx.tag[view]
 
+
 class WorkspacePage(athena.LivePage):
     """
     The entire workspace area, where the user spends most of his time

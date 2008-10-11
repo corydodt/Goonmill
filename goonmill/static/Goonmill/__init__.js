@@ -790,12 +790,11 @@ Goonmill.MonsterGroup.methods(
     // popup a big version of the image
     function imageBoxClicked(self, node, event) {
         var url = node.getAttribute('rel');
-        var div = new Element('div');
-        div.addClassName('modalImage');
-        div.addClassName('imageBox');
-        var img = new Element('img', {'src': url});
-        div.insert(img);
-        Goonmill.imageBox(div);
+        var meat = document.body.select(
+            '.offstage .imageBoxMeat')[0].cloneNode(true);
+        var ctx = new JsEvalContext({'url': url});
+        jstProcess(ctx, meat);
+        Goonmill.imageBox(meat);
     },
 
     function randomizeClicked(self, node, event) {
@@ -905,20 +904,14 @@ var LightboxConfig = function () {
 
 // display an image
 Goonmill.imageBox = function (node) {
-    if (node.innerHTML === undefined) {
-        node = new Element('span').update(node);
-    }
-
-    // add a closing box always
-    var hr = new Element('hr');
-    var close = new Element('input', {type: 'button', value: 'close'});
-    close.observe('click', function() { Control.Modal.current.close(true); } );
-
-    var contents = $A([node, hr, close]);
-    var m = Goonmill.Modal(contents);
+    var m = Goonmill.Modal(node);
 
     return m;
 };
+
+Goonmill.bindCloseBox = function (node) {
+    node.observe('click', function() { Control.Modal.current.close(true); } );
+}
 
 
 // display any node or string as a message
@@ -974,6 +967,10 @@ Goonmill.Modal = function (contents, extraOptions) {
 
     var modal = new Control.Modal(null, config);
     modal.open();
+    // modal.update requires that its argument be an array
+    if (contents.length === undefined) {
+        contents = $A([contents]);
+    }
     modal.update(contents);
 
     return modal;
