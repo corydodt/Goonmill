@@ -2,6 +2,8 @@
 // import Divmod.Defer
 
 
+body = document.body; // less typing yay
+
 var Widget = Nevow.Athena.Widget;
 // monkey patch a bug with detach not cleaning up properly
 // see: http://divmod.org/trac/ticket/2678
@@ -424,7 +426,7 @@ Goonmill.ConstituentList.methods(
     function constituentClicked(self, node) {
         var id = parseInt(node.readAttribute('rel'), 10);
         d = self.callRemote('displayConstituent', id);
-        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.select('.x2x')[0]);
 
         d.addCallback(function (wi) {
             if (node.hasClassName('kind-monsterGroup')) {
@@ -594,8 +596,7 @@ Goonmill.EventBus.methods(
 
         w.detach();
 
-        var blank = document.body.select(
-            '.offstage .itemView')[0].cloneNode(true);
+        var blank = body.select('.offstage .itemView')[0].cloneNode(true);
         w.node.replace(blank);
     }
 );
@@ -702,7 +703,7 @@ Goonmill.MonsterGroup.methods(
         var amount = parseInt(event.element().increaseByAmount.value, 10);
         var d = self.callRemote('increaseGroupies', amount);
             
-        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.select('.x2x')[0]);
 
         d.addCallback(function (wi) {
             Goonmill.unspin(spinner);
@@ -747,7 +748,7 @@ Goonmill.MonsterGroup.methods(
 
         var d = self.callRemote('deleteChecked', ids);
 
-        var spinner = Goonmill.spin(document.body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.select('.x2x')[0]);
 
         d.addCallback(function (count) {
             Goonmill.unspin(spinner);
@@ -790,8 +791,7 @@ Goonmill.MonsterGroup.methods(
     // popup a big version of the image
     function imageBoxClicked(self, node, event) {
         var url = node.getAttribute('rel');
-        var meat = document.body.select(
-            '.offstage .imageBoxMeat')[0].cloneNode(true);
+        var meat = body.select('.offstage .imageBoxMeat')[0].cloneNode(true);
         var ctx = new JsEvalContext({'url': url});
         jstProcess(ctx, meat);
         Goonmill.imageBox(meat);
@@ -854,37 +854,31 @@ Goonmill.whichNewThing = function(name) {
     var d = new Divmod.Defer.Deferred(); 
     var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
     var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
+    var closer = function (e) { Control.Modal.current.close(true); };
 
-    var tmpl = document.documentElement.select('.whichNewThing')[0];
-    var clone = tmpl.cloneNode(true);
+    var clone = body.select('.offstage .whichNewThing')[0].cloneNode(true);
+    var ctx = new JsEvalContext({'name': name});
+    jstProcess(ctx, clone);
 
     /* if using new monster group, only integers between 1-123 allowed */
-    var count = clone.select('[name=count]')[0];
+    var count = ctx.getVariable('$count');
     var countValid = new LiveValidation(count, {validMessage:''} );
     countValid.add(Validate.Presence);
     countValid.add(Validate.Numericality, 
             { onlyInteger: true, minimum: 1, maximum: 123 }
     );
 
-    var nameSlot = clone.select('.wntName')[0];
-    nameSlot.update(nameSlot.innerHTML.interpolate({name: name}));
+    ctx.getVariable('$newMonsterGroup').observe('click', f1);
+    ctx.getVariable('$newNPC').observe('click', f2);
+    ctx.getVariable('$cancel').observe('click', closer);
 
-    var button1 = clone.select('[name=newMonsterGroup]')[0];
-    button1.observe('click', f1);
-    var button2 = clone.select('[name=newNPC]')[0];
-    button2.observe('click', f2);
-    var cancel = clone.select('[name=cancel]')[0];
-    cancel.observe('click', function (e) { Control.Modal.current.close(true); });
-
-    var contents = $A([clone]);
-            
     d.addCallback(function (button) {
         if (button == 1) { return ['monsterGroup', count.value]; }
         else if (button == 2) { return ['npc' ]; }
     });
 
-    contents[0].show();
-    var m = Goonmill.Modal(contents);
+    clone.show();
+    var m = Goonmill.Modal(clone);
 
     return d;
 };
@@ -911,7 +905,7 @@ Goonmill.imageBox = function (node) {
 
 Goonmill.bindCloseBox = function (node) {
     node.observe('click', function() { Control.Modal.current.close(true); } );
-}
+};
 
 
 // display any node or string as a message
@@ -948,8 +942,8 @@ Goonmill.Modal = function (contents, extraOptions) {
     // kludge .. hide all embedded stuff when showing the modal
     var embeds = document.documentElement.select('embed');
     $A(embeds).each(function (e) { 
-        e.setAttribute('_oldVisibility', e.style['visibility']);
-        e.style['visibility'] = 'hidden'; 
+        e.setAttribute('_oldVisibility', e.style.visibility);
+        e.style.visibility = 'hidden'; 
     });
     
     // esc to close
@@ -959,7 +953,7 @@ Goonmill.Modal = function (contents, extraOptions) {
 
     // restore embedded stuff when closing the modal
     config.afterClose = function () { $A(embeds).each(function(e) {
-        e.style['visibility'] = e.readAttribute('_oldVisibility');
+        e.style.visibility = e.readAttribute('_oldVisibility');
         e.removeAttribute('_oldVisibility');
         });
         escHotkey.destroy();
@@ -981,14 +975,14 @@ Goonmill.Modal = function (contents, extraOptions) {
 // the clicked button.
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
-    var meat = document.body.select('.offstage .confirm')[0].cloneNode(true);
+    var meat = body.select('.offstage .confirm')[0].cloneNode(true);
     var d = new Divmod.Defer.Deferred(); 
     var ctx = new JsEvalContext({'message':message, 
-            'button1text': button1text, 'button2text': button2text,
+            'button1text': button1text, 'button2text': button2text
     });
     jstProcess(ctx, meat);
-    var f1 = function() { Control.Modal.current.close(true); d.callback(1); }
-    var f2 = function() { Control.Modal.current.close(true); d.callback(2); }
+    var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
+    var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
     ctx.getVariable('$button1').observe('click', f1);
     ctx.getVariable('$button2').observe('click', f2);
 

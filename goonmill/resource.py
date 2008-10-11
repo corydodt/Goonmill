@@ -170,9 +170,6 @@ class WorkspacePage(athena.LivePage):
         mainActions.setFragmentParent(self)
         ctx.tag.fillSlots('mainActions', mainActions)
 
-        wnt = WhichNewThing()
-        ctx.tag.fillSlots('whichNewThing', wnt)
-
         return ctx.tag
 
 
@@ -470,13 +467,6 @@ class EventBus(athena.LiveElement):
 
     # TODO - drop this class entirely.  this is completely implemented in
     # javascript now.
-
-
-class WhichNewThing(page.Element):
-    """
-    A dialog box to ask whether you want a new NPC or Monster Group
-    """
-    docFactory = loaders.xmlfile(RESOURCE('templates/WhichNewThing'))
 
 
 class StaticImage(object):
