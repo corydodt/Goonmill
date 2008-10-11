@@ -791,10 +791,7 @@ Goonmill.MonsterGroup.methods(
     // popup a big version of the image
     function imageBoxClicked(self, node, event) {
         var url = node.getAttribute('rel');
-        var meat = body.select('.offstage .imageBoxMeat')[0].cloneNode(true);
-        var ctx = new JsEvalContext({'url': url});
-        jstProcess(ctx, meat);
-        Goonmill.imageBox(meat);
+        Goonmill.imageBox(url);
     },
 
     function randomizeClicked(self, node, event) {
@@ -897,34 +894,31 @@ var LightboxConfig = function () {
 
 
 // display an image
-Goonmill.imageBox = function (node) {
+Goonmill.imageBox = function (url) {
+    var meat = body.select('.offstage .imageBoxMeat')[0].cloneNode(true);
+    var ctx = new JsEvalContext({'url': url});
+    jstProcess(ctx, meat);
+
+    var close = ctx.getVariable('$close');
+    close.observe('click', function() { Control.Modal.current.close(true); } );
     var m = Goonmill.Modal(node);
 
     return m;
 };
 
-Goonmill.bindCloseBox = function (node) {
-    node.observe('click', function() { Control.Modal.current.close(true); } );
-};
-
 
 // display any node or string as a message
 Goonmill.messageBox = function (node) {
-    if (node.innerHTML === undefined) {
-        node = new Element('span').update(node);
-    }
+    var meat = body.select('.offstage .messageBoxMeat')[0].cloneNode(true);
+    var ctx = new JsEvalContext({});
+    jstProcess(ctx, meat);
 
-    // add a closing box always
-    var hr = new Element('hr');
-    var close = new Element('input', {type: 'button', value: 'close'});
-    // FIXME - this buttonContainer is duplicated in Goonmill.confirm
-    var buttonContainer = new Element('div', {'class': 'modalButtonBox'});
-    buttonContainer.insert(close);
+    ctx.getVariable('$container').update(node);
 
+    var close = ctx.getVariable('$close');
     close.observe('click', function() { Control.Modal.current.close(true); } );
 
-    var contents = $A([node, hr, buttonContainer]);
-    var m = Goonmill.Modal(contents);
+    var m = Goonmill.Modal(meat);
 
     return m;
 };
