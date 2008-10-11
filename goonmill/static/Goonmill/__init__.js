@@ -985,10 +985,12 @@ Goonmill.confirm = function (message, button1text, button2text) {
     var d = new Divmod.Defer.Deferred(); 
     var ctx = new JsEvalContext({'message':message, 
             'button1text': button1text, 'button2text': button2text,
-            'f1': function() { Control.Modal.current.close(true); d.callback(1); },
-            'f2': function() { Control.Modal.current.close(true); d.callback(2); }
     });
     jstProcess(ctx, meat);
+    var f1 = function() { Control.Modal.current.close(true); d.callback(1); }
+    var f2 = function() { Control.Modal.current.close(true); d.callback(2); }
+    ctx.getVariable('$button1').observe('click', f1);
+    ctx.getVariable('$button2').observe('click', f2);
 
     var m = Goonmill.Modal(meat);
 
