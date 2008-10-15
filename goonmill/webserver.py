@@ -35,11 +35,11 @@ class WebSite(appserver.NevowSite):
 class WebServer(internet.TCPServer):
     def startService(self, *a, **kw):
         from .query2 import db
-        from . import user, auth, search
+        from . import user, auth, search2
 
         # build the search index.  block on this, it has to happen before app
         # startup.
-        search.buildIndex(db.allMonsters())
+        search2.buildIndex(db.allMonsters())
 
         r = self.site.resource
         userdb = user.userDatabase()

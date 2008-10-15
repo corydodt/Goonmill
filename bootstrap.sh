@@ -33,6 +33,7 @@ function testPython()
     fi
 }
 
+testPython "PySQLite2" 'import pysqlite2.dbapi2'
 testPython "Playtools" 'import playtools'
 testPython "RDFlib" 'import rdflib'
 testPython "Storm" 'import storm.locals'
@@ -41,7 +42,7 @@ t="from twisted import __version__ as v; assert v>='2.5.0', 'Have %s' % (v,)"
 testPython "Twisted 2.5" "$t"
 testPython "Divmod Nevow" 'import nevow'
 testPython "simpleparse" 'import simpleparse'
-testPython "PyLucene" 'from lucene import *'
+testPython "HyperEstraier" 'from _estraiernative import *'
 testPython "Python 2.5" 'import xml.etree'
 
 if [ "$errorStatus" == "error" ]; then
@@ -79,11 +80,11 @@ else
     echo ::
 fi
 
-luceneindex=goonmill/lucene-data/segments.gen
-if [ ! -r "$luceneindex" ]; then
-    python goonmill/search.py --build-index
+estraierindex=goonmill/search-index/_idx
+if [ ! -d "$estraierindex" ]; then
+    python goonmill/search2.py --build-index
 else
-    echo "** ${luceneindex} already exists, not willing to overwrite it!"
+    echo "** ${estraierindex} already exists, not willing to overwrite it!"
     echo ::
     echo :: If you have already run bootstrap.sh once, this is not an error.
     echo ::

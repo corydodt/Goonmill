@@ -5,7 +5,7 @@
 (/|\\)srd35\.db$
 (/|\\|^).*\.pid$
 ^goonmill/html/.*$
-^goonmill/lucene-data/.*$
+^goonmill/search-index/.*$
 ^options\.local$
 ^hook.d/.*$
 ^doc/goonmill-shots\.graffle.*$

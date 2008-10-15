@@ -11,6 +11,7 @@ from zope.interface import Interface, implements
 from PIL import Image
 
 from nevow import rend, url, loaders, athena, static, guard, page, tags as T
+## from formless import annotate, webform TODO
 
 from twisted.cred.portal import Portal
 from twisted.cred.credentials import IAnonymous
@@ -19,7 +20,7 @@ from twisted.cred.checkers import AllowAnonymousAccess
 from .util import RESOURCE
 from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
-from . import search
+from . import search2
 from .history import Statblock
 
 
@@ -43,6 +44,9 @@ class Root(rend.Page):
 
     def renderHTTP(self, ctx):
         return url.root.child("app")
+
+## TODO     def child_upload(self, ctx):
+## TODO         return FileUploadPage()
 
 
 class GuardedRoot(rend.Page):
@@ -419,8 +423,9 @@ class BasicSearch(athena.LiveElement):
     @athena.expose
     def searched(self, searchTerms):
         terms = searchTerms.split()
-        self.lastFound = search.find(terms)
-        return [(t.name, int(t.id), int(t.score * 100)) for t in self.lastFound]
+        self.lastFound = search2.find(terms)
+        unpack = lambda t: (t['@name'].decode('utf-8'), t.id(), t.teaser(terms))
+        return [unpack(t) for t in self.lastFound]
 
     @athena.expose
     def newMonsterGroup(self, stencilId, count):
@@ -1096,3 +1101,20 @@ class NPCView(athena.LiveElement):
     def initialize(self, req, tag):
         tag.fillSlots('monsterName', self.npc.name)
         return tag
+
+
+## TODO class FileUploadPage(rend.Page):
+## TODO     """Render a file upload page
+## TODO     """
+## TODO     addSlash = True
+## TODO     docFactory = loaders.xmlfile(RESOURCE('templates/fileupload.xhtml'))
+## TODO 
+## TODO     def bind_upload(self, ctx):
+## TODO         return [('upload': annotate.FileUpload())]
+## TODO     
+## TODO     def render_uploadForm(self, ctx, data):
+## TODO         t = webform.renderForms()
+## TODO         return t
+## TODO     
+## TODO     def upload(self, ctx, **kwargs):
+## TODO         print '***** submit called with:', kwargs

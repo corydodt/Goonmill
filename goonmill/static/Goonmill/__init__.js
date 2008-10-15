@@ -330,31 +330,31 @@ Goonmill.BasicSearch.methods(
     function onSubmitSearch(self, event) {
         event.stop();
         event.preventDefault();
-        $A(self.hitContainer.childNodes).each(function (e) { e.remove(); } );
+        // $A(self.hitContainer.childNodes).each(function (e) { e.remove(); } ); FIXME - dont need to clear each time now that we use transclude
         var d = self.callRemote('searched', self.searchForm.searchTerms.value);
 
         d.addCallback(function (hits) {
+            var ctx, hitHits, monsterId, setupHit;
             self.resetSearchInput();
-            for (var n=0; n<hits.length; n++) {
-                var hit = hits[n];
-                var monsterId = hit[1];
-                var anc = new Element('a', {href:'#'+n, rev:monsterId, 'class':'hit'});
-                var name = new Element('span', {'class':'hitName'}).update(hit[0]);
 
-                var sub = new Element('sub').update(' ' + hit[2] + '%');
+            hitHits = $A(hits).map(function (hit) {
+                return { 
+                    monsterName: hit[0],
+                    monsterId: hit[1], 
+                    teaser: hits[2],
+                    setupHit: function(anc, ctx) {
+                        // TODO - add teaser
+                        anc.observe('click', function (event) {
+                            self.onClickedHit(event, anc, ctx['monsterId']);
+                        });
+                    }
+                };
+            });
+            ctx = new JsEvalContext({'hits':hitHits});
+            jstProcess(ctx, self.hitContainer);
+            self.hitContainer = ctx.getVariable("newContainer");
 
-                anc.hide();
-                anc.insert(name);
-                anc.insert(sub);
-
-                // closures in javascript, feh
-                anc.observe('click', function (anc, monsterId, event) { 
-                        self.onClickedHit(event, anc, monsterId);
-                }.curry(anc, monsterId));
-
-                self.hitContainer.insert(anc);
-                Effect.SlideDown(anc);
-            }
+            Effect.BlindDown(self.hitContainer);
         });
 
         return d;
