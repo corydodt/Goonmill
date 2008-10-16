@@ -425,7 +425,7 @@ class BasicSearch(athena.LiveElement):
         terms = searchTerms.split()
         self.lastFound = search2.find(terms)
         unpack = lambda t: (t['@name'].decode('utf-8'), t.id(), t.teaser(terms))
-        return [unpack(t) for t in self.lastFound]
+        return [unpack(tt) for tt in self.lastFound]
 
     @athena.expose
     def newMonsterGroup(self, stencilId, count):
