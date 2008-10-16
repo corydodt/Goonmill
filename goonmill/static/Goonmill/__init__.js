@@ -736,7 +736,9 @@ Goonmill.MonsterGroup.methods(
     },
 
     // hide other tabs
-    function tabHandleClicked(self, tabHandle) {
+    function tabHandleClicked(self, tabHandle, event) {
+        event.stop();
+        event.preventDefault();
         var which = tabHandle.getAttribute('rel');
         var n = self.node;
         n.select('.tab').each(function (tab) {
