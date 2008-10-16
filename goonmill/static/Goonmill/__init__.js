@@ -2,8 +2,7 @@
 // import Divmod.Defer
 
 
-body = document.body; // less typing yay
-
+// BEGIN MONKEYPATCHING
 var Widget = Nevow.Athena.Widget;
 // monkey patch a bug with detach not cleaning up properly
 // see: http://divmod.org/trac/ticket/2678
@@ -18,6 +17,12 @@ Widget.method('_athenaDetachClient', function (self) {
     delete Nevow.Athena.Widget._athenaWidgets[self.objectID];
     self.detached();
 });
+// END MONKEYPATCHING
+
+
+
+body = document.body; // less typing yay
+
 
 // attach certain automatic behavior to every widget, such as checking for
 // behavior-oriented class names and applying those behaviors
