@@ -10,7 +10,8 @@ from zope.interface import Interface, implements
 
 from PIL import Image
 
-from nevow import rend, url, loaders, athena, static, guard, page, tags as T
+from nevow import (rend, url, loaders, athena, static, guard, page, tags as T,
+        vhost)
 ## from formless import annotate, webform TODO
 
 from twisted.cred.portal import Portal
@@ -22,6 +23,10 @@ from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
 from . import search2
 from .history import Statblock
+
+
+# only need one of these.
+VHM = vhost.VHostMonsterResource()
 
 
 class Root(rend.Page):
@@ -44,6 +49,9 @@ class Root(rend.Page):
 
     def renderHTTP(self, ctx):
         return url.root.child("app")
+
+    def child_vhost(self, ctx):
+        return VHM
 
 ## TODO     def child_upload(self, ctx):
 ## TODO         return FileUploadPage()
