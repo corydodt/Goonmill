@@ -375,6 +375,8 @@ dd {
 /* SEARCH */ }
 /* SEARCH */ .prototip .tipTip {
 /* SEARCH */   width: 300px;
+/* SEARCH */   padding: 1px;
+/* SEARCH */   border: thin solid #bdbb60;
 /* SEARCH */   }
 /* SEARCH */ .prototip .tipTip .toolbar {
 /* SEARCH */   background: #CFE6DC;
@@ -394,5 +396,5 @@ dd {
 /* SEARCH */ 
 /* SEARCH */ .ttArrow1-1 {
 /* SEARCH */     position:relative;
-/* SEARCH */     left: -9px;
+/* SEARCH */     left: -11px;
 /* SEARCH */ }

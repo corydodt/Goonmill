@@ -839,7 +839,7 @@ Goonmill.GoonTip.methods(
             closeButton: false,
             hook: { target: 'bottomRight', tip: 'bottomLeft' },
             className: 'tipTip',
-            offset: { x:10, y:15 },
+            offset: { x:10, y:3 },
             effect: 'appear',
             duration: 0.2
             // hideOn: { element: 'closeButton' }
