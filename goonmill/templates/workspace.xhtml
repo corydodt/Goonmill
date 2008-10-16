@@ -7,6 +7,7 @@
     <title>Goonmill Workspace</title>
     <link type="text/css" rel="stylesheet" href="/static/reset.css" />
     <link type="text/css" rel="stylesheet" href="/static/workspace.css" />
+    <link rel="stylesheet" type="text/css" href="/static/3p/prototip.css" />
 
     <script type="text/javascript" src=
       "/static/3p/prototype.js"></script>
@@ -21,6 +22,9 @@
     <!-- this is the lightbox effect -->
     <script type="text/javascript" src=
       "/static/3p/control.modal.js"></script>
+    <!-- tooltips -->
+    <script type="text/javascript" src=
+      "/static/3p/prototip.js"></script>
     <!-- keyboard shortcuts -->
     <script type="text/javascript" src=
       "/static/3p/hotkey.cdd.js"></script>
@@ -146,11 +150,20 @@
 
       <!-- search hits -->
       <div id="basicHits" rev="hits" class="hits" jsvars="newContainer:this">
-        <a jsselect="hits" href="#" rev="REV" class="hit" title="TEASER" jseval=
+        <span jsselect="hits"><a href="#" rev="REV" class="hit" title="TEASER" jseval=
           "setupHit(this,$this)" jsvalues=
           "title:teaser;href:'#'+$index;rev:monsterId" jscontent=
-          "monsterName"></a>
+          "monsterName"></a><br /></span>
       </div>
+
+      <!-- prototip stuff -->
+      <span class="prototipTip">
+        <div class=
+          "ttArrow1"><div style="height:100%">&#160;</div><div class=
+            "ttArrow1-1"><img src="/static/leftarrow-10x10-fffdc0.png" /></div></div>
+        <!-- can't use jscontent because $this is a string of markup, not a node -->
+        <div jseval="this.innerHTML=$this" />
+      </span>
 
     </div>
   </body>

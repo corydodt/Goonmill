@@ -131,28 +131,6 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     background-image: url(/static/closing-x.png);
 }
 
-/* search */ .basicSearch {
-/* search */     padding-left: 1em;
-/* search */ }
-/* search */ 
-/* search */ [name=searchTerms] {
-/* search */    width: 150px;
-/* search */ }
-/* search */ 
-/* search */ [name=searchTerms].defaultText {
-/* search */     text-align: center;
-/* search */ }
-/* search */ 
-/* search */ [name=advancedButton] {
-/* search */      position: absolute;
-/* search */      bottom: 4px;
-/* search */      right: 4px;
-/* search */ }
-/* search */
-/* search */ .hit {
-/* search */     display: block;
-/* search */ }
-
 .mainActions {
     float: right;
     padding-right: 7px;
@@ -369,3 +347,52 @@ dd {
     height: 384px;
     line-height: 384px;
 }
+
+/* SEARCH */ .basicSearch {
+/* SEARCH */     padding-left: 1em;
+/* SEARCH */ }
+/* SEARCH */ 
+/* SEARCH */ [name=searchTerms] {
+/* SEARCH */    width: 150px;
+/* SEARCH */ }
+/* SEARCH */ 
+/* SEARCH */ [name=searchTerms].defaultText {
+/* SEARCH */     text-align: center;
+/* SEARCH */ }
+/* SEARCH */ 
+/* SEARCH */ [name=advancedButton] {
+/* SEARCH */      position: absolute;
+/* SEARCH */      bottom: 4px;
+/* SEARCH */      right: 4px;
+/* SEARCH */ }
+/* SEARCH */
+/* SEARCH */ .hit {
+/* SEARCH */     /* display: block; */
+/* SEARCH */ }
+
+/* SEARCH */ .prototip {
+/* SEARCH */     background: #fffdc0; 
+/* SEARCH */ }
+/* SEARCH */ .prototip .tipTip {
+/* SEARCH */   width: 300px;
+/* SEARCH */   }
+/* SEARCH */ .prototip .tipTip .toolbar {
+/* SEARCH */   background: #CFE6DC;
+/* SEARCH */   font: italic 8pt;
+/* SEARCH */   font-weight: bold;
+/* SEARCH */   }
+/* SEARCH */ .prototip .tipTip .title { padding: 2px; }
+/* SEARCH */ .prototip .tipTip .content { 
+/* SEARCH */   font-size: 7pt;
+/* SEARCH */     padding: 0px; margin: 0px;
+/* SEARCH */   }
+/* SEARCH */ 
+/* SEARCH */ .ttArrow1 {
+/* SEARCH */     float:left;
+/* SEARCH */     height:100%;
+/* SEARCH */ }
+/* SEARCH */ 
+/* SEARCH */ .ttArrow1-1 {
+/* SEARCH */     position:relative;
+/* SEARCH */     left: -9px;
+/* SEARCH */ }

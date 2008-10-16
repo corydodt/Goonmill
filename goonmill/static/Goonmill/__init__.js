@@ -341,12 +341,14 @@ Goonmill.BasicSearch.methods(
                 return { 
                     monsterName: hit[0],
                     monsterId: hit[1], 
-                    teaser: hits[2],
+                    teaser: hit[2],
                     setupHit: function(anc, ctx) {
                         // TODO - add teaser
                         anc.observe('click', function (event) {
                             self.onClickedHit(event, anc, ctx['monsterId']);
                         });
+                        anc.removeAttribute('title');
+                        var _ignored = new Goonmill.GoonTip(anc, ctx['teaser']);
                     }
                 };
             });
@@ -364,7 +366,7 @@ Goonmill.BasicSearch.methods(
     function onClickedHit(self, event, node, monsterId) {
         event.stop();
         event.preventDefault();
-        var name = node.select('.hitName')[0].innerHTML;
+        var name = node.innerHTML;
         var d = Goonmill.whichNewThing(name);
 
         d.addCallback(function (which) {
@@ -827,6 +829,35 @@ Goonmill.NPC.methods(
 );
 
 
+// with hax, subclass prototip Tip and customize it
+Goonmill.GoonTip = Divmod.Class.subclass('Goonmill.GoonTip');
+Goonmill.GoonTip.methods(
+    function __init__(self, node, content) {
+        self.content = self.containerize(content);
+        var TIPCONFIG = {
+            fixed: true,
+            closeButton: false,
+            hook: { target: 'bottomRight', tip: 'bottomLeft' },
+            className: 'tipTip',
+            offset: { x:10, y:15 },
+            effect: 'appear',
+            duration: 0.2
+            // hideOn: { element: 'closeButton' }
+        };
+        self.node = node;
+
+        // kludgy but apparently works
+        self.__proto__ = new Tip(self.node, self.content, TIPCONFIG);
+    },
+
+    // wrap 
+    function containerize(self, content) {
+        var clone = $$('.offstage .prototipTip')[0].cloneNode(true);
+        var ctx = new JsEvalContext(content);
+        jstProcess(ctx, clone);
+        return clone;
+    }
+);
 
 
 /* functions begin here **************************************************/
