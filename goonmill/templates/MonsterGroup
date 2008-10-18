@@ -36,7 +36,7 @@
     <td>Hit Points</td>
     <td>Alignment</td>
     <td>Treasure/Gear</td>
-    <td n:render="spells">Spells</td>
+    <td n:render="ifStatblock" n:data="casterLevel">Spells</td>
     <td>Individual's name</td>
     </tr>
     </thead>
@@ -48,7 +48,7 @@
     <td><n:slot name="hitPoints" /></td>
     <td><n:slot name="alignment" /></td>
     <td><n:slot name="gear" /></td>
-    <td n:render="spells"><n:slot name="spells" /></td>
+    <td n:render="ifStatblock" n:data="casterLevel"><n:slot name="spells" /></td>
     <td><n:slot name="personalName" /></td>
     </tr>
     <tr class="notesRow" n:pattern="notesRow"><td
@@ -80,7 +80,7 @@
     <n:slot name="alignment"/>
     <n:slot name="size"/>
     <n:slot name="creatureType"/>
-    <n:invisible n:render="subtype">(<n:slot name="subtype"/>)</n:invisible>
+    <n:invisible n:render="ifStatblock" n:data="descriptor">(<n:slot name="subtype"/>)</n:invisible>
     </strong></p>
 
     <p>Init&#xA0;<strong><n:slot name=
@@ -88,14 +88,14 @@
       "senses" /></strong></span>; Listen <strong><n:slot name=
       "listen" /></strong>, Spot <strong><n:slot name="spot" /></strong></p>
 
-    <p n:render="aura">Aura&#xA0;<strong><n:slot name="aura" /></strong></p>
+    <p n:render="ifStatblock" n:data="aura">Aura&#xA0;<strong><n:slot name="aura" /></strong></p>
 
     <p>Languages&#xA0;<strong><n:slot name="languages"/></strong></p>
 
     <!-- defense block -->
     <div class="statblock">
     <p>AC&#xA0;<strong><n:slot name="ac" /></strong><span n:render=
-        "specialAC"
+        "ifStatblock" n:data="specialAC"
         title=
         "mods to AC, see e.g. cyclonic ravager deflecting winds">; <n:slot
         name="specialAC" /></span><span n:render=
@@ -104,20 +104,20 @@
     <p>hp&#xA0;<strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
           href="#">grid</a></strong>&#xA0;&#xA0;HD <strong><n:slot name=
         "hitDice" /></strong> 
-      <span n:render="fastHealing">; fast healing <strong><n:slot name=
+      <span n:render="ifStatblock" n:data="fastHealing">; fast healing <strong><n:slot name=
         "fastHealing" /></strong></span>
-      <span n:render="regeneration">; regeneration <strong><n:slot name=
+      <span n:render="ifStatblock" n:data="regeneration">; regeneration <strong><n:slot name=
         "regeneration" /></strong></span>
-      <span n:render="damageReduction">DR <strong><n:slot name=
+      <span n:render="ifStatblock" n:data="damageReduction">DR <strong><n:slot name=
         "damageReduction" /></strong></span></p>
 
-    <p n:render="immunities">Immune&#xA0;<strong><n:slot name=
+    <p n:render="ifStatblock" n:data="immunities">Immune&#xA0;<strong><n:slot name=
       "immunities" /></strong></p>
 
     <p><span n:render=
-      "resistances">Resist&#xA0;<strong><n:slot name=
+      "ifStatblock" n:data="resistances">Resist&#xA0;<strong><n:slot name=
         "resistances" /></strong>
-      </span><span n:render="spellResistance">SR <strong><n:slot name=
+      </span><span n:render="ifStatblock" n:data="spellResistance">SR <strong><n:slot name=
         "spellResistance" /></strong></span></p>
 
     <p>Fort <strong><n:slot name="fort" /></strong>, 
@@ -164,7 +164,7 @@
         </span></strong>
     </p>
 
-    <p n:render="specialActions" title=
+    <p n:render="ifStatblock" n:data="specialActions" title=
         "something it can do besides attack">Special Actions
         <strong><n:slot name="specialActions" /></strong></p>
 
@@ -173,7 +173,7 @@
       Gear <strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
           href="#">grid</a>.</strong></p>
 
-    <p n:render="spells">Spells <strong>(CL <n:slot name=
+    <p n:render="ifStatblock" n:data="casterLevel">Spells <strong>(CL <n:slot name=
       "casterLevel" />) See <a class="tabHandle gridTab" rel="monsterGroupGrid"
           href="#">grid</a>.</strong></p>
 
@@ -193,7 +193,9 @@
     <p>Possessions <strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
           href="#">grid</a>.</strong></p>
 
-    <p n:render="spells">Spellbook&#xA0;<strong>See <a class="tabHandle gridTab" rel="monsterGroupGrid"
+    <p n:render="ifStatblock" n:data=
+      "casterLevel">Spellbook&#xA0;<strong>See <a class=
+        "tabHandle gridTab" rel="monsterGroupGrid"
         href="#">grid</a>.</strong></p>
     </div>
     

@@ -631,6 +631,13 @@ class MonsterGroupView(athena.LiveElement):
         return tag
 
     @page.renderer
+    def ifStatblock(self, req, tag):
+        trait = tag.data.name
+        if self.statblock.get(trait):
+            return tag
+        return ''
+
+    @page.renderer
     def sections(self, req, tag):
         get = self.statblock.get
         fill = tag.fillSlots
@@ -703,59 +710,11 @@ class MonsterGroupView(athena.LiveElement):
         return [] # disabled for now - only available in NPC
 
     @page.renderer
-    def subtype(self, req, tag):
-        if self.statblock.get('descriptor'):
-            return tag
-        return ''
-
-    @page.renderer
-    def aura(self, req, tag):
-        if self.statblock.get('aura'):
-            return tag
-        return ''
-
-    @page.renderer
-    def immunities(self, req, tag):
-        if self.statblock.get('immunities'):
-            return tag
-        return ''
-
-    @page.renderer
-    def specialAC(self, req, tag):
-        if self.statblock.get('specialAC'):
-            return tag
-        return ''
-
-    @page.renderer
     def acFeats(self, req, tag):
         feats = self.statblock.acFeats()
         if len(feats) > 0:
             return tag
 
-        return ''
-
-    @page.renderer
-    def fastHealing(self, req, tag):
-        if self.statblock.get('fastHealing'):
-            return tag
-        return ''
-
-    @page.renderer
-    def regeneration(self, req, tag):
-        if self.statblock.get('regeneration'):
-            return tag
-        return ''
-
-    @page.renderer
-    def damageReduction(self, req, tag):
-        if self.statblock.get('damageReduction'):
-            return tag
-        return ''
-
-    @page.renderer
-    def resistances(self, req, tag):
-        if self.statblock.get('resistances'):
-            return tag
         return ''
 
     @page.renderer
@@ -772,12 +731,6 @@ class MonsterGroupView(athena.LiveElement):
             content.append(pg().fillSlots('attackEffect', vuln))
 
         return tag[content]
-
-    @page.renderer
-    def spellResistance(self, req, tag):
-        if self.statblock.get('spellResistance'):
-            return tag
-        return ''
 
     @page.renderer
     def speedFeats(self, req, tag):
@@ -832,18 +785,6 @@ class MonsterGroupView(athena.LiveElement):
         if len(feats) > 0:
             return tag
 
-        return ''
-
-    @page.renderer
-    def specialActions(self, req, tag):
-        if self.statblock.get('specialActions'):
-            return tag
-        return ''
-
-    @page.renderer
-    def spells(self, req, tag):
-        if self.statblock.get('casterLevel'):
-            return tag
         return ''
 
     @page.renderer
