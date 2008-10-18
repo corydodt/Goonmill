@@ -204,7 +204,7 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 .printButton {
-    background-image: url(/static/printer.png);
+    background-image: url(/static/3p/printer.png);
     background-repeat: no-repeat;
     float: right;
     padding-left: 26px;
