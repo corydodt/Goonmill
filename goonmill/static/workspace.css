@@ -215,11 +215,11 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
 }
 
 .statblockTab {
-    background-image: url(/static/report.png);
+    background-image: url(/static/3p/report.png);
 }
 
 .gridTab {
-    background-image: url(/static/table__pencil.png);
+    background-image: url(/static/3p/table__pencil.png);
 }
 
 .tabHandle:hover {
