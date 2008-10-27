@@ -1,6 +1,6 @@
 /* Control.Modal styles */
 
-#modal_container {  
+.modal_container {  
     padding:5px;  
     background-color:#fff;  
     border:2px outset black;
@@ -11,6 +11,6 @@
     text-align:left;  
 } 
  
-#modal_overlay {  
+#control_overlay {  
     background-color: #a87675;  
 }  

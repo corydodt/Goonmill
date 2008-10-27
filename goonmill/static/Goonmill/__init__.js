@@ -32,7 +32,9 @@ Goonmill.GoonmillWidget.methods(
         Goonmill.GoonmillWidget.upcall(self, '__init__', node);
         // apply behaviors based on class
         for (behavior in Goonmill.Behaviors) {
-            node.select('.' + behavior).each(Goonmill.Behaviors[behavior]);
+            if (Goonmill.Behaviors.hasOwnProperty(behavior)) {
+                node.select('.' + behavior).each(Goonmill.Behaviors[behavior]);
+            }
         }
     }
 );
@@ -350,10 +352,10 @@ Goonmill.BasicSearch.methods(
                     setupHit: function(anc, ctx) {
                         // TODO - add teaser
                         anc.observe('click', function (event) {
-                            self.onClickedHit(event, anc, ctx['monsterId']);
+                            self.onClickedHit(event, anc, ctx.monsterId);
                         });
                         anc.removeAttribute('title');
-                        var _ignored = new Goonmill.GoonTip(anc, ctx['teaser']);
+                        var _ignored = new Goonmill.GoonTip(anc, ctx.teaser);
                     }
                 };
             });
@@ -920,15 +922,11 @@ Goonmill.whichNewThing = function(name) {
 
 // this is the standard default way lightboxes will display in goonmill
 // (function is for folding purposes only)
-var LightboxConfig = function () {
-    return Class.create({
-        opacity:0.7,
-        fade: false,  // too slow joe
-        // fadeDuration: 0.4,
-        initialize: function() {},
-        beforeClose: function() { throw $break; }
-    });
-}();
+var LightboxConfig = {
+    overlayOpacity:0.7,
+    fade: false,  // too slow joe
+    className: 'modal_container'
+};
 
 
 // display an image
@@ -938,8 +936,7 @@ Goonmill.imageBox = function (url) {
     jstProcess(ctx, meat);
 
     var close = ctx.getVariable('$close');
-    close.observe('click', function() { Control.Modal.current.close(true); } );
-    var m = Goonmill.Modal(meat);
+    var m = Goonmill.Modal(meat, {closeOnClick: close});
 
     return m;
 };
@@ -954,50 +951,29 @@ Goonmill.messageBox = function (node) {
     ctx.getVariable('$container').update(node);
 
     var close = ctx.getVariable('$close');
-    close.observe('click', function() { Control.Modal.current.close(true); } );
-
-    var m = Goonmill.Modal(meat);
+    var m = Goonmill.Modal(meat, {closeOnClick: close});
 
     return m;
 };
 
 // copy the contents into a modal dialog (lightbox)
 Goonmill.Modal = function (contents, extraOptions) {
-    var config = new LightboxConfig();
-    if (extraOptions !== undefined) {
-        for (attr in extraOptions) {
-            config[attr] = extraOptions[attr];
-        }
-    }
-    config.contents = '<span>__ignored__</span>';
+    var config = $H(LightboxConfig).merge(extraOptions).toObject();
 
-    // kludge .. hide all embedded stuff when showing the modal
-    var embeds = document.documentElement.select('embed');
-    $A(embeds).each(function (e) { 
-        e.setAttribute('_oldVisibility', e.style.visibility);
-        e.style.visibility = 'hidden'; 
-    });
-    
     // esc to close
     var escHotkey = new HotKey('esc', function (event) { 
             Control.Modal.current.close(true); 
-            }, {ctrlKey:false});
+    }, {ctrlKey:false});
 
     // restore embedded stuff when closing the modal
-    config.afterClose = function () { $A(embeds).each(function(e) {
-        e.style.visibility = e.readAttribute('_oldVisibility');
-        e.removeAttribute('_oldVisibility');
-        });
+    config.afterClose = function () { 
+        Control.Modal.current.destroy();
         escHotkey.destroy();
     };
 
     var modal = new Control.Modal(null, config);
+    modal.container.insert(contents);
     modal.open();
-    // modal.update requires that its argument be an array
-    if (contents.length === undefined) {
-        contents = $A([contents]);
-    }
-    modal.update(contents);
 
     return modal;
 };
