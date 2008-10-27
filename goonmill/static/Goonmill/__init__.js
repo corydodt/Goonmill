@@ -494,11 +494,10 @@ Goonmill.ConstituentList.methods(
 
     // put a new constituent into the list
     function addConstituent(self, kind, id, name, detail) {
-        var listItem = self.node.select('.template')[0].cloneNode(true);
-        var ctx = new JsEvalContext({'title':'FIXME', 'name':name, 'rel':id,
-                'detail':detail, 'kind':kind
-        });
-        jstProcess(ctx, listItem);
+        var source = self.node.select('.template')[0];
+        var listItem = new Goonmill.JstClone(source, {'title':'FIXME', 
+            'name':name, 'rel':id, 'detail':detail, 'kind':kind
+        }).clonedNode;
         self.node.insert(listItem);
         self._setEvents(listItem);
         listItem.select('.closingX')[0].observe('click', function (event) {
@@ -861,10 +860,30 @@ Goonmill.GoonTip.methods(
 
     // wrap 
     function containerize(self, content) {
-        var clone = $$('.offstage .prototipTip')[0].cloneNode(true);
-        var ctx = new JsEvalContext(content);
-        jstProcess(ctx, clone);
-        return clone;
+        return new Goonmill.JstClone('.offstage .prototipTip',
+            content).clonedNode;
+    }
+);
+
+
+// simplify the process of clone-and-template
+// TODO - make this an extension of Element
+Goonmill.JstClone = Divmod.Class.subclass('Goonmill.JstClone');
+Goonmill.JstClone.methods(
+    function __init__(self, selector, context) {
+        if (selector.tagName) {
+            self.sourceNode = selector;
+        } else {
+            self.sourceNode = body.select(selector)[0];
+        }
+        self.clonedNode = self.sourceNode.cloneNode(true);
+        self.context = new JsEvalContext(context);
+        jstProcess(self.context, self.clonedNode);
+    },
+
+    // interact with the context
+    function get(self, name) {
+        return self.context.getVariable(name);
     }
 );
 
@@ -893,21 +912,20 @@ Goonmill.whichNewThing = function(name) {
     var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
     var closer = function (e) { Control.Modal.current.close(true); };
 
-    var clone = body.select('.offstage .whichNewThing')[0].cloneNode(true);
-    var ctx = new JsEvalContext({'name': name});
-    jstProcess(ctx, clone);
+    var cloneCtx = new Goonmill.JstClone('.offstage .whichNewThing', {'name': name});
+    var clone = cloneCtx.clonedNode;
 
     /* if using new monster group, only integers between 1-123 allowed */
-    var count = ctx.getVariable('$count');
+    var count = cloneCtx.get('$count');
     var countValid = new LiveValidation(count, {validMessage:''} );
     countValid.add(Validate.Presence);
     countValid.add(Validate.Numericality, 
             { onlyInteger: true, minimum: 1, maximum: 123 }
     );
 
-    ctx.getVariable('$newMonsterGroup').observe('click', f1);
-    ctx.getVariable('$newNPC').observe('click', f2);
-    ctx.getVariable('$cancel').observe('click', closer);
+    cloneCtx.get('$newMonsterGroup').observe('click', f1);
+    cloneCtx.get('$newNPC').observe('click', f2);
+    cloneCtx.get('$cancel').observe('click', closer);
 
     d.addCallback(function (button) {
         if (button == 1) { return ['monsterGroup', count.value]; }
@@ -931,12 +949,9 @@ var LightboxConfig = {
 
 // display an image
 Goonmill.imageBox = function (url) {
-    var meat = body.select('.offstage .imageBoxMeat')[0].cloneNode(true);
-    var ctx = new JsEvalContext({'url': url});
-    jstProcess(ctx, meat);
-
-    var close = ctx.getVariable('$close');
-    var m = Goonmill.Modal(meat, {closeOnClick: close});
+    var ctx = new Goonmill.JstClone('.offstage .imageBoxMeat', {'url':url});
+    var close = ctx.get('$close');
+    var m = Goonmill.Modal(ctx.clonedNode, {closeOnClick: close});
 
     return m;
 };
@@ -944,14 +959,12 @@ Goonmill.imageBox = function (url) {
 
 // display any node or string as a message
 Goonmill.messageBox = function (node) {
-    var meat = body.select('.offstage .messageBoxMeat')[0].cloneNode(true);
-    var ctx = new JsEvalContext({});
-    jstProcess(ctx, meat);
+    var ctx = new Goonmill.JstClone('.offstage .messageBoxMeat', {});
 
-    ctx.getVariable('$container').update(node);
+    ctx.get('$container').update(node);
 
-    var close = ctx.getVariable('$close');
-    var m = Goonmill.Modal(meat, {closeOnClick: close});
+    var close = ctx.get('$close');
+    var m = Goonmill.Modal(ctx.clonedNode, {closeOnClick: close});
 
     return m;
 };
@@ -983,18 +996,16 @@ Goonmill.Modal = function (contents, extraOptions) {
 // the clicked button.
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
-    var meat = body.select('.offstage .confirm')[0].cloneNode(true);
     var d = new Divmod.Defer.Deferred(); 
-    var ctx = new JsEvalContext({'message':message, 
+    var ctx = new Goonmill.JstClone('.offstage .confirm', {'message':message, 
             'button1text': button1text, 'button2text': button2text
     });
-    jstProcess(ctx, meat);
     var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
     var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
-    ctx.getVariable('$button1').observe('click', f1);
-    ctx.getVariable('$button2').observe('click', f2);
+    ctx.get('$button1').observe('click', f1);
+    ctx.get('$button2').observe('click', f2);
 
-    var m = Goonmill.Modal(meat);
+    var m = Goonmill.Modal(ctx.clonedNode);
 
     return d;
 };
@@ -1022,7 +1033,7 @@ Goonmill.debugView = function () {
 Goonmill.findAllWidgets = function() {
     var widgets = [];
     var widgetMap = Nevow.Athena.Widget._athenaWidgets;
-    for (wid in widgetMap) { widgets.push(widgetMap[wid]); }
+    $H(widgetMap).values().each(function (wid) { widgets.push(wid); });
     return widgets;
 };
 
