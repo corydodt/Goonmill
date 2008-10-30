@@ -153,7 +153,7 @@ class EHit(object):
             raise NotImplementedError("Only html format supported for teaser text")
         # arguments to make_snippet MUST be byte strings
         terms = [t.encode('utf8') for t in terms]
-        snip = self.make_snippet(terms, 60, 20, 20)
+        snip = self.make_snippet(terms, 120, 35, 35)
         bunches = snip.split('\n\n')
 
         strings = []
