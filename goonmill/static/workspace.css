@@ -370,31 +370,23 @@ dd {
 /* SEARCH */     /* display: block; */
 /* SEARCH */ }
 
-/* SEARCH */ .prototip {
-/* SEARCH */     background: #fffdc0; 
-/* SEARCH */ }
-/* SEARCH */ .prototip .tipTip {
+/* SEARCH */ .tipTip2 {
+/* SEARCH */   background: #fffdc0; 
 /* SEARCH */   width: 300px;
 /* SEARCH */   padding: 1px;
 /* SEARCH */   border: thin solid #bdbb60;
-/* SEARCH */   }
-/* SEARCH */ .prototip .tipTip .toolbar {
-/* SEARCH */   background: #CFE6DC;
-/* SEARCH */   font: italic 8pt;
-/* SEARCH */   font-weight: bold;
-/* SEARCH */   }
-/* SEARCH */ .prototip .tipTip .title { padding: 2px; }
-/* SEARCH */ .prototip .tipTip .content { 
-/* SEARCH */   font-size: 7pt;
-/* SEARCH */     padding: 0px; margin: 0px;
-/* SEARCH */   }
+/* SEARCH */ }
+/* SEARCH */ 
+/* SEARCH */ .tipTip2 .title { padding: 2px; }
+/* SEARCH */ 
+/* SEARCH */ .tipTip2 .content { 
+/* SEARCH */   font-size: 11px;
+/* SEARCH */   padding: 2px;
+/* SEARCH */   margin: 0px;
+/* SEARCH */ }
 /* SEARCH */ 
 /* SEARCH */ .ttArrow1 {
 /* SEARCH */     float:left;
-/* SEARCH */     height:100%;
-/* SEARCH */ }
-/* SEARCH */ 
-/* SEARCH */ .ttArrow1-1 {
 /* SEARCH */     position:relative;
 /* SEARCH */     left: -11px;
 /* SEARCH */ }

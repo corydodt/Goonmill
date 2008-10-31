@@ -7,7 +7,6 @@
     <title>Goonmill Workspace</title>
     <link type="text/css" rel="stylesheet" href="/static/reset.css" />
     <link type="text/css" rel="stylesheet" href="/static/workspace.css" />
-    <link rel="stylesheet" type="text/css" href="/static/3p/prototip.css" />
 
     <script type="text/javascript" src=
       "/static/3p/prototype.js"></script>
@@ -22,9 +21,6 @@
     <!-- this is the lightbox effect -->
     <script type="text/javascript" src=
       "/static/3p/livepipe.window.js"></script>
-    <!-- tooltips -->
-    <script type="text/javascript" src=
-      "/static/3p/prototip.js"></script>
     <!-- keyboard shortcuts -->
     <script type="text/javascript" src=
       "/static/3p/hotkey.cdd.js"></script>
@@ -156,13 +152,12 @@
           "monsterName"></a><br /></span>
       </div>
 
-      <!-- prototip stuff -->
-      <span class="prototipTip">
+      <!-- tooltip stuff -->
+      <span class="searchTip">
         <div class=
-          "ttArrow1"><div style="height:100%">&#160;</div><div class=
-            "ttArrow1-1"><img src="/static/leftarrow-10x10-fffdc0.png" /></div></div>
+            "ttArrow1"><img src="/static/leftarrow-10x10-fffdc0.png" /></div>
         <!-- can't use jscontent because $this is a string of markup, not a node -->
-        <div jseval="this.innerHTML=$this" />
+        <div class="content" jseval="this.innerHTML=$this" />
       </span>
 
     </div>

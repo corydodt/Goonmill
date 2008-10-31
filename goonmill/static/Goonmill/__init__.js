@@ -299,7 +299,7 @@ Goonmill.BasicSearch.methods(
 
         self.searchTerms = self.searchForm.searchTerms;
 
-        self.searchTerms.observe('click', function (event) {
+        self.searchTerms.observe('focus', function (event) {
             self.searchTerms.value = '';
             self.searchTerms.removeClassName('defaultText');
         });
@@ -350,12 +350,12 @@ Goonmill.BasicSearch.methods(
                     monsterId: hit[1], 
                     teaser: hit[2],
                     setupHit: function(anc, ctx) {
-                        // TODO - add teaser
                         anc.observe('click', function (event) {
                             self.onClickedHit(event, anc, ctx.monsterId);
                         });
                         anc.removeAttribute('title');
                         var _ignored = new Goonmill.GoonTip(anc, ctx.teaser);
+                        // anc.tooltip = new Control.ToolTip(anc, ctx.teaser, {});
                     }
                 };
             });
@@ -841,25 +841,24 @@ Goonmill.GoonTip = Divmod.Class.subclass('Goonmill.GoonTip');
 Goonmill.GoonTip.methods(
     function __init__(self, node, content) {
         self.content = self.containerize(content);
-        var TIPCONFIG = {
-            fixed: true,
-            closeButton: false,
-            hook: { target: 'bottomRight', tip: 'bottomLeft' },
-            className: 'tipTip',
-            offset: { x:10, y:3 },
-            effect: 'appear',
-            duration: 0.2
-            // hideOn: { element: 'closeButton' }
-        };
         self.node = node;
+        var TIPCONFIG = {
+            position: 'relative',
+            offsetLeft: function () { return self.node.offsetWidth + 13; },
+            offsetTop: -3,
+            // fade: true,
+            hover: self.node,
+            className: 'tipTip2'
+        };
 
         // kludgy but apparently works
-        self.__proto__ = new Tip(self.node, self.content, TIPCONFIG);
+        var tip = new Control.Window(' ', TIPCONFIG);
+        tip.container.insert(self.content);
     },
 
     // wrap 
     function containerize(self, content) {
-        return body.select('.offstage .prototipTip')[0].jstClone(content);
+        return body.select('.offstage .searchTip')[0].jstClone(content);
     }
 );
 
