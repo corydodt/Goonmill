@@ -615,7 +615,7 @@ Goonmill.ItemView.methods(
     function __init__(self, node) {
         Goonmill.ItemView.upcall(self, '__init__', node);
         node.hide();
-        var oldView = document.documentElement.select('.itemView')[0];
+        var oldView = body.select('.itemView')[0];
         oldView.replace(node);
         node.show();
     }
@@ -1045,7 +1045,7 @@ Goonmill.message = function(text, severity) {
     var span = new Element('span').update(text);
     span.hide();
     // TODO - severity
-    var messageArea = document.documentElement.select('.messageArea')[0];
+    var messageArea = body.select('.messageArea')[0];
     $A(messageArea.childNodes).each(function (e) { e.remove(); } );
     messageArea.insert(span);
     messageArea.addClassName('contents');
