@@ -1,4 +1,4 @@
-"""PyLucene-based indexing and searching """
+"""HyperEstraier-based indexing and searching """
 # vi:ft=python
 import sys, os
 import shutil
