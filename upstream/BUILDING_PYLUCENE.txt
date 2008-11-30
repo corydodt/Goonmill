@@ -1,5 +1,0 @@
-- Uncomment the RHEL section
-- Edit PYTHON_VER to 2.5 in the RHEL section
-- sudo apt-get install gcj ant sun-java6-jdk g++ java-gcj-compat{,dev}
-- make
-- sudo make install
