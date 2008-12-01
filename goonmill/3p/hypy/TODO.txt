@@ -1,0 +1,5 @@
+1. Add a Document class with an API like the one demonstrated in
+    goonmill.search2
+2. Add unit tests for all the high-level classes
+3. Add some rudimentary documentation
+4. Contact YY for permission to distribute it this way.
