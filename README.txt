@@ -33,16 +33,16 @@ of this file.  bootstrap.sh is kept up-to-date better than this file is, and
 should reliably tell you when something you need is missing.
 
 2. Install Playtools.
-sudo apt-get install python python-pysqlite2 
-sudo easy_install rdflib storm http://playtools-source.goonmill.org/archive/tip.tar.gz
+    sudo apt-get install python python-pysqlite2 python-setuptools
+    sudo easy_install playtools
 
 3. Install the rest of Goonmill's dependencies
-sudo apt-get install python-twisted python-nevow python-simpleparse \
-    python-zopeinterface hyperestraier libestraier8-dev libqdbm14-dev
+    sudo apt-get install python-twisted python-nevow python-simpleparse \
+        python-zopeinterface hyperestraier libestraier8-dev libqdbm14-dev
 
 4. Build estraiernative, the Python bindings for the search library.
-cd goonmill/3p/estraiernative-cdd
-sudo python setup.py install
+    cd goonmill/3p/estraiernative-cdd
+    sudo python setup.py install
 
 5. Run bootstrap.sh one more time.  This time it will generate all the runtime
 files Goonmill needs to launch.
