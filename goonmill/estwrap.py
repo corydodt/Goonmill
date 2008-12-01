@@ -1,4 +1,9 @@
-from _estraiernative import Document, Condition, Database
+"""
+Put a Pythonic face on estraiernative
+"""
+
+from _estraiernative import (Condition as CCondition,
+    Database as CDatabase)
 
 class PutFailed(Exception):
     """
@@ -38,19 +43,19 @@ class ECondition(object):
     Use matching='simple', 'rough', 'union' or 'isect'
     """
     def __init__(self, phrase, matching='simple', max=None):
-        self.condition = Condition()
+        self.condition = CCondition()
         self.set_phrase(phrase)
         if max is not None:
             self.set_max(max)
         flags = 0
         if matching == 'simple':
-            flags |= Condition.SIMPLE
+            flags |= CCondition.SIMPLE
         elif matching == 'rough':
-            flags |= Condition.ROUGH
+            flags |= CCondition.ROUGH
         elif matching == 'union':
-            flags |= Condition.UNION
+            flags |= CCondition.UNION
         elif matching == 'isect':
-            flags |= Condition.ISECT
+            flags |= CCondition.ISECT
         self.set_options(flags)
 
     def __getattr__(self, name):
@@ -59,10 +64,10 @@ class ECondition(object):
 
 class EDatabase(object):
     """
-    A more pythonic interface to estraier
+    A more pythonic interface to estraier's database
     """
     def __init__(self):
-        self.database = Database()
+        self.database = CDatabase()
 
     def __getattr__(self, name):
         return getattr(self.database, name)
@@ -107,16 +112,25 @@ class EDatabase(object):
         return self
 
     def close(self):
+        """
+        Put the database down for the night.
+        """
         if not self.database.close():
             msg = self.err_msg(self.error())
             raise CloseFailed(msg)
 
     def search(self, condition):
+        """
+        Submit a query to the database and return the results object.
+        """
         result = self.database.search(condition.condition)
         return EResults(self, result)
 
 
 class EResults(list):
+    """
+    List wrapper for results of the search.
+    """
     def __init__(self, db, result):
         l = []
         count = result.doc_num()
@@ -132,8 +146,8 @@ class EResults(list):
 
 
 class EHit(object):
-    """One monster search result
-    Essentially an adapter for estraier's hits
+    """
+    Dict-like interface to a document returned from a search
     """
     def __getattr__(self, name):
         return getattr(self.hit, name)
