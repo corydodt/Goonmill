@@ -7,7 +7,7 @@ import re
 from twisted.web import microdom, domhelpers
 from twisted.python import usage
 
-from goonmill import estwrap
+import hypy
 
 from goonmill.util import RESOURCE
 
@@ -24,7 +24,7 @@ def repSlash(m):
 def indexMonster(database, monster):
     _ft = re.sub(slashRx, repSlash, monster.full_text)
     full = textFromHtml(_ft)
-    doc = estwrap.Document()
+    doc = hypy.CDocument() # FIXME - use a pythonic wrapper for this
     doc.add_attr("@uri", str(monster.id)) # required
     doc.add_attr("@name", monster.name)
     doc.add_text(full)
@@ -36,6 +36,23 @@ def indexMonster(database, monster):
 
     sys.stdout.write(".")
     sys.stdout.flush()
+
+# here's the api I'd like to see instead.
+if 0:
+    def indexMonster(database, monster):
+        _ft = re.sub(slashRx, repSlash, monster.full_text)
+        full = textFromHtml(_ft)
+        doc = hypy.Document(uri=str(monster.id))
+        doc.addText(full)
+        doc['@name'] = monster.name
+        # add monster.name to the text so that it has extra weight in the
+        # search results
+        doc.addHiddenText(monster.name)
+
+        database.putDoc(doc, 0)
+
+        sys.stdout.write(".")
+        sys.stdout.flush()
 
 
 def textFromHtml(htmlText):
@@ -61,10 +78,10 @@ def find(terms):
     """Use the estraier index to find monsters"""
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
     phrase = ' '.join(fuzzy)
-    estdb = estwrap.EDatabase()
+    estdb = hypy.EDatabase()
     estdb.open(INDEX_DIRECTORY, 'r')
 
-    query = estwrap.ECondition(phrase, matching='simple', max=10)
+    query = hypy.ECondition(phrase, matching='simple', max=10)
 
     return estdb.search(query)
 
@@ -72,7 +89,7 @@ def find(terms):
 def buildIndex(monsters):
     if os.path.exists(INDEX_DIRECTORY):
         return
-    estdb = estwrap.EDatabase()
+    estdb = hypy.EDatabase()
     estdb.open(INDEX_DIRECTORY, 'a')
 
     for n, monster in enumerate(monsters):
