@@ -15,3 +15,5 @@
 ^goonmill/static/monster$
 ^goonmill/rdflib\.db.*$
 ^goonmill/3p/estraiernative-cdd/build.*$
+Hypy.egg-info.*$
+hypy/build.*$
