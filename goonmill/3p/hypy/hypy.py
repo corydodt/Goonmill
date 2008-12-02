@@ -3,7 +3,7 @@ Put a Pythonic face on estraiernative
 """
 
 from _estraiernative import (Condition as CCondition,
-    Database as CDatabase)
+    Database as CDatabase, Document as CDocument)
 
 class PutFailed(Exception):
     """
