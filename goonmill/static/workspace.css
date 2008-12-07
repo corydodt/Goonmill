@@ -68,8 +68,7 @@
 }
 
 a.warmText:hover {
-    color: #555;
-    background-color: white;
+    background-color: transparent;
     outline: 2px inset black;
 }
 

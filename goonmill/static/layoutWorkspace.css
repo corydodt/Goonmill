@@ -8,6 +8,14 @@
     right: 4px;
 }
 
+.y1b {
+    background-image: url(/static/field-header-b.png);
+    background-repeat: repeat;
+    height: 94px;
+    left: 0px;
+    right: 0px;
+}
+
 .y2 {
     position: absolute;
     top: 94px;
@@ -95,6 +103,16 @@
     background-position: -240px;
     position: absolute;
     top: 10px;
+    height: 40px;
+    right: 0px;
+    left: 0px;
+}
+
+.x2-2-1xb {
+    background-image: url(/static/field-header-b.png);
+    background-position: -240px;
+    position: absolute;
+    top: 0px;
     height: 40px;
     right: 0px;
     left: 0px;
