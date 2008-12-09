@@ -24,35 +24,17 @@ def repSlash(m):
 def indexMonster(database, monster):
     _ft = re.sub(slashRx, repSlash, monster.full_text)
     full = textFromHtml(_ft)
-    doc = hypy.CDocument() # FIXME - use a pythonic wrapper for this
-    doc.add_attr("@uri", str(monster.id)) # required
-    doc.add_attr("@name", monster.name)
-    doc.add_text(full)
-    # add monster.name to the text so that it has extra weight in the search
-    # results
-    doc.add_hidden_text(monster.name)
+    doc = hypy.HDocument(uri=unicode(monster.id))
+    doc.addText(full)
+    doc[u'@name'] = monster.name
+    # add monster.name to the text so that it has extra weight in the
+    # search results
+    doc.addHiddenText(monster.name)
 
     database.putDoc(doc, 0)
 
     sys.stdout.write(".")
     sys.stdout.flush()
-
-# here's the api I'd like to see instead.
-if 0:
-    def indexMonster(database, monster):
-        _ft = re.sub(slashRx, repSlash, monster.full_text)
-        full = textFromHtml(_ft)
-        doc = hypy.Document(uri=str(monster.id))
-        doc.addText(full)
-        doc['@name'] = monster.name
-        # add monster.name to the text so that it has extra weight in the
-        # search results
-        doc.addHiddenText(monster.name)
-
-        database.putDoc(doc, 0)
-
-        sys.stdout.write(".")
-        sys.stdout.flush()
 
 
 def textFromHtml(htmlText):
@@ -78,10 +60,10 @@ def find(terms):
     """Use the estraier index to find monsters"""
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
     phrase = ' '.join(fuzzy)
-    estdb = hypy.EDatabase()
+    estdb = hypy.HDatabase()
     estdb.open(INDEX_DIRECTORY, 'r')
 
-    query = hypy.ECondition(phrase, matching='simple', max=10)
+    query = hypy.HCondition(phrase, matching='simple', max=10)
 
     return estdb.search(query)
 
@@ -89,7 +71,7 @@ def find(terms):
 def buildIndex(monsters):
     if os.path.exists(INDEX_DIRECTORY):
         return
-    estdb = hypy.EDatabase()
+    estdb = hypy.HDatabase()
     estdb.open(INDEX_DIRECTORY, 'a')
 
     for n, monster in enumerate(monsters):
@@ -124,7 +106,8 @@ class Options(usage.Options):
             for hit in find(self['terms']):
                 # print hit.name, hit.score
                 print hit['@name']
-            # except lucene.JavaError, e: FIXME
+            # except lucene.JavaError, e: FIXME - need the hypy version of
+            # this code
             #   if 'FileNotFoundException' in str(e):
             #       raise usage.UsageError(
             #               "** Missing index directory.  Run with --build-index")

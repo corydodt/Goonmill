@@ -430,9 +430,11 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def searched(self, searchTerms):
-        terms = searchTerms.split()
+        terms = tuple(searchTerms.split())
         self.lastFound = search2.find(terms)
-        unpack = lambda t: (t['@name'].decode('utf-8'), t.id(), t.teaser(terms))
+        def unpack(t):
+            import pdb; pdb.set_trace()
+            return (t[u'@name'], t.id, t.teaser(terms))
         return [unpack(tt) for tt in self.lastFound]
 
     @athena.expose
