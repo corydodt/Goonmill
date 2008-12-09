@@ -11,10 +11,7 @@ class TestHDocument(unittest.TestCase):
     def test_dictlike(self):
         doc = self.doc
 
-        def _set():
-            doc['foobar'] = 'baz'
-
-        self.assertRaises(TypeError, _set)
+        self.assertRaises(TypeError, doc.__setitem__, 'foobar', 'baz')
 
         doc[u'foobar'] = u'baz'
         doc[u'foobar']
@@ -34,17 +31,14 @@ class TestHDocument(unittest.TestCase):
 
     def test_text(self):
         doc = self.doc
-        def _add():
-            doc.addText('xyz')
-        self.assertRaises(TypeError, _add)
+        self.assertRaises(TypeError, doc.addText, 'xyz')
         doc.addText(u'xyz')
-        # problem.. get_texts doesn't seem to work. or maybe it only works
-        # after a search.
-        TODO
+        self.assertEqual([u'xyz'], doc.getTexts())
         doc.addText(u'123')
-        doc.getTexts()
-        doc.addHiddenText('abc')
+        self.assertEqual([u'xyz', u'123'], doc.getTexts())
+        self.assertRaises(TypeError, doc.addHiddenText, 'abc')
         doc.addHiddenText(u'abc')
+        self.assertEqual([u'xyz', u'123'], doc.getTexts())
         doc.getTexts()
         print str(doc)
 
@@ -78,12 +72,8 @@ class TestQueries(unittest.TestCase):
 
     def test_dbOpenClosed(self):
         db = HDatabase()
-        def badOpen():
-            db.open('does/not/exist', 'a')
-        self.assertRaises(OpenFailed, badOpen)
-        def badClose():
-            db.close()
-        self.assertRaises(CloseFailed, badClose)
+        self.assertRaises(OpenFailed, db.open, 'does/not/exist', 'a')
+        self.assertRaises(CloseFailed, db.close)
 
         db.open('_test_db', 'w')
         self.assert_(os.path.exists('_test_db/_idx'))

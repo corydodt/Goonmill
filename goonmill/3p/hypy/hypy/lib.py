@@ -186,7 +186,7 @@ class HDocument(object):
         if not type(text) is type(u''):
             raise TypeError("Must provide unicode text")
         t = text.encode('utf-8')
-        self._cdoc.add_hidden_text(t)
+        self._cdoc.add_text(t)
 
     @classmethod
     def fromCDocument(cls, cdocument):
