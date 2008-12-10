@@ -1,0 +1,10 @@
+To use these bindings, you need:
+
+* hyperestraier runtime (on Ubuntu: sudo apt-get install hyperestraier)
+* libestraier headers and object code (on Ubuntu: sudo apt-get install
+  libestraier-dev)
+* libqdbm headers and object code (on Ubuntu: sudo apt-get install libqdbm-dev)
+* Python headers and object code, natch (on Ubuntu: sudo apt-get install
+  python-dev)
+
+Then just run python setup.py build; sudo python setup.py install
