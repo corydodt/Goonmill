@@ -19,7 +19,8 @@ if not db.open("casket", Database.DBREADER) :
 cond = Condition()
 
 # set the search phrase to the search condition object
-cond.set_phrase("rainbow AND lullaby")
+cond.set_phrase("lull*")
+cond.set_options(Condition.SIMPLE)
 
 # get the result of search
 result = db.search(cond)
