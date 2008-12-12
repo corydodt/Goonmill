@@ -66,7 +66,7 @@ class TestQueries(unittest.TestCase):
 
         return db
 
-    def test_dbextras(self):
+    def test_dbExtras(self):
         """
         Tests for put flags, document removal, document id, optimization,
         len() of database
@@ -75,7 +75,7 @@ class TestQueries(unittest.TestCase):
         db.putDoc
         TODO
 
-    def test_condextras(self):
+    def test_condExtras(self):
         """
         Tests for search skip, cond options, cond on attributes
         """
@@ -90,26 +90,38 @@ class TestQueries(unittest.TestCase):
         condyy = HCondition(u'yy')
 
         db = HDatabase()
+        # open of unreachable directory
         self.assertRaises(OpenFailed, db.open, 'does/not/exist', 'a')
+        # close before successful open
         self.assertRaises(CloseFailed, db.close)
 
+        # w mode
         db.open('_test_db', 'w')
         self.assert_(os.path.exists('_test_db/_idx'))
         db.putDoc(docyy)
         db.close()
 
+        # r mode
         db.open('_test_db', 'r')
+        # write to read-only db
         self.assertRaises(PutFailed, db.putDoc, docxx)
         self.assertEqual(len(db.search(condyy)), 1)
         db.close()
 
+        # a mode
         db.open('_test_db', 'a')
         db.putDoc(docxx)
+        db.flush()
         self.assertEqual(len(db.search(condxx)), 1)
         self.assertEqual(len(db.search(condyy)), 1)
-        db.flush()
         db.close()
-        # see if we can't close it twice
+
+        # w mode again - check that the db is clobbered
+        db.open('_test_db', 'w')
+        self.assertEqual(len(db.search(condxx)), 0)
+        db.close()
+
+        # close after successful close
         self.assertRaises(CloseFailed, db.close)
 
     def test_queries(self):
