@@ -19,3 +19,5 @@ Hypy.egg-info.*$
 hypy/build.*$
 hypy/apidocs.*$
 _trial_temp.*$
+casket/.*$
+build/.*$
