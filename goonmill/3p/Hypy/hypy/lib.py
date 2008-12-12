@@ -5,6 +5,27 @@ Put a Pythonic face on estraiernative
 from _estraiernative import (Condition as CCondition,
     Database as CDatabase, Document as CDocument, EstError as CError)
 
+class FlushFailed(Exception):
+    """
+    Could not remove the specified doc from the database.
+    """
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+class RemoveFailed(Exception):
+    """
+    Could not remove the specified doc from the database.
+    """
+    def __init__(self, id, message):
+        self.id = id
+        self.message = message
+
+    def __str__(self):
+        return 'Document %s: %s' % (self.id, self.message)
+
 class PutFailed(Exception):
     """
     Could not add the specified doc to the database.
@@ -43,33 +64,49 @@ class HCondition(object):
     Use matching='simple', 'rough', 'union' or 'isect'
     """
     def __init__(self, phrase, matching='simple', max=None):
+        if type(phrase) is unicode:
+            phrase = phrase.encode('utf-8')
         self.condition = CCondition()
         self.condition.set_phrase(phrase)
         if max is not None:
             self.condition.set_max(max)
-        flags = 0
-        if matching == 'simple':
-            flags |= CCondition.SIMPLE
-        elif matching == 'rough':
-            flags |= CCondition.ROUGH
-        elif matching == 'union':
-            flags |= CCondition.UNION
-        elif matching == 'isect':
-            flags |= CCondition.ISECT
+        # flags = 0
+        flags = CCondition.SIMPLE
+        if matching != 'simple':
+            raise NotImplemented("Only simple matching is supported by Hyper Estraier with this API.  Use | for UNION and ! for NOT.  All other terms are combined with AND.")
+        ## if matching == 'simple':
+        ##     flags |= CCondition.SIMPLE
+        ## elif matching == 'rough':
+        ##     flags |= CCondition.ROUGH
+        ## elif matching == 'union':
+        ##     flags |= CCondition.UNION
+        ## elif matching == 'isect':
+        ##     flags |= CCondition.ISECT
         self.condition.set_options(flags)
+
+
+# TODO - @unicodeToByte("argname", ...) to require unicode (and decode it)
 
 
 class HDatabase(object):
     """
     A more pythonic interface to estraier's database
+
+    With autoflush=True (the default), automatically flush after every
+    document add, which simplifies indexing.
+
+    Set autoflush=False to manually flush, which allows better performance
+    when indexing lots of documents at once.
     """
     # TODO - pass an optional encoding into __init__ (default utf-8) to
     # specify the desired encoding.  after a database is created, write a
     # special file in it that remembers the encoding.  read that file on
     # opening to set an instance variable.  replace all 'utf-8' with
     # self.encoding in database accesses
-    def __init__(self):
+    def __init__(self, autoflush=True):
         self._cdb = CDatabase()
+        # self.autoflush = autoflush
+        self.autoflush = False # FIXME
 
     def putDoc(self, doc, clean=False, weight=False):
         """
@@ -84,7 +121,47 @@ class HDatabase(object):
             msg = self._cdb.err_msg(self._cdb.error())
             raise PutFailed(doc[u'@uri'], msg)
 
+        if self.autoflush:
+            self.flush()
+
         return doc
+
+    def flush(self):
+        if not self._cdb.flush(-1):
+            msg = self._cdb.err_msg(self._cdb.error())
+            raise FlushFailed(msg)
+
+    def remove(self, uri=None, id=None):
+        """
+        Take a document out of the database by uri or id
+        """
+        if uri is None and id is None:
+            raise TypeError("Either uri or id is required to remove a document")
+        if uri is not None:
+            id = self._cdb.uri_to_id(uri.encode('utf-8'))
+        if not self._cdb.out_doc(id):
+            msg = self._cdb.err_msg(self._cdb.error())
+            raise RemoveFailed(id, msg)
+
+    def optimize(self, purge=False, opt=False):
+        """
+        Perform either a free-space compact operation, or a db optimization,
+        or both, or neither, depending on flags.
+        """
+        flags = (0 if purge else self._cdb.OPTNOPURGE)
+        flags = flags | (0 if opt else self._cdb.OPTNODBOPT)
+        self._cdb.optimize(flags)
+
+    def __len__(self):
+        return self._cdb.size()
+
+    def sync(self):
+        """
+        ??? If anyone knows what this should do and how it is different from
+        flush(), tell me.
+        """
+        raise NotImplemented("I'll implement this when someone tells me what it does")
+        self._cdb.sync() # TODO - needs a unit test
 
     def open(self, directory, mode):
         """
@@ -229,7 +306,7 @@ class HDocument(object):
         return [(a,self[a]) for a in self.keys()]
 
     def getTexts(self):
-        TODO # return a dict of each text, and each hidden?
+        return map(lambda t: t.decode('utf-8'), self._cdoc.texts())
 
     def _get_id(self):
         return self._cdoc.id()

@@ -39,8 +39,6 @@ class TestHDocument(unittest.TestCase):
         self.assertRaises(TypeError, doc.addHiddenText, 'abc')
         doc.addHiddenText(u'abc')
         self.assertEqual([u'xyz', u'123'], doc.getTexts())
-        doc.getTexts()
-        print str(doc)
 
 
 class TestQueries(unittest.TestCase):
@@ -54,20 +52,33 @@ class TestQueries(unittest.TestCase):
 
         doc = HDocument(uri=u'1')
         doc.addText(u'word this is my document. do you like documents? this one is hi-res.')
-        db.putDoc(doc)
+        db.putDoc(doc, clean=True)
 
         doc = HDocument(uri=u'2')
-        doc.addText(u'word lorem ipsum dolor sit amet something whatever i don\'t remember the rest')
+        doc.addText(u'word lorem ipsum dolor sit amet something whatever whatever i do not remember the rest')
         db.putDoc(doc)
 
         doc = HDocument(uri=u'3')
-        doc.addText(u'word four score and 7 years ago our forefathers brought forth upon something')
+        doc.addText(u'word four score and 7 years ago our forefathers brought forth upon upon something')
         db.putDoc(doc)
+
+        db.flush()
 
         return db
 
-    def test_putFlags(self):
+    def test_dbextras(self):
+        """
+        Tests for put flags, document removal, document id, optimization,
+        len() of database
+        """
+        self.freshenDatabase()
         db.putDoc
+        TODO
+
+    def test_condextras(self):
+        """
+        Tests for search skip, cond options, cond on attributes
+        """
         TODO
 
     def test_dbOpenClosed(self):
@@ -81,18 +92,26 @@ class TestQueries(unittest.TestCase):
         # see if we can't close it twice
         self.assertRaises(CloseFailed, db.close)
 
+        TODO # test 'r' and 'a' open modes
+
     def test_queries(self):
         db = self.freshenDatabase()
 
-        # test max vs. non-max
-        result = db.search(HCondition('word*', matching='simple'))
+        # plain search, 8-bit str
+        result = db.search(HCondition('wor*', matching='simple'))
         self.assertEqual(len(result), 3)
-        result = db.search(HCondition('word*', matching='simple', max=1))
+
+        # unicode searches
+        result = db.search(HCondition(u'wor*', matching='simple'))
+        self.assertEqual(len(result), 3)
+
+        # max
+        result = db.search(HCondition('wor*', matching='simple', max=1))
         self.assertEqual(len(result), 1)
 
         # test simple query with multiple hits
         result = db.search(HCondition('res*', matching='simple'))
-        self.assertEqual(result.pluck('@uri'), [u'1', u'2']) # FIXME
+        self.assertEqual(result.pluck('@uri'), [u'1', u'2'])
 
         # test fewer-than-max hits
         result = db.search(HCondition('7*', matching='simple', max=2))
@@ -100,10 +119,8 @@ class TestQueries(unittest.TestCase):
         self.assertEqual(result[0][u'@uri'], u'3')
 
         # vary query terms to check result scoring
-        result = db.search(HCondition('something* upon*', matching='simple', max=2))
+        result = db.search(HCondition('someth* | whatever*', matching='simple', max=2))
+        self.assertEqual(result.pluck(u'@uri'), [u'2', u'3'])
+        result = db.search(HCondition('someth* | upon*', matching='simple', max=2))
         self.assertEqual(result.pluck(u'@uri'), [u'3', u'2']) # FIXME
-        result = db.search(HCondition('something* whatever*', matching='simple', max=2))
-        self.assertEqual(result.pluck(u'@uri'), [u'2', u'3']) # FIXME
-
-        TODO # test other matching types i.e. isect, rough
 

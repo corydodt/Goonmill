@@ -71,12 +71,13 @@ def find(terms):
 def buildIndex(monsters):
     if os.path.exists(INDEX_DIRECTORY):
         return
-    estdb = hypy.HDatabase()
+    estdb = hypy.HDatabase(autoflush=False)
     estdb.open(INDEX_DIRECTORY, 'a')
 
     for n, monster in enumerate(monsters):
         if n%100 == 0:
             sys.stdout.write("%s" % (n,))
+            estdb.flush()
         indexMonster(estdb, monster)
 
     estdb.close()
@@ -111,8 +112,6 @@ class Options(usage.Options):
             #   if 'FileNotFoundException' in str(e):
             #       raise usage.UsageError(
             #               "** Missing index directory.  Run with --build-index")
-
-
 
 
 def run(argv=None):
