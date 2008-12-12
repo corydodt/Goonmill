@@ -82,17 +82,35 @@ class TestQueries(unittest.TestCase):
         TODO
 
     def test_dbOpenClosed(self):
+        docyy = HDocument(uri=u'yy')
+        docyy.addText(u'yy')
+        docxx = HDocument(uri=u'xx')
+        docxx.addText(u'xx')
+        condxx = HCondition(u'xx')
+        condyy = HCondition(u'yy')
+
         db = HDatabase()
         self.assertRaises(OpenFailed, db.open, 'does/not/exist', 'a')
         self.assertRaises(CloseFailed, db.close)
 
         db.open('_test_db', 'w')
         self.assert_(os.path.exists('_test_db/_idx'))
+        db.putDoc(docyy)
+        db.close()
+
+        db.open('_test_db', 'r')
+        self.assertRaises(PutFailed, db.putDoc, docxx)
+        self.assertEqual(len(db.search(condyy)), 1)
+        db.close()
+
+        db.open('_test_db', 'a')
+        db.putDoc(docxx)
+        self.assertEqual(len(db.search(condxx)), 1)
+        self.assertEqual(len(db.search(condyy)), 1)
+        db.flush()
         db.close()
         # see if we can't close it twice
         self.assertRaises(CloseFailed, db.close)
-
-        TODO # test 'r' and 'a' open modes
 
     def test_queries(self):
         db = self.freshenDatabase()
