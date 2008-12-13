@@ -1,5 +1,0 @@
-1. Add 'contributing' section to README
-2. Install README and docs on goonmill.org/hypy/
-3. Try to get 100% coverage on tests.
-4. Use a unicode wrapper on functions
-5. Python 3.0 compat

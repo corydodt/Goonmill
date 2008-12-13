@@ -14,10 +14,3 @@
 ^goonmill.wpu$
 ^goonmill/static/monster$
 ^goonmill/rdflib\.db.*$
-^goonmill/3p/estraiernative-cdd/build.*$
-Hypy.egg-info.*$
-hypy/build.*$
-apidocs/.*$
-_trial_temp.*$
-casket/.*$
-build/.*$
