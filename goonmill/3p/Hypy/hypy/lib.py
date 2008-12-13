@@ -15,9 +15,9 @@ class FlushFailed(Exception):
     def __str__(self):
         return self.message
 
-class RemoveFailed(Exception):
+class EditFailed(Exception):
     """
-    Could not remove the specified doc from the database.
+    Could not edit the specified doc in the database
     """
     def __init__(self, id, message):
         self.id = id
@@ -63,26 +63,41 @@ class HCondition(object):
     A search condition.
     Use matching='simple', 'rough', 'union' or 'isect'
     """
-    def __init__(self, phrase, matching='simple', max=None):
+    def __init__(self, phrase, matching='simple', max=None, skip=None):
         if type(phrase) is unicode:
             phrase = phrase.encode('utf-8')
         self.condition = CCondition()
         self.condition.set_phrase(phrase)
         if max is not None:
             self.condition.set_max(max)
-        # flags = 0
-        flags = CCondition.SIMPLE
-        if matching != 'simple':
-            raise NotImplemented("Only simple matching is supported by Hyper Estraier with this API.  Use | for UNION and ! for NOT.  All other terms are combined with AND.")
-        ## if matching == 'simple':
-        ##     flags |= CCondition.SIMPLE
-        ## elif matching == 'rough':
-        ##     flags |= CCondition.ROUGH
-        ## elif matching == 'union':
-        ##     flags |= CCondition.UNION
-        ## elif matching == 'isect':
-        ##     flags |= CCondition.ISECT
+        if skip is not None:
+            self.condition.set_skip(skip)
+        flags = 0
+        if matching == 'simple':
+            flags |= CCondition.SIMPLE
+        elif matching == 'rough':
+            flags |= CCondition.ROUGH
+        elif matching == 'union':
+            flags |= CCondition.UNION
+        elif matching == 'isect':
+            flags |= CCondition.ISECT
         self.condition.set_options(flags)
+
+    def addAttr(self, expression):
+        """
+        Use 'expression' to filter results by attributes
+        """
+        if not type(expression) is unicode:
+            raise KeyError("expression must be unicode text")
+        self.condition.add_attr(expression.encode('utf-8'))
+
+    def setOrder(self, expression):
+        """
+        Use 'expression' to order results by attributes
+        """
+        if not type(expression) is unicode:
+            raise KeyError("expression must be unicode text")
+        self.condition.set_order(expression.encode('utf-8'))
 
 
 # TODO - @unicodeToByte("argname", ...) to require unicode (and decode it)
@@ -131,17 +146,34 @@ class HDatabase(object):
             msg = self._cdb.err_msg(self._cdb.error())
             raise FlushFailed(msg)
 
-    def remove(self, uri=None, id=None):
+    def remove(self, doc=None, uri=None, id=None):
         """
-        Take a document out of the database by uri or id
+        Take a document out of the database by reference, by uri or by id
         """
-        if uri is None and id is None:
-            raise TypeError("Either uri or id is required to remove a document")
-        if uri is not None:
-            id = self._cdb.uri_to_id(uri.encode('utf-8'))
-        if not self._cdb.out_doc(id):
+        if uri is None and id is None and doc is None:
+            raise TypeError("Either doc, uri or id is required to remove a document")
+
+        flags = 0 # TODO - support ODCLEAN flag
+        if hasattr(doc, 'id'):
+            id = doc.id
+        else:
+            if uri is not None:
+                id = self._cdb.uri_to_id(uri.encode('utf-8'))
+        if not self._cdb.out_doc(id, flags):
             msg = self._cdb.err_msg(self._cdb.error())
-            raise RemoveFailed(id, msg)
+            raise EditFailed(id, msg)
+
+    def __delitem__(self, uri):
+        return self.remove(uri=uri)
+
+    def updateAttributes(self, doc):
+        """
+        Edit a document's attributes in-place.  Note: there is no way to edit
+        the texts.
+        """
+        if not self._cdb.edit_doc(doc._cdoc):
+            msg = self._cdb.err_msg(self._cdb.error())
+            raise EditFailed(doc.id, msg)
 
     def optimize(self, purge=False, opt=False):
         """
@@ -153,7 +185,7 @@ class HDatabase(object):
         self._cdb.optimize(flags)
 
     def __len__(self):
-        return self._cdb.size()
+        return self._cdb.doc_num()
 
     def sync(self):
         """
@@ -217,6 +249,13 @@ class HDatabase(object):
                 continue    # someone removing docs from the index?
 
             yield HHit.fromCDocument(doc)
+
+    def __getitem__(self, uri):
+        if not type(uri) is unicode:
+            raise KeyError("key (uri) must be unicode text")
+        uri = uri.encode('utf8')
+        id = self._cdb.uri_to_id(uri)
+        return HDocument.fromCDocument(self._cdb.get_doc(id, 0))
 
 
 class HResults(list):

@@ -2,6 +2,8 @@
 from .lib import (PutFailed,
     OpenFailed,
     CloseFailed,
+    EditFailed,
+    FlushFailed,
     HCondition,
     HDatabase,
     HResults,
