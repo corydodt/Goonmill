@@ -1,1 +1,3 @@
-3. Add some rudimentary documentation
+2. Try to get 100% coverage on tests.
+3. Use a unicode wrapper on functions
+4. Python 3.0 compat
