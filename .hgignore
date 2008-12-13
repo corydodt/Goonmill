@@ -17,7 +17,7 @@
 ^goonmill/3p/estraiernative-cdd/build.*$
 Hypy.egg-info.*$
 hypy/build.*$
-hypy/apidocs.*$
+apidocs/.*$
 _trial_temp.*$
 casket/.*$
 build/.*$
