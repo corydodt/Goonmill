@@ -1,9 +1,9 @@
 # hypy version of the estraiernative gather example
-from hypy import *
 
-# create the database object
+from hypy import HDatabase, HDocument
+
+# open the database
 db = HDatabase()
-
 db.open('casket', 'w')
 
 # create a document object

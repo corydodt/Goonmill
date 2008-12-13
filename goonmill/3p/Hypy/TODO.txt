@@ -1,2 +1,1 @@
-2. Add unit tests for all the high-level classes
 3. Add some rudimentary documentation
