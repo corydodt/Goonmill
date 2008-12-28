@@ -511,12 +511,19 @@ class StaticImage(object):
         If it already exists in the filesystem, just return it, otherwise
         create it.
         """
-        needFilename = "%s_%sx%s" % (self.file, maxWidth, maxHeight)
+        def repackage(s):
+            if '.' in s:
+                left, ext = s.rsplit('.', 1)
+                return "%s_%sx%s.%s" % (left, maxWidth, maxHeight, ext)
+            else:
+                return "%s_%sx%s" % (s, maxWidth, maxHeight)
+
+        needFilename = repackage(self.file)
         if not os.path.exists(needFilename):
             thumb = self.thumbnail(maxWidth, maxHeight, needFilename)
             if thumb is None:
                 return None
-        return '%s_%sx%s' % (self.url, maxWidth, maxHeight)
+        return repackage(self.url)
 
     def thumbnail(self, maxWidth, maxHeight, outFile=None):
         """
