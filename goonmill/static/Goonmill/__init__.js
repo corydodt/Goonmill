@@ -922,7 +922,7 @@ Goonmill.ImageBox.methods(
         event.stopPropagation();
 
 
-        iframe = new Element('iframe', {src: '/upload/', 'class': 'ibeIframe ibeIframeInvisible'});
+        iframe = new Element('iframe', {'class': 'ibeIframe ibeIframeInvisible'});
         ctx1 = {content:iframe};
 
         relative = self.replace;
@@ -930,6 +930,7 @@ Goonmill.ImageBox.methods(
         windowConf = {afterOpen: function () {
                 var goonwin, coords, left, top;
                 goonwin = iframe.up('.goonwin');
+                iframe.writeAttribute('src', '/upload/')
                 coords = goonwin.cumulativeOffset();
                 top = coords.top + relative.offsetHeight + 6;
                 left = coords.left + relative.offsetWidth - goonwin.offsetWidth;
@@ -942,15 +943,14 @@ Goonmill.ImageBox.methods(
 
         // once the controls are open, esc should close them.
         self.escHotkey = new HotKey('esc', function (event) { 
-            self.closeUploadFrame();
+            self.closeUploadFrame('error=cancel');
         }, {ctrlKey:false});
 
         self.lastWindow = new Goonmill.GoonWin(relative, ctx1, windowConf);
     },
 
     function closeUploadFrame(self, message) {
-        var m;
-        m = message.toString().toQueryParams();
+        var m = message.toString().toQueryParams();
         if (m.error) {
             if (m.error.toLowerCase() != 'cancel') {
                 Goonmill.messageBox(m.error);
