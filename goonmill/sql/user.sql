@@ -4,7 +4,8 @@ CREATE TABLE user (
     id INTEGER PRIMARY KEY,
     name varchar(100),
     passwordHash varchar(50),
-    cookie varchar(100)
+    cookie varchar(100),
+    folder varchar(100)
 );
 
 CREATE TABLE workspace (

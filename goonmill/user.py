@@ -6,8 +6,6 @@ from storm import locals
 from .util import RESOURCE
 from .history import Statblock
 
-from zope.interface import Interface, implements
-
 KIND_NPC = u'npc'
 KIND_MONSTERGROUP = u'monsterGroup'
 KIND_ENCOUNTER = u'encounter'
@@ -20,6 +18,7 @@ class User(object):
     name = locals.Unicode()
     passwordHash = locals.Unicode()
     cookie = locals.Unicode()
+    folder = locals.Unicode()
 
 
 # class Library: ? - no, there's only one library per user.  Just
