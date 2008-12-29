@@ -8,6 +8,13 @@ from cStringIO import StringIO
 from PIL import Image
 from .util import RESOURCE
 
+
+class ImageDecodeError(Exception):
+    """
+    The image could not be decoded
+    """
+
+
 class StaticImage(object):
     """A managed image class, for finding/creating thumbnails"""
     def __init__(self, url):
@@ -67,7 +74,7 @@ class StaticImage(object):
         newfile = cls.thumbnail(io, maxWidth, maxHeight)
         thumb = newfile.read()
         hex = hashlib.md5(thumb).hexdigest()
-        staticImage = cls('/%s/%s.png' % (folder, hex))
+        staticImage = cls('%s/%s.png' % (folder, hex))
         open(staticImage.file, 'w').write(thumb)
         return staticImage
 
@@ -91,7 +98,7 @@ class StaticImage(object):
             return _tempfile
 
         except IOError:
-            pass
+            raise ImageDecodeError("Couldn't figure out this image.  Are you sure it's an image?")
 
 
 def userFolder(user):

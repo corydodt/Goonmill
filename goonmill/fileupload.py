@@ -38,11 +38,16 @@ class FileUploadPage(rend.Page):
                 Thumbnail off the data and save it
                 """
                 whereto = userFolder(self.user)
-                # FIXME - handle not-an-image error
                 thumb = StaticImage.fromBytes(data, whereto, 384, 384)
-                return url.root.child('static').child('uploaddone.xhtml')
+                return url.root.child('static').child(
+                        'uploaddone.xhtml').add('url', thumb.url)
 
-            d.addCallback(gotData)
+            def noData(err):
+                message = err.getErrorMessage()
+                return url.root.child('static').child(
+                        'uploaddone.xhtml').add('error', message)
+
+            d.addCallback(gotData).addErrback(noData)
             return d 
         else:
             return rend.Page.renderHTTP(self, ctx)

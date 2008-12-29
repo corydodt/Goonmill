@@ -936,7 +936,7 @@ Goonmill.ImageBox.methods(
                 goonwin.style.left = left + 'px';
                 goonwin.style.top = top + 'px';
                 goonwin.down('.overlayWindow').removeClassName('invisible');
-                window.closeUploadFrame = function () { self.closeUploadFrame(); };
+                window.closeUploadFrame = function (message) { self.closeUploadFrame(message); };
             }
         };
 
@@ -948,7 +948,17 @@ Goonmill.ImageBox.methods(
         self.lastWindow = new Goonmill.GoonWin(relative, ctx1, windowConf);
     },
 
-    function closeUploadFrame(self) {
+    function closeUploadFrame(self, message) {
+        var m;
+        m = message.toString().toQueryParams();
+        if (m.error) {
+            alert(m.error);
+        } else if (m.url) {
+            self.clone.down('img').writeAttribute('src', m.url);
+            // TODO - save this new url down to the server
+        } else {
+            debugger;
+        }
         self.lastWindow.close();
         self.escHotkey.destroy();
         delete window.closeUploadFrame;
