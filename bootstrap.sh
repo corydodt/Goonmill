@@ -3,6 +3,12 @@
 
 umask 002
 
+if [ "$1" == "force" ]; then
+    force="force"
+else
+    force=""
+fi
+
 cat <<EOF
 :: This script will check your environment to make sure Goonmill is
 :: ready to run, and do any one-time setup steps necessary.
@@ -50,10 +56,20 @@ if [ "$errorStatus" == "error" ]; then
     exit 1
 fi
 
-echo "Done."
+if [ -n "$force" ]; then
+    echo ::
+    echo ':: force is in effect: removing database files!'
+    set -x
+    rm -f goonmill/user.db*
+    rm -f goonmill/rdflib.db*
+    rm -rf goonmill/search-index/
+    set +x
+fi
 
 userdb=goonmill/user.db
 if [ ! -r "$userdb" ]; then
+    echo ::
+    echo :: $userdb
     sqlite3 -init goonmill/sql/user.sql $userdb '.exit' || exit 1
     sqlite3 -init goonmill/sql/dummy.sql $userdb '.exit' || exit 1
     chmod 664 $userdb
@@ -66,6 +82,8 @@ fi
 
 tripledb=goonmill/rdflib.db
 if [ ! -r "$tripledb" ]; then
+    echo ::
+    echo :: $tripledb
     ptstore create $tripledb
     ns=("--n3 http://www.w3.org/2000/01/rdf-schema#"
         "--n3 http://goonmill.org/2007/family.n3#"
@@ -82,11 +100,17 @@ fi
 
 estraierindex=goonmill/search-index/_idx
 if [ ! -d "$estraierindex" ]; then
+    echo ::
+    echo :: $estraierindex
     python goonmill/search2.py --build-index
+    echo
 else
     echo "** ${estraierindex} already exists, not willing to overwrite it!"
     echo ::
     echo :: If you have already run bootstrap.sh once, this is not an error.
     echo ::
 fi
+
+echo ::
+echo :: Done.
 
