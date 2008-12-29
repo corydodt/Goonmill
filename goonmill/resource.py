@@ -4,15 +4,11 @@ The resource structure for Goonmill
 API for building the goonmill page and its fragments.
 """
 import random
-import os
 
 from zope.interface import Interface, implements
 
-from PIL import Image
-
 from nevow import (rend, url, loaders, athena, static, guard, page, tags as T,
         vhost)
-## from formless import annotate, webform TODO
 
 from twisted.cred.portal import Portal
 from twisted.cred.credentials import IAnonymous
@@ -24,6 +20,7 @@ from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
 from . import search2
 from .history import Statblock
 from .fileupload import FileUploadPage
+from .userfile import StaticImage
 
 
 # only need one of these.
@@ -482,71 +479,6 @@ class EventBus(athena.LiveElement):
 
     # TODO - drop this class entirely.  this is completely implemented in
     # javascript now.
-
-
-class StaticImage(object):
-    """A managed image class, for finding/creating thumbnails"""
-    def __init__(self, url):
-        self.url = url
-        self.file = RESOURCE(self.url.lstrip("/"))
-
-    def scaledImageSize(self, maxWidth, maxHeight):
-        mw, mh = map(float, [maxWidth, maxHeight])
-        # PIL cannot read all image types, so try/except to punt
-        try:
-            filedata = open(self.file, 'r')
-            original = Image.open(filedata)
-            w, h = original.size
-            scaleW = mw / w
-            scaleH = mh / h
-            if scaleW <= scaleH:
-                return scaleW * w, scaleW * h
-            else:
-                return scaleH * w, scaleH * h
-        except IOError:
-            return 0,0
-
-    def getThumbnailUrl(self, maxWidth, maxHeight):
-        """
-        Return a url to a thumbnail of the specified dimensions.
-        If it already exists in the filesystem, just return it, otherwise
-        create it.
-        """
-        def repackage(s):
-            if '.' in s:
-                left, ext = s.rsplit('.', 1)
-                return "%s_%sx%s.%s" % (left, maxWidth, maxHeight, ext)
-            else:
-                return "%s_%sx%s" % (s, maxWidth, maxHeight)
-
-        needFilename = repackage(self.file)
-        if not os.path.exists(needFilename):
-            thumb = self.thumbnail(maxWidth, maxHeight, needFilename)
-            if thumb is None:
-                return None
-        return repackage(self.url)
-
-    def thumbnail(self, maxWidth, maxHeight, outFile=None):
-        """
-        Return a string of thumbnail data
-        """
-        # PIL can't thumbnail every identifiable kind of
-        # image, so just punt if it fails to update.
-        try:
-            filedata = open(self.file, 'r')
-            original = Image.open(filedata)
-            thumb = original.copy()
-            thumb.thumbnail((maxWidth,maxHeight), Image.ANTIALIAS)
-            if outFile is None:
-                _tempfile = StringIO()
-            else:
-                _tempfile = open(outFile, 'w')
-            thumb.save(_tempfile, 'PNG', optimize=True)
-            _tempfile.seek(0)
-            return _tempfile
-
-        except IOError:
-            pass
 
 
 class MonsterGroupView(athena.LiveElement):
@@ -1059,20 +991,3 @@ class NPCView(athena.LiveElement):
     def initialize(self, req, tag):
         tag.fillSlots('monsterName', self.npc.name)
         return tag
-
-
-## TODO class FileUploadPage(rend.Page):
-## TODO     """Render a file upload page
-## TODO     """
-## TODO     addSlash = True
-## TODO     docFactory = loaders.xmlfile(RESOURCE('templates/fileupload.xhtml'))
-## TODO 
-## TODO     def bind_upload(self, ctx):
-## TODO         return [('upload': annotate.FileUpload())]
-## TODO     
-## TODO     def render_uploadForm(self, ctx, data):
-## TODO         t = webform.renderForms()
-## TODO         return t
-## TODO     
-## TODO     def upload(self, ctx, **kwargs):
-## TODO         print '***** submit called with:', kwargs
