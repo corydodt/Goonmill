@@ -49,6 +49,9 @@ class StaticImage(object):
         If it already exists in the filesystem, just return it, otherwise
         create it.
         """
+        if self.file is None:
+            return None
+
         def repackage(s):
             if '.' in s:
                 left, ext = s.rsplit('.', 1)

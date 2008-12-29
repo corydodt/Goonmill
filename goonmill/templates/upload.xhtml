@@ -51,13 +51,13 @@ document.observe('dom:loaded', function () {
   body.down('.closingX').observe('click', function (e) {
       e.stop();
       e.preventDefault();
-      window.parent.closeUploadFrame(true);
+      window.parent.closeUploadFrame('error=cancel');
   });
 
   // bind esc to close the iframe
   if (window.HotKey) {
       var _ignored = new HotKey('esc', function (event) {
-              window.parent.closeUploadFrame(true);
+              window.parent.closeUploadFrame('error=cancel');
           }, {ctrlKey:false});
   }
 

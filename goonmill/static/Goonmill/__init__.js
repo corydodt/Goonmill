@@ -952,7 +952,9 @@ Goonmill.ImageBox.methods(
         var m;
         m = message.toString().toQueryParams();
         if (m.error) {
-            Goonmill.messageBox(m.error);
+            if (m.error.toLowerCase() != 'cancel') {
+                Goonmill.messageBox(m.error);
+            }
         } else if (m.url) {
             self.clone.down('img').writeAttribute('src', m.url);
             // TODO - save this new url down to the server
