@@ -181,13 +181,41 @@ div.kind-stencil:hover { background-image: url(/static/box-stencil-sel.png); }
     line-height: 84px;
 }
 
-.imageBox {
-    text-align: center;
-}
+/* big ImageBox */ .imageBox {
+/* big ImageBox */     text-align: center;
+/* big ImageBox */ }
+/* big ImageBox */
+/* big ImageBox */ .imageBox img {
+/* big ImageBox */     vertical-align: middle;
+/* big ImageBox */ }
+/* big ImageBox */
+/* big ImageBox */ .imageBoxEdit {
+/* big ImageBox */     top: 0px;
+/* big ImageBox */     right: 15px;
+/* big ImageBox */     position: absolute;
+/* big ImageBox */ }
+/* big ImageBox */
+/* big ImageBox */ .imageBoxEdit input {
+/* big ImageBox */     float: right;
+/* big ImageBox */     margin-left: 6px;
+/* big ImageBox */ }
+/* big ImageBox */
+/* big ImageBox */ .imageBoxEdit input[value=reset] {
+/* big ImageBox */     visibility: hidden;
+/* big ImageBox */ }
+/* big ImageBox */
+/* big ImageBox */ .imageBoxEditControls .ibeLine {
+/* big ImageBox */     line-height: 32px;
+/* big ImageBox */     font-family: sans-serif;
+/* big ImageBox */     font-size: 12px;
+/* big ImageBox */ }
+/* big ImageBox */ .imageBoxEditIframe {
+/* big ImageBox */     position: absolute;
+/* big ImageBox */     width: 380px;
+/* big ImageBox */ }
+/* big ImageBox */ iframe.ibeIframe { width: 380px; }
+/* big ImageBox */ body.ibeIframe { margin: 0px; }
 
-.imageBox img {
-    vertical-align: middle;
-}
 
 .personalName, .constituentGroupName {
     float: left;
@@ -368,7 +396,7 @@ dd {
 /* SEARCH */ .hit {
 /* SEARCH */     /* display: block; */
 /* SEARCH */ }
-
+/* SEARCH */ 
 /* SEARCH */ .tipTip2 {
 /* SEARCH */   background: #fffdc0; 
 /* SEARCH */   width: 300px;
@@ -389,3 +417,17 @@ dd {
 /* SEARCH */     position:relative;
 /* SEARCH */     left: -11px;
 /* SEARCH */ }
+
+.overlayWindow {
+    background-color: white;
+    border: 1px solid black;
+    padding: 6px;
+}
+
+iframe {
+    border: 0px;
+}
+
+.invisible {
+    visibility: hidden;
+}

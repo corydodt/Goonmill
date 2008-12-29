@@ -129,8 +129,21 @@
           "close" jsvalues="$close:this" /></div>
       </div>
 
+      <!-- blank overlay window -->
+      <div class="overlayWindow invisible">
+        <!-- another fugly with jscontent - can't use a node as jscontent
+             directly without doing this
+        -->
+        <div class="content" jseval='this.appendChild($this.content)' />
+      </div>
+
       <!-- the contents of the image box -->
       <div class="imageBoxMeat">
+        <hr />
+        <div class="imageBoxEdit">
+          <input type="button" value="replace" jsvalues="$replace:this" />
+          <input type="button" value="reset" jsvalues="$reset:this" />
+        </div>
         <div class="imageBox modalImage">
           <img jsvalues="src:url" />
         </div>

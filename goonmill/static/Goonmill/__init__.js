@@ -800,7 +800,8 @@ Goonmill.MonsterGroup.methods(
     // popup a big version of the image
     function imageBoxClicked(self, node, event) {
         var url = node.getAttribute('rel');
-        Goonmill.imageBox(url);
+        var ib = new Goonmill.ImageBox(url);
+        ib.show();
     },
 
     function randomizeClicked(self, node, event) {
@@ -836,11 +837,11 @@ Goonmill.NPC.methods(
 );
 
 
-// with hax, subclass prototip Tip and customize it
+// with hax, subclass control.window and customize it
 Goonmill.GoonTip = Divmod.Class.subclass('Goonmill.GoonTip');
 Goonmill.GoonTip.methods(
-    function __init__(self, node, content) {
-        self.content = self.containerize(content);
+    function __init__(self, node, context) {
+        self.content = self.containerize(context);
         self.node = node;
         var TIPCONFIG = {
             position: 'relative',
@@ -857,17 +858,113 @@ Goonmill.GoonTip.methods(
     },
 
     // wrap 
-    function containerize(self, content) {
-        return body.select('.offstage .searchTip')[0].jstClone(content);
+    function containerize(self, context) {
+        return body.select('.offstage .searchTip')[0].jstClone(context);
     }
 );
+
+
+// with hax, subclass control.window and customize it
+Goonmill.GoonWin = Divmod.Class.subclass('Goonmill.GoonWin');
+Goonmill.GoonWin.methods(
+    function __init__(self, relative, context, extraConfig) {
+        var TIPCONFIG, w;
+        TIPCONFIG = {
+            className: 'goonwin',
+            position: relative.cumulativeOffset()
+        };
+        TIPCONFIG = $H(TIPCONFIG).merge(extraConfig || {}).toObject();
+
+        self.content = self.containerize(context);
+        body.appendChild(self.content); // XXX is this really needed?
+
+        // kludgy but apparently works
+        self.window = w = new Control.Window(' ', TIPCONFIG);
+        w.container.insert(self.content);
+        w.open();
+    },
+
+    function close(self) {
+        self.window.close();
+    },
+
+    // wrap 
+    function containerize(self, context) {
+        return body.select('.offstage .overlayWindow')[0].jstClone(context);
+    }
+);
+
+// display an image
+Goonmill.ImageBox = Divmod.Class.subclass('Goonmill.ImageBox');
+Goonmill.ImageBox.methods(
+    function __init__(self, url) {
+        self.clone = body.select('.offstage .imageBoxMeat')[0].jstClone({'url':url});
+        self.replace = self.clone.jstGet('$replace');
+        self.replace.observe('click', function (event) {
+            self.openEditControls(event);
+        });
+    },
+
+    function show(self) {
+        var close = self.clone.jstGet('$close');
+        var m = Goonmill.modal(self.clone, {closeOnClick: close});
+        return m;
+    },
+
+    function openEditControls(self, event) {
+        var _ignored, ctx1, iframe, windowConf, windowFixer, relative;
+
+        if (window.closeUploadFrame !== undefined) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        iframe = new Element('iframe', {src: '/upload/', 'class': 'ibeIframe ibeIframeInvisible'});
+        ctx1 = {content:iframe};
+
+        relative = self.replace;
+
+        windowConf = {afterOpen: function () {
+                var goonwin, coords, left, top;
+                goonwin = iframe.up('.goonwin');
+                coords = goonwin.cumulativeOffset();
+                top = coords.top + relative.offsetHeight + 6;
+                left = coords.left + relative.offsetWidth - goonwin.offsetWidth;
+                goonwin.style.left = left + 'px';
+                goonwin.style.top = top + 'px';
+                goonwin.down('.overlayWindow').removeClassName('invisible');
+                window.closeUploadFrame = function () { self.closeUploadFrame(); };
+            }
+        };
+
+        // once the controls are open, esc should close them.
+        self.escHotkey = new HotKey('esc', function (event) { 
+            self.closeUploadFrame();
+        }, {ctrlKey:false});
+
+        self.lastWindow = new Goonmill.GoonWin(relative, ctx1, windowConf);
+    },
+
+    function closeUploadFrame(self) {
+        self.lastWindow.close();
+        self.escHotkey.destroy();
+        delete window.closeUploadFrame;
+        self.replace.focus();
+    }
+);
+
+
+
 
 
 Element.addMethods({
     // clone the element and jstProcess it
     jstClone: function (element, context) {
         var cloned = element.cloneNode(true);
-        cloned.context = new JsEvalContext(context);
+        cloned.context = new JsEvalContext(context || {});
         jstProcess(cloned.context, cloned);
         return cloned;
     },
@@ -923,7 +1020,7 @@ Goonmill.whichNewThing = function(name) {
     });
 
     clone.show();
-    var m = Goonmill.Modal(clone);
+    var m = Goonmill.modal(clone);
 
     return d;
 };
@@ -933,17 +1030,8 @@ Goonmill.whichNewThing = function(name) {
 var LightboxConfig = {
     overlayOpacity:0.7,
     fade: false,  // too slow joe
-    className: 'modal_container'
-};
-
-
-// display an image
-Goonmill.imageBox = function (url) {
-    var clone = body.select('.offstage .imageBoxMeat')[0].jstClone({'url':url});
-    var close = clone.jstGet('$close');
-    var m = Goonmill.Modal(clone, {closeOnClick: close});
-
-    return m;
+    className: 'modal_container',
+    iframeshim: false // save: if true (the default), FF flickers when you click the window
 };
 
 
@@ -954,13 +1042,13 @@ Goonmill.messageBox = function (node) {
     meat.jstGet('$container').update(node);
 
     var close = meat.jstGet('$close');
-    var m = Goonmill.Modal(meat, {closeOnClick: close});
+    var m = Goonmill.modal(meat, {closeOnClick: close});
 
     return m;
 };
 
 // copy the contents into a modal dialog (lightbox)
-Goonmill.Modal = function (contents, extraOptions) {
+Goonmill.modal = function (contents, extraOptions) {
     var config = $H(LightboxConfig).merge(extraOptions).toObject();
 
     // esc to close
@@ -995,7 +1083,7 @@ Goonmill.confirm = function (message, button1text, button2text) {
     clone.jstGet('$button1').observe('click', f1);
     clone.jstGet('$button2').observe('click', f2);
 
-    var m = Goonmill.Modal(clone);
+    var m = Goonmill.modal(clone);
 
     return d;
 };

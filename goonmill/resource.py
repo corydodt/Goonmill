@@ -23,6 +23,7 @@ from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
 from . import search2
 from .history import Statblock
+from .fileupload import FileUploadPage
 
 
 # only need one of these.
@@ -53,8 +54,8 @@ class Root(rend.Page):
     def child_vhost(self, ctx):
         return VHM
 
-## TODO     def child_upload(self, ctx):
-## TODO         return FileUploadPage()
+    def child_upload(self, ctx):
+        return FileUploadPage()
 
 
 class GuardedRoot(rend.Page):

@@ -1,0 +1,101 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <!-- vi:ft=html
+  -->
+  <head>
+      <title>Upload</title>
+      <link rel="stylesheet" type="text/css" href="/static/workspace.css" />
+      <script type="text/javascript" src=
+        "/static/3p/prototype.js"></script>
+
+      <script type="text/javascript" src=
+        "/static/3p/livepipe.js"></script>
+      <!-- keyboard shortcuts -->
+      <script type="text/javascript" src=
+        "/static/3p/hotkey.cdd.js"></script>
+
+      <script type="text/javascript">
+document.observe('dom:loaded', function () {
+  body = document.body;
+
+  var form;
+  form = body.down('.imageBoxEditControls');
+
+  form.select('.imageFileBox')[1].hide();
+
+  form.select('[name=imageUploadType]').invoke('observe', 'click', function (e) {
+      form.select('.imageFileBox').invoke('hide');
+  });
+
+  form.down('[value=file]').observe('click', function (e) {
+      e.element().next('.imageFileBox').show();
+  });
+
+  form.down('[value=url]').observe('click', function (e) {
+      var n = e.element().next('.imageFileBox');
+      n.show();
+      n.activate();
+  });
+
+  form.down('[value=file]').click();
+
+  /* hide the form and show a busy-waiter while large files upload */
+  form.observe('submit', function (e) {
+      form.hide();
+      body.down('.cancelLink').hide(); // cancelling no longer an option at this point
+      $('busy-wait').removeClassName('hiddenBusyWait');
+  });
+
+  body.down('.closingX').observe('click', function (e) {
+      e.stop();
+      e.preventDefault();
+      window.parent.closeUploadFrame(true);
+  });
+
+  // bind esc to close the iframe
+  if (window.HotKey) {
+      var _ignored = new HotKey('esc', function (event) {
+              window.parent.closeUploadFrame(true);
+          }, {ctrlKey:false});
+  }
+
+});
+      </script>
+
+      <style type="text/css">
+        .cancelLink { margin: 2pt; text-align: right;}
+        .hiddenBusyWait { display: none; }
+        #busy-wait { background-color: white; height: 96px; }
+      </style>
+  </head>
+  <body class="ibeIframe">
+    <div class="imageBoxEditIframe">
+      <div class="cancelLink">
+        <span class="closingX" title="cancel upload" />
+      </div>
+      <form enctype="multipart/form-data" name="upload" method="POST" action=
+        "/upload/" class='imageBoxEditControls'>
+        <div class="ibeLine">
+        <input type="radio" name="imageUploadType" value="file" id=
+          "imageFileNameRadio" /><label for="imageFileNameRadio"> file upload</label>
+        <input type="file" name="imageFileName" class="imageFileBox imageFileName" />
+        </div>
+
+        <div class="ibeLine">
+        <input type="radio" name="imageUploadType" value="url" id=
+          "imageFileURLRadio" /><label for="imageFileURLRadio"> http url</label>
+        <input type="text" name="imageFileURL" class="imageFileBox imageFileURL" value="http://" />
+        </div>
+
+        <input type="submit" value="get image" />
+      </form>
+      <div id="busy-wait" class="hiddenBusyWait">
+        <img src="/static/loading.gif" alt="Uploading..." />
+        Uploading . . .
+      </div>
+    </div>
+  </body>
+</html>
+
