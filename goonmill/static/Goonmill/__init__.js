@@ -75,8 +75,8 @@ Goonmill.DiceSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.DiceSandbox.upcall(self, '__init__', node);
 
-        self.queryForm = self.node.select('.queryForm')[0];
-        self.results = self.node.select('.results')[0];
+        self.queryForm = self.node.down('.queryForm');
+        self.results = self.node.down('.results');
         self.queryArea = self.queryForm.query;
 
         self.queryArea.observe('keyup', 
@@ -115,8 +115,8 @@ Goonmill.SparqlSandbox.methods(
     function __init__(self, node) { // {{{
         Goonmill.SparqlSandbox.upcall(self, '__init__', node);
 
-        self.queryForm = self.node.select('.queryForm')[0];
-        self.results = self.node.select('.results')[0];
+        self.queryForm = self.node.down('.queryForm');
+        self.results = self.node.down('.results');
         self.queryArea = self.queryForm.query;
 
         self.queryArea.observe('keyup', 
@@ -202,7 +202,7 @@ Goonmill.WarmText.methods(
 
         // the anchor is the node that gets initialized.  It should probably
         // have the n:render attribute in the template.
-        self.anchor = node.select('.warmText')[0];
+        self.anchor = node.down('.warmText');
         self.form = new Element('form');
         node.insert(self.form, {position: 'bottom'});
 
@@ -295,7 +295,7 @@ Goonmill.BasicSearch = Goonmill.GoonmillWidget.subclass('Goonmill.BasicSearch');
 Goonmill.BasicSearch.methods(
     function __init__(self, node) { // {{{
         Goonmill.BasicSearch.upcall(self, '__init__', node);
-        self.searchForm = node.select('.searchForm')[0];
+        self.searchForm = node.down('.searchForm');
 
         self.searchTerms = self.searchForm.searchTerms;
 
@@ -324,7 +324,7 @@ Goonmill.BasicSearch.methods(
                 self.searchTerms.addClassName('defaultText');
             }
         });
-        self.hitContainer = node.select('div[rev=hits]')[0];
+        self.hitContainer = node.down('div[rev=hits]');
     }, // }}}
 
     // clear the search form and reset it
@@ -421,7 +421,7 @@ Goonmill.ConstituentList.methods(
     // make all closing x's clickable, and the buttons themselves clickable
     function _setEvents(self, constituent) {
         // closing x
-        constituent.select('.closingX')[0].observe('click', function (event) {
+        constituent.down('.closingX').observe('click', function (event) {
             self.removeConstituentClicked(event, constituent);
         });
 
@@ -435,7 +435,7 @@ Goonmill.ConstituentList.methods(
     function constituentClicked(self, node) {
         var id = parseInt(node.readAttribute('rel'), 10);
         d = self.callRemote('displayConstituent', id);
-        var spinner = Goonmill.spin(body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.down('.x2x'));
 
         d.addCallback(function (wi) {
             if (node.hasClassName('kind-monsterGroup')) {
@@ -454,8 +454,8 @@ Goonmill.ConstituentList.methods(
     // throw the given constituent out of the workspace
     function removeConstituentClicked(self, event, node) {
         event.stop();
-        var args = {name: node.select('.constituentName')[0].innerHTML,
-            detail: node.select('.constituentDetail')[0].innerHTML
+        var args = {name: node.down('.constituentName').innerHTML,
+            detail: node.down('.constituentDetail').innerHTML
         };
         var message, button1;
 
@@ -496,7 +496,7 @@ Goonmill.ConstituentList.methods(
 
     // put a new constituent into the list
     function addConstituent(self, kind, id, name, detail) {
-        var source = self.node.select('.template')[0];
+        var source = self.node.down('.template');
         var listItem = source.jstClone({'title':'FIXME', 
             'name':name, 'rel':id, 'detail':detail, 'kind':kind
         });
@@ -510,7 +510,7 @@ Goonmill.ConstituentList.methods(
     function updateConstituentDetail(self, id, detail) {
         var match = '.constituent[rel=' + id + '] .constituentDetail';
         detail = detail.toString().truncate(15);
-        var n = self.node.select(match)[0];
+        var n = self.node.down(match);
         n.hide();
         n.update(detail);
         Effect.Appear(n);
@@ -523,16 +523,16 @@ Goonmill.MainActions = Goonmill.GoonmillWidget.subclass('Goonmill.MainActions');
 Goonmill.MainActions.methods(
     function __init__(self, node) {
         Goonmill.MainActions.upcall(self, '__init__', node);
-        node.select('[rev=npc]')[0].observe('click', function (event) {
+        node.down('[rev=npc]').observe('click', function (event) {
             self.newNPCClicked();
         });
-        node.select('[rev=monsterGroup]')[0].observe('click', function (event) {
+        node.down('[rev=monsterGroup]').observe('click', function (event) {
             self.newMonsterGroupClicked();
         });
-        node.select('[rev=stencil]')[0].observe('click', function (event) {
+        node.down('[rev=stencil]').observe('click', function (event) {
             self.newStencilClicked();
         });
-        node.select('[rev=encounter]')[0].observe('click', function (event) {
+        node.down('[rev=encounter]').observe('click', function (event) {
             self.newEncounterClicked();
         });
     },
@@ -603,7 +603,7 @@ Goonmill.EventBus.methods(
 
         w.detach();
 
-        var blank = body.select('.offstage .itemView')[0].cloneNode(true);
+        var blank = body.down('.offstage .itemView').cloneNode(true);
         w.node.replace(blank);
     }
 );
@@ -615,7 +615,7 @@ Goonmill.ItemView.methods(
     function __init__(self, node) {
         Goonmill.ItemView.upcall(self, '__init__', node);
         node.hide();
-        var oldView = body.select('.itemView')[0];
+        var oldView = body.down('.itemView');
         oldView.replace(node);
         node.show();
     }
@@ -642,12 +642,12 @@ Goonmill.MonsterGroup.methods(
             }.curry(n) );
         });
 
-        var toggleAll = node.select('[name=toggleAll]')[0];
+        var toggleAll = node.down('[name=toggleAll]');
         toggleAll.observe('click', function (e) {
                 self.toggleAllClicked(toggleAll, e);
         });
 
-        var randomize = node.select('.randomize')[0];
+        var randomize = node.down('.randomize');
         randomize.observe('click', function (e) {
             self.randomizeClicked(e);
         });
@@ -655,9 +655,9 @@ Goonmill.MonsterGroup.methods(
         // the "increase by" form must have a limit to prevent overloading the
         // browser.  Server code will check to make sure the total is in sane
         // limits (and raise if not)
-        var increaseBy = node.select('[name=increaseBy]')[0];
+        var increaseBy = node.down('[name=increaseBy]');
 
-        var imageBox = node.select('.imageBox')[0];
+        var imageBox = node.down('.imageBox');
         imageBox.observe('click', function (e) {
             self.imageBoxClicked(imageBox, e);
         });
@@ -710,7 +710,7 @@ Goonmill.MonsterGroup.methods(
         var amount = parseInt(event.element().increaseByAmount.value, 10);
         var d = self.callRemote('increaseGroupies', amount);
             
-        var spinner = Goonmill.spin(body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.down('.x2x'));
 
         d.addCallback(function (wi) {
             Goonmill.unspin(spinner);
@@ -725,7 +725,7 @@ Goonmill.MonsterGroup.methods(
         var checkedRows = [];
 
         var ids = rows.map(function (r) {
-            var checkbox = r.select('[name=selectGroupie]')[0];
+            var checkbox = r.down('[name=selectGroupie]');
             if (checkbox.checked) {
                 checkedRows.push(r);
                 return parseInt(r.readAttribute('rel'), 10);
@@ -744,7 +744,7 @@ Goonmill.MonsterGroup.methods(
         n.select('.tab').each(function (tab) {
             tab.removeClassName('tabSelected');
         });
-        n.select('.' + which)[0].addClassName('tabSelected');
+        n.down('.' + which).addClassName('tabSelected');
     },
 
     // tell the server to remove the groupies that were checked
@@ -757,7 +757,7 @@ Goonmill.MonsterGroup.methods(
 
         var d = self.callRemote('deleteChecked', ids);
 
-        var spinner = Goonmill.spin(body.select('.x2x')[0]);
+        var spinner = Goonmill.spin(body.down('.x2x'));
 
         d.addCallback(function (count) {
             Goonmill.unspin(spinner);
@@ -859,7 +859,7 @@ Goonmill.GoonTip.methods(
 
     // wrap 
     function containerize(self, context) {
-        return body.select('.offstage .searchTip')[0].jstClone(context);
+        return body.down('.offstage .searchTip').jstClone(context);
     }
 );
 
@@ -890,7 +890,7 @@ Goonmill.GoonWin.methods(
 
     // wrap 
     function containerize(self, context) {
-        return body.select('.offstage .overlayWindow')[0].jstClone(context);
+        return body.down('.offstage .overlayWindow').jstClone(context);
     }
 );
 
@@ -898,7 +898,7 @@ Goonmill.GoonWin.methods(
 Goonmill.ImageBox = Divmod.Class.subclass('Goonmill.ImageBox');
 Goonmill.ImageBox.methods(
     function __init__(self, url) {
-        self.clone = body.select('.offstage .imageBoxMeat')[0].jstClone({'url':url});
+        self.clone = body.down('.offstage .imageBoxMeat').jstClone({'url':url});
         self.replace = self.clone.jstGet('$replace');
         self.replace.observe('click', function (event) {
             self.openEditControls(event);
@@ -1012,7 +1012,7 @@ Goonmill.whichNewThing = function(name) {
     var f2 = function() { Control.Modal.current.close(true); d.callback(2); };
     var closer = function (e) { Control.Modal.current.close(true); };
 
-    var clone = body.select('.offstage .whichNewThing')[0].jstClone({'name': name});
+    var clone = body.down('.offstage .whichNewThing').jstClone({'name': name});
 
     /* if using new monster group, only integers between 1-123 allowed */
     var count = clone.jstGet('$count');
@@ -1049,7 +1049,7 @@ var LightboxConfig = {
 
 // display any node or string as a message
 Goonmill.messageBox = function (node) {
-    var meat = body.select('.offstage .messageBoxMeat')[0].jstClone({});
+    var meat = body.down('.offstage .messageBoxMeat').jstClone({});
 
     meat.jstGet('$container').update(node);
 
@@ -1087,7 +1087,7 @@ Goonmill.modal = function (contents, extraOptions) {
 Goonmill.confirm = function (message, button1text, button2text) {
     // copy the content of node into a modal dialog (lightbox)
     var d = new Divmod.Defer.Deferred(); 
-    var clone = body.select('.offstage .confirm')[0].jstClone({'message':message, 
+    var clone = body.down('.offstage .confirm').jstClone({'message':message, 
             'button1text': button1text, 'button2text': button2text
     });
     var f1 = function() { Control.Modal.current.close(true); d.callback(1); };
@@ -1145,7 +1145,7 @@ Goonmill.message = function(text, severity) {
     var span = new Element('span').update(text);
     span.hide();
     // TODO - severity
-    var messageArea = body.select('.messageArea')[0];
+    var messageArea = body.down('.messageArea');
     $A(messageArea.childNodes).each(function (e) { e.remove(); } );
     messageArea.insert(span);
     messageArea.addClassName('contents');
