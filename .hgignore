@@ -14,3 +14,4 @@
 ^goonmill.wpu$
 ^goonmill/static/monster$
 ^goonmill/rdflib\.db.*$
+^goonmill/static/upload/.*\.png$
