@@ -3,8 +3,9 @@
 import re
 
 from goonmill import query2, dice, rdfquery
-from goonmill.parser import (diceparser, skillparser, featparser, 
+from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
+from playtools import diceparser
 
 class History(object):
     """
