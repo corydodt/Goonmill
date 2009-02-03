@@ -3,7 +3,7 @@ from twisted.python import log
 from nevow import athena, loaders, tags as T, flat
 
 from goonmill.util import RESOURCE
-from goonmill import dice
+from playtools import dice
 
 class DiceSandboxPage(athena.LivePage):
     # FIXME - for now, just use the goonmill page
