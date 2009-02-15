@@ -34,7 +34,7 @@ def indexItem(database, domain, item):
     """
     _ft = re.sub(slashRx, repSlash, item.full_text)
     full = textFromHtml(_ft)
-    doc = hypy.HDocument(uri=unicode(item.id))
+    doc = hypy.HDocument(uri=u'%s/%s' % (domain, unicode(item.id)))
     doc.addText(full)
     doc[u'@name'] = item.name
     doc[u'domain'] = domain
@@ -70,9 +70,11 @@ def find(estdb, domain, terms):
     phrase = ' '.join(fuzzy)
 
     query = hypy.HCondition(phrase, matching='simple', max=10)
-    query.addAttr('domain STREQ %s' % (domain,))
+    query.addAttr(u'domain STREQ %s' % (domain,))
 
-    return estdb.search(query)
+    r = estdb.search(query)
+
+    return r
 
 
 def buildIndex(estdb, domain, items):
@@ -124,8 +126,8 @@ class Options(usage.Options):
 
             estdb = hypy.HDatabase(autoflush=False)
             estdb.open(idir, 'a')
-            buildIndex(estdb, u'monster', db.allMonsters())
             buildIndex(estdb, u'spell', db.allSpells())
+            buildIndex(estdb, u'monster', db.allMonsters())
             estdb.close()
 
         else:
