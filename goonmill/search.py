@@ -55,9 +55,6 @@ def textFromHtml(htmlText):
     return s
 
 
-identity = lambda x: x
-
-
 ALWAYS_SKIP = object()
 
 def fuzzyQuoteTerm(t):
@@ -136,7 +133,8 @@ class Options(usage.Options):
             estdb.open(idir, 'r')
 
             for hit in find(estdb, domain, self['terms']):
-                print hit[u'@uri'] + ': ' + hit[u'@name']
+                print '<%s> %s' % (hit[u'@uri'], hit[u'@name'])
+                print '    %s' % (hit.teaser(self['terms'], format='rst'),)
 
 
 def run(argv=None):

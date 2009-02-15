@@ -102,7 +102,7 @@ estraierindex=goonmill/search-index/_idx
 if [ ! -d "$estraierindex" ]; then
     echo ::
     echo :: $estraierindex
-    python goonmill/search2.py --build-index
+    python goonmill/search.py --build-index
     echo
 else
     echo "** ${estraierindex} already exists, not willing to overwrite it!"
