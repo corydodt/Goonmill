@@ -449,7 +449,7 @@ class Statblock(object):
 
         if self._parsedHitDice is None:
             return self.monster.hit_dice
-        return str(self._parsedHitDice[0])
+        return str(self._parsedHitDice)
 
     def parseHitPoints(self):
         """Roll hit points for one monster of this type"""
@@ -562,93 +562,3 @@ def parseSpecialQualities(specialQualitiesStats):
     """All full ability markup as a list of strings"""
     return specialparser.parseSpecialQualities(specialQualitiesStats)
 
-# tests
-def test_statblockSkill():
-    skillStats = query._allSkillStats()
-    for s in skillStats:
-        if s is None:
-            continue
-
-        try:
-            parseSkills(s)
-        except Exception, e:
-            print s
-            print e
-            raise
-
-def test_statblockFeat():
-    featStats = query._allFeatStats()
-    for f in featStats:
-        if f is None:
-            continue
-
-        try:
-            parseFeats(f)
-        except Exception, e:
-            print f
-            print e
-            raise
-
-def test_hitPoints():
-    hpStats = query._allHPStats()
-    for hp in hpStats:
-        if hp is None:
-            continue
-
-        try:
-            parseHitPoints(hp)
-        except Exception, e:
-            print hp
-            print e
-            raise
-
-def test_saves():
-    saveStats = query._allSaveStats()
-    for saves in saveStats:
-        if saves is None:
-            continue
-
-        try:
-            parseSaves(saves)
-        except Exception, e:
-            print saves
-            print e
-            raise
-
-def test_statblock():
-    monsters = query.allMonsters()
-    for monster in monsters:
-        try:
-            Statblock.fromId(monster.id)
-        except Exception, e:
-            print monster
-            print e
-            import sys, pdb; pdb.post_mortem(sys.exc_info()[2])
-
-
-# run the tests
-if __name__ == '__main__': # {{{
-    import time
-
-    print 'testing parseSaves'
-    t1 = time.time()
-    test_saves()
-    print time.time() - t1
-    t1 = time.time()
-    print 'testing parseHitPoints'
-    test_hitPoints()
-    print time.time() - t1
-    t1 = time.time()
-    print 'testing statblockSkill'
-    test_statblockSkill()
-    print time.time() - t1
-    t1 = time.time()
-    print 'testing statblockFeat'
-    test_statblockFeat()
-    print time.time() - t1
-    t1 = time.time()
-    print 'testing statblock'
-    test_statblock()
-    print time.time() - t1
-    t1 = time.time()
-# }}}
