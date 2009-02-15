@@ -19,7 +19,7 @@ from twisted.cred.checkers import AllowAnonymousAccess
 from .util import RESOURCE
 from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
-from . import search2
+from . import search
 from .history import Statblock
 from .fileupload import FileUploadPage
 from .userfile import StaticImage
@@ -432,15 +432,15 @@ class BasicSearch(athena.LiveElement):
     def searched(self, searchTerms):
         terms = tuple(searchTerms.split())
         estdb = hypy.HDatabase()
-        estdb.open(search2.INDEX_DIRECTORY, 'r')
-        self.lastFound = search2.find(estdb, 'monster', terms)
+        estdb.open(search.INDEX_DIRECTORY, 'r')
+        self.lastFound = search.find(estdb, 'monster', terms)
         def unpack(t):
             return (t[u'@name'], t.id, t.teaser(terms))
         return [unpack(tt) for tt in self.lastFound]
 
     @athena.expose
     def newMonsterGroup(self, stencilId, count):
-        from .query2 import db
+        from .query import db
         m = db.lookup(stencilId)
         c = Constituent.monsterGroupKind(m, count, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId
@@ -457,7 +457,7 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def newNPC(self, stencilId):
-        from .query2 import db
+        from .query import db
         m = db.lookup(stencilId)
         c = Constituent.npcKind(m, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId

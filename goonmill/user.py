@@ -182,7 +182,7 @@ class Constituent(object):
         return self.getStencilBase().image
 
 def getStencil(id):
-    from .query2 import db
+    from .query import db
     return db.lookup(id)
 
 

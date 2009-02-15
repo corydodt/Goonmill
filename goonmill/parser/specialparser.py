@@ -11,7 +11,7 @@ from simpleparse.common import chartypes, numbers
 ## appease pyflakes
 chartypes, numbers
 
-from goonmill import query2
+from goonmill import query
 
 
 grammar = ( # {{{
@@ -321,7 +321,7 @@ def printFrequenciesOfUnknowns():
 
 
 if __name__ == '__main__': # {{{
-    tests = query2._allSQStats()
+    tests = query._allSQStats()
     for id, test in tests:
         #print id, test
         suc, children, next = specialQualityParser.parse(test, processor=Processor())

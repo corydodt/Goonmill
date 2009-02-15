@@ -2,7 +2,7 @@
 
 import re
 
-from goonmill import query2, rdfquery
+from goonmill import query, rdfquery
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
 from playtools import diceparser, dice
@@ -46,7 +46,7 @@ class Statblock(object):
         assert isinstance(id, int)
         sb = Statblock()
         sb.id = id
-        sb.monster = query2.lookup(id)
+        sb.monster = query.lookup(id)
         sb.initStats()
         return sb
 
@@ -504,7 +504,7 @@ def parseFeats(featStat):
     parsed = featparser.parseFeats(featStat)[0]
 
     for item in parsed:
-        item.dbFeat = query2.lookupFeat(item.name)
+        item.dbFeat = query.lookupFeat(item.name)
         ret.append(item)
 
     return ret
@@ -564,7 +564,7 @@ def parseSpecialQualities(specialQualitiesStats):
 
 # tests
 def test_statblockSkill():
-    skillStats = query2._allSkillStats()
+    skillStats = query._allSkillStats()
     for s in skillStats:
         if s is None:
             continue
@@ -577,7 +577,7 @@ def test_statblockSkill():
             raise
 
 def test_statblockFeat():
-    featStats = query2._allFeatStats()
+    featStats = query._allFeatStats()
     for f in featStats:
         if f is None:
             continue
@@ -590,7 +590,7 @@ def test_statblockFeat():
             raise
 
 def test_hitPoints():
-    hpStats = query2._allHPStats()
+    hpStats = query._allHPStats()
     for hp in hpStats:
         if hp is None:
             continue
@@ -603,7 +603,7 @@ def test_hitPoints():
             raise
 
 def test_saves():
-    saveStats = query2._allSaveStats()
+    saveStats = query._allSaveStats()
     for saves in saveStats:
         if saves is None:
             continue
@@ -616,7 +616,7 @@ def test_saves():
             raise
 
 def test_statblock():
-    monsters = query2.allMonsters()
+    monsters = query.allMonsters()
     for monster in monsters:
         try:
             Statblock.fromId(monster.id)

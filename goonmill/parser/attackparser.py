@@ -1,5 +1,5 @@
 from playtools import diceparser
-from .. import query2
+from .. import query
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
@@ -63,9 +63,7 @@ attackStat := empty/(attackGroup, (';'?, ws, 'or', ws, attackGroup)*)
 attackStatRoot := attackStat
 ''') # }}}
 
-attackParser = parser.Parser(grammar, root='attackStatRoot', prebuilts = [
-    ('diceExpression', diceparser.diceExpression)
-])
+attackParser = parser.Parser(grammar, root='attackStatRoot')
 
 
 class AttackGroup(object):
@@ -225,7 +223,7 @@ def parseAttacks(s):
 
 
 if __name__ == '__main__': # {{{
-    tests = query2._allAttackStats()
+    tests = query._allAttackStats()
     for id, test in tests:
         print id, test
         suc, children, next = attackParser.parse(test, processor=Processor())

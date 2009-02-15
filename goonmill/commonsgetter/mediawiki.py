@@ -6,7 +6,7 @@ from twisted.internet import reactor, task, defer
 from twisted.web.client import getPage
 from twisted.python import log
 
-from goonmill.query2 import db
+from goonmill.query import db
 
 from BeautifulSoup import BeautifulStoneSoup
 import simplejson
