@@ -21,15 +21,26 @@ def repSlash(m):
         return '\n'
     return m.group(1)
 
-def indexMonster(database, monster):
-    _ft = re.sub(slashRx, repSlash, monster.full_text)
+
+def indexItem(database, domain, item):
+    """
+    Take a row from an srd35 table and index it.  Assumes the table conforms
+    to the norm of:
+    .id - int id
+    .name - string name
+    .full_text - html text
+
+    Add the domain to the attributes of the thing to help filter searches
+    """
+    _ft = re.sub(slashRx, repSlash, item.full_text)
     full = textFromHtml(_ft)
-    doc = hypy.HDocument(uri=unicode(monster.id))
+    doc = hypy.HDocument(uri=unicode(item.id))
     doc.addText(full)
-    doc[u'@name'] = monster.name
-    # add monster.name to the text so that it has extra weight in the
+    doc[u'@name'] = item.name
+    doc[u'domain'] = domain
+    # add item.name to the text so that it has extra weight in the
     # search results
-    doc.addHiddenText(monster.name)
+    doc.addHiddenText(item.name)
 
     database.putDoc(doc, 0)
 
@@ -56,62 +67,76 @@ def fuzzyQuoteTerm(t):
     return '%s*' % (t,)
 
 
-def find(terms):
-    """Use the estraier index to find monsters"""
+def find(estdb, domain, terms):
+    """Use an estraier index to find monsters"""
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
     phrase = ' '.join(fuzzy)
-    estdb = hypy.HDatabase()
-    estdb.open(INDEX_DIRECTORY, 'r')
 
     query = hypy.HCondition(phrase, matching='simple', max=10)
+    query.addAttr('domain STREQ %s' % (domain,))
 
     return estdb.search(query)
 
 
-def buildIndex(monsters):
-    if os.path.exists(INDEX_DIRECTORY):
-        return
-    estdb = hypy.HDatabase(autoflush=False)
-    estdb.open(INDEX_DIRECTORY, 'a')
-
-    for n, monster in enumerate(monsters):
+def buildIndex(estdb, domain, items):
+    for n, item in enumerate(items):
         if n%100 == 0:
             sys.stdout.write("%s" % (n,))
             estdb.flush()
-        indexMonster(estdb, monster)
-
-    estdb.close()
+        indexItem(estdb, domain, item)
 
 
 class Options(usage.Options):
+    optParameters = [
+            ['index-dir', None, INDEX_DIRECTORY, 'Where the index will be'],
+            ['domain', None, u'monster', 'Domain (monster, spell, item...) to search inside of'],
+            ]
     optFlags = [
-            ['build-index', 'b', 'Build a fresh index']
-
+            ['build-index', 'b', 'Build a fresh index'],
             ]
 
+    def decode(self, s):
+        """
+        Trying these encodings in order: [sys.stdin.encoding,
+        sys.getdefautencoding()], decode s and return a unicode.
+
+        If s is already unicode, return s.
+        """
+        if type(s) is unicode: return s
+
+        if sys.stdin.encoding:
+            return s.decode(sys.stdin.encoding)
+
+        # getdefaultencoding version
+        return unicode(s)
+
     def parseArgs(self, *terms):
-        self['terms'] = terms
+        self['terms'] = map(self.decode, terms)
 
     def postOptions(self):
+        idir = self['index-dir']
+
+        domain = self.decode(self['domain'])
+
+        from goonmill.query2 import db
         if self['build-index']:
             try:
-                shutil.rmtree(INDEX_DIRECTORY)
+                shutil.rmtree(idir)
             except EnvironmentError, e:
                 pass
 
-            from goonmill.query2 import db
-            buildIndex(db.allMonsters())
+            estdb = hypy.HDatabase(autoflush=False)
+            estdb.open(idir, 'a')
+            buildIndex(estdb, u'monster', db.allMonsters())
+            buildIndex(estdb, u'spell', db.allSpells())
+            estdb.close()
 
         else:
-            # try: FIXME
-            for hit in find(self['terms']):
-                # print hit.name, hit.score
-                print hit['@name']
-            # except lucene.JavaError, e: FIXME - need the hypy version of
-            # this code
-            #   if 'FileNotFoundException' in str(e):
-            #       raise usage.UsageError(
-            #               "** Missing index directory.  Run with --build-index")
+            estdb = hypy.HDatabase(autoflush=False)
+            estdb.open(idir, 'r')
+
+            for hit in find(estdb, domain, self['terms']):
+                print hit[u'@uri'] + ': ' + hit[u'@name']
 
 
 def run(argv=None):

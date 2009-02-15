@@ -99,6 +99,14 @@ class Feat(object):
         return "<Feat %s>" % (self.name,)
 
 
+class Spell(object):
+    """A spell"""
+    __storm_table__ = 'spell'
+    id = SL.Int(primary=True)                #
+    name = SL.Unicode()
+    full_text = SL.Unicode()
+
+
 class SRDDatabase(object):
     """A complete SRD database"""
     def __init__(self):
@@ -162,6 +170,9 @@ class SRDDatabase(object):
         """Return all save names as strings"""
         return [m.saves for m in self.store.find(Monster)]
 
+    def allSpells(self):
+        return list(self.store.find(Spell))
+
     def allMonsters(self):
         return list(self.store.find(Monster))
 
@@ -214,3 +225,6 @@ def _allIds():
 
 def _allHPStats():
     return db._allHPStats()
+
+def allSpells():
+    return db.allSpells()

@@ -10,6 +10,8 @@ from zope.interface import Interface, implements
 from nevow import (rend, url, loaders, athena, static, guard, page, tags as T,
         vhost)
 
+import hypy
+
 from twisted.cred.portal import Portal
 from twisted.cred.credentials import IAnonymous
 from twisted.cred.checkers import AllowAnonymousAccess
@@ -429,7 +431,9 @@ class BasicSearch(athena.LiveElement):
     @athena.expose
     def searched(self, searchTerms):
         terms = tuple(searchTerms.split())
-        self.lastFound = search2.find(terms)
+        estdb = hypy.HDatabase()
+        estdb.open(search2.INDEX_DIRECTORY, 'r')
+        self.lastFound = search2.find(estdb, 'monster', terms)
         def unpack(t):
             return (t[u'@name'], t.id, t.teaser(terms))
         return [unpack(tt) for tt in self.lastFound]
