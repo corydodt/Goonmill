@@ -11,6 +11,8 @@ CHAR = NS('http://goonmill.org/2007/characteristic.n3#')
 DICE = NS('http://goonmill.org/2007/dice.n3#')
 PCCLASS = NS('http://goonmill.org/2007/pcclass.n3#')
 PROP = NS('http://goonmill.org/2007/property.n3#')
+SKILL = NS('http://goonmill.org/2007/skill.n3#')
+FEAT = NS('http://goonmill.org/2007/feat.n3#')
 
 DB_LOCATION = RESOURCE('rdflib.db')
 
@@ -89,6 +91,60 @@ class Family(S.SparqItem):
         'SELECT ?r { $key p:resistance ?r }')
     vulnerabilities = S.Ref(Vulnerability,
         'SELECT ?r { $key p:vulnerabilities ?r }')
+
+
+class Ability(S.SparqItem):
+    """An ability score"""
+
+
+class SkillSynergy(S.SparqItem):
+    """A skill synergy"""
+    bonus = S.Literal('SELECT ?n { $key p:bonus ?n }')
+    synergyComment = S.Literal('SELECT ?c { $key p:synergyComment ?c }')
+
+
+class Skill(S.SparqItem):
+    """A skill usable by monsters, such as Diplomacy"""
+    keyAbility = S.Ref(Ability, 'SELECT ?k { ?k a c:AbilityScore . $key p:keyAbility ?k }')
+    synergy = S.Ref(SkillSynergy, 'SELECT ?s { $key p:synergy ?s }')
+
+    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
+    epicUse = S.Literal('SELECT ?a { $key p:epicUse ?a }')
+    skillAction = S.Literal('SELECT ?a { $key p:skillAction ?a }')
+    skillCheck = S.Literal('SELECT ?a { $key p:skillCheck ?a }')
+    tryAgainComment = S.Literal('SELECT ?a { $key p:tryAgainComment ?a }')
+    untrained = S.Literal('SELECT ?a { $key p:untrained ?a }')
+
+SkillSynergy.otherSkill = S.Ref(Skill, 'SELECT ?s { $key p:fromSkill ?s }')
+
+
+class Feat(S.SparqItem):
+    """A feat usable by monsters, such as Weapon Focus"""
+    stackable = S.Boolean(
+            'ASK { $key a c:StackableFeat }')
+    canTakeMultiple = S.Boolean(
+            'ASK { $key a c:CanTakeMultipleFeat }')
+    epic = S.Boolean(
+            'ASK { $key a c:EpicFeat}')
+    psionic = S.Boolean(
+            'ASK { $key a c:PsionicFeat }')
+
+    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
+    benefit = S.Literal('SELECT ?a { $key p:benefit ?a }')
+    choiceText = S.Literal('SELECT ?a { $key p:choiceText ?a }')
+    prerequisiteText = S.Literal('SELECT ?a { $key p:prerequisiteText ?a }')
+    noFeatComment = S.Literal('SELECT ?a { $key p:noFeatCommen ?a }')
+    isArmorClassFeat = S.Boolean(
+            'ASK { $key a <http://goonmill.org/2009/statblock.n3#ArmorClassFeat> }')
+    isAttackOptionFeat = S.Boolean(
+            'ASK { $key a <http://goonmill.org/2009/statblock.n3#AttackOptionFeat> }')
+    isSpecialActionFeat = S.Boolean(
+            'ASK { $key a <http://goonmill.org/2009/statblock.n3#SpecialActionFeat> }')
+    isRangedAttackFeat = S.Boolean(
+            'ASK { $key a <http://goonmill.org/2009/statblock.n3#RangedAttackFeat> }')
+    isSpeedFeat = S.Boolean(
+            'ASK { $key a <http://goonmill.org/2009/statblock.n3#SpeedFeat> }')
+
 
 
 def needDatabase(f):
@@ -171,66 +227,3 @@ def openDatabase():
     return db
 
 
-if __name__ == '__main__': # {{{
-    import string
-    template = string.Template('''$name
-    Senses: $senses
-    Languages: $languages
-    Special Abilities
-    -----------------
-    $specs
-    Special Qualities
-    -----------------
-    $specQ
-    Combat Mechanics
-    ----------------
-    $combatMech
-    ''')
-
-    specs = string.Template('''$specLabel
-      $specComment
-    ''')
-
-    from twisted.python import text
-    def formatComment(c):
-        return '\n      '.join(text.greedyWrap(c))
-
-    @needDatabase
-    def formatFamily(key):
-        fam = Family(db=db, key=key)
-
-        senses = ', '.join([sen.label for sen in fam.senses])
-        languages = ', '.join([l.label for l in fam.languages])
-        abilities = []
-        for spec in fam.specialAbilities:
-            abilities.append(specs.substitute(specLabel='- ' + spec.label, 
-                specComment=formatComment(spec.comment)))
-        abilities = ''.join(abilities)
-
-        qualities = []
-        for spec in fam.specialQualities:
-            qualities.append(specs.substitute(specLabel='- ' + spec.label, 
-                specComment=formatComment(spec.comment)))
-        qualities= ''.join(qualities)
-
-        combatMechanics = []
-        for spec in fam.combatMechanics:
-            combatMechanics.append(specs.substitute(specLabel='- ' + spec.label, 
-                specComment=formatComment(spec.comment)))
-        combatMechanics= ''.join(combatMechanics)
-
-        print template.substitute(name=fam.label, 
-                senses=senses, 
-                languages=languages, 
-                specs=abilities,
-                specQ=qualities,
-                combatMech=combatMechanics)
-        #
-
-
-    formatFamily(FAM.devil)
-    formatFamily(FAM.ooze)
-    formatFamily(FAM.undead)
-    formatFamily(FAM.construct)
-    formatFamily(FAM.fey)
-# }}}
