@@ -89,6 +89,8 @@ if [ ! -r "$tripledb" ]; then
         "--n3 http://goonmill.org/2007/family.n3#"
         "--n3 http://goonmill.org/2007/characteristic.n3#"
         "--n3 http://goonmill.org/2007/property.n3#"
+        "--n3 http://goonmill.org/2007/skill.n3#"
+        "--n3 http://goonmill.org/2007/feat.n3#"
         )
     ptstore pull --verbose ${ns[@]} $tripledb || exit 1
 else
