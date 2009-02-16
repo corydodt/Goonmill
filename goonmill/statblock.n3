@@ -1,0 +1,52 @@
+@prefix :     <http://goonmill.org/2009/statblock.n3#> .
+@prefix feat: <http://goonmill.org/2007/feat.n3#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<> rdfs:title "Statblock Policy" .
+<> rdfs:comment "Rules for formatting a 35e standard module statblock" .
+
+
+:ArmorClassFeat a rdfs:Class;
+    rdfs:comment "Should appear in statblocks near the armor class stat" .
+:SpecialActionFeat a rdfs:Class;
+    rdfs:comment "Should appear in statblocks near the special actions" .
+:SpeedFeat a rdfs:Class;
+    rdfs:comment "Should appear in statblocks near the speed stat" .
+:AttackOptionFeat a rdfs:Class;
+    rdfs:comment "Should appear in statblocks near the attacks" .
+:RangedAttackFeat a rdfs:Class;
+    rdfs:comment "Should appear in statblocks near the ranged attacks" .
+
+feat:snatchArrows              a       :SpecialActionFeat .
+feat:deflectArrows             a       :ArmorClassFeat .
+feat:dodge                     a       :ArmorClassFeat .
+feat:mobility                  a       :ArmorClassFeat .
+feat:twoWeaponDefense          a       :ArmorClassFeat .
+feat:rideByAttack              a       :SpeedFeat .
+feat:run                       a       :SpeedFeat .
+feat:shotOnTheRun              a       :SpeedFeat .
+feat:springAttack              a       :SpeedFeat .
+feat:blindFight                a       :AttackOptionFeat .
+feat:cleave                    a       :AttackOptionFeat .
+feat:combatReflexes            a       :AttackOptionFeat .
+feat:farShot                   a       :AttackOptionFeat .
+feat:greatCleave               a       :AttackOptionFeat .
+feat:improvedBullRush          a       :AttackOptionFeat .
+feat:improvedDisarm            a       :AttackOptionFeat .
+feat:improvedFeint             a       :AttackOptionFeat .
+feat:improvedOverrun           a       :AttackOptionFeat .
+feat:improvedPreciseShot       a       :AttackOptionFeat .
+feat:improvedSunder            a       :AttackOptionFeat .
+feat:improvedTrip              a       :AttackOptionFeat .
+feat:mountedCombat             a       :AttackOptionFeat .
+feat:pointBlankShot            a       :AttackOptionFeat .
+feat:powerAttack               a       :AttackOptionFeat .
+feat:preciseShot               a       :AttackOptionFeat .
+feat:quickDraw                 a       :AttackOptionFeat .
+feat:rapidReload               a       :AttackOptionFeat .
+feat:spiritedCharge            a       :AttackOptionFeat .
+feat:stunningFist              a       :AttackOptionFeat .
+feat:trample                   a       :AttackOptionFeat .
+feat:whirlwindAttack           a       :AttackOptionFeat .
+feat:manyshot                  a       :RangedAttackFeat .
+feat:rapidShot                 a       :RangedAttackFeat .
