@@ -92,6 +92,7 @@ class Options(usage.Options):
             ]
     optFlags = [
             ['build-index', 'b', 'Build a fresh index'],
+            ['full-document', 'f', 'Display the entire document for each hit'],
             ]
 
     def decode(self, s):
@@ -136,6 +137,9 @@ class Options(usage.Options):
 
             for hit in find(estdb, domain, self['terms']):
                 print '<%s> %s' % (hit[u'@uri'], hit[u'@name'])
+                if self['full-document']:
+                    for line in hit.encode('utf-8').splitlines():
+                        print '   ' + line
                 print '    %s' % (hit.teaser(self['terms'], format='rst'),)
 
 
