@@ -1,4 +1,6 @@
-"""The history of statblocks for this session"""
+"""
+The history of statblocks for this session
+"""
 
 import re
 
@@ -504,7 +506,7 @@ def parseFeats(featStat):
     parsed = featparser.parseFeats(featStat)[0]
 
     for item in parsed:
-        item.dbFeat = query.lookupFeat(item.name)
+        item.dbFeat = query.lookup(item.name, klass=query.Feat)
         ret.append(item)
 
     return ret

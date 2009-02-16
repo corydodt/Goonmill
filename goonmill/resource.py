@@ -417,6 +417,21 @@ class MainActions(athena.LiveElement):
     docFactory = loaders.xmlfile(RESOURCE('templates/MainActions'))
     
 
+def searched(searchTerms):
+    """
+    Do a Monster search for some search terms, and return a 3-tup of (name,
+    id-number, html-teaser)
+    """
+    terms = tuple(searchTerms.split())
+    estdb = hypy.HDatabase()
+    estdb.open(search.INDEX_DIRECTORY, 'r')
+    lastFound = search.find(estdb, 'monster', terms)
+    def unpack(t):
+        num = int(t[u'@uri'].split('/')[1])
+        return (t[u'@name'], num, t.teaser(terms))
+    return [unpack(tt) for tt in lastFound]
+
+
 class BasicSearch(athena.LiveElement):
     """
     Search widget in the lower-left corner
@@ -430,18 +445,12 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def searched(self, searchTerms):
-        terms = tuple(searchTerms.split())
-        estdb = hypy.HDatabase()
-        estdb.open(search.INDEX_DIRECTORY, 'r')
-        self.lastFound = search.find(estdb, 'monster', terms)
-        def unpack(t):
-            return (t[u'@name'], t.id, t.teaser(terms))
-        return [unpack(tt) for tt in self.lastFound]
+        return searched(searchTerms)
 
     @athena.expose
     def newMonsterGroup(self, stencilId, count):
-        from .query import db
-        m = db.lookup(stencilId)
+        from . import query
+        m = query.lookup(stencilId)
         c = Constituent.monsterGroupKind(m, count, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId
         mgv = MonsterGroupView(c)
@@ -457,8 +466,8 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def newNPC(self, stencilId):
-        from .query import db
-        m = db.lookup(stencilId)
+        from . import query
+        m = query.lookup(stencilId)
         c = Constituent.npcKind(m, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId
         npcv = NPCView(c)

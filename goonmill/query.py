@@ -113,17 +113,14 @@ class SRDDatabase(object):
         self.db = SL.create_database('sqlite:///' + RESOURCE('srd35.db'))
         self.store = SL.Store(self.db)
 
-    def lookup(self, id):
-        """Return the Monster for this id by querying the sqlite database"""
-        return self.store.find(Monster, Monster.id==id).one()
-
-    def genericLookup(self, klass, idOrName):
+    def lookup(self, idOrName, klass):
         """
         Implement the dual-interpretation logic for "idOrName" to look
         up an object from the database by id or by name.  Naturally
         this requires the table have a 'name' column.
         
-        @return an instance of the table-mapped class, e.g. Feat or Skill
+        @return an instance of the table-mapped class, e.g. Monster, Spell,
+        Feat or Skill
         """
         try:
             id = int(idOrName)
@@ -133,14 +130,6 @@ class SRDDatabase(object):
         except ValueError:
             pass
         return self.store.find(klass, klass.name==idOrName).one()
-
-    def lookupFeat(self, idOrName):
-        """A Feat for this id or name"""
-        return self.genericLookup(Feat, idOrName)
-
-    def lookupSkill(self, idOrName):
-        """A Skill for this id or name"""
-        return self.genericLookup(Skill, idOrName)
 
     def _allSkillStats(self):
         """Return all skill names as strings"""
@@ -181,17 +170,11 @@ class SRDDatabase(object):
 
 db = SRDDatabase()
 
-def lookup(id):
-    """Return the Monster for this id"""
-    return db.lookup(id)
-
-def lookupSkill(idOrName):
-    """Return the Skill for this id or name"""
-    return db.lookupSkill(idOrName)
-
-def lookupFeat(idOrName):
-    """Return the Feat for this is or name"""
-    return db.lookupFeat(idOrName)
+def lookup(id, klass=Monster):
+    """
+    Return the Monster for this id
+    """
+    return db.lookup(id, klass=klass)
 
 def _allSkillStats():
     """Return the skill attribute for every monster"""

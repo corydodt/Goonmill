@@ -182,8 +182,8 @@ class Constituent(object):
         return self.getStencilBase().image
 
 def getStencil(id):
-    from .query import db
-    return db.lookup(id)
+    from . import query
+    return query.lookup(id)
 
 
 Workspace.constituents = locals.ReferenceSet(
