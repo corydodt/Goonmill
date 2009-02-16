@@ -10,10 +10,10 @@ from rdflib.Namespace import Namespace as NS
 from nevow import athena, loaders, tags as T, flat
 
 from goonmill.rdfquery import (FAM, CHAR, DICE, PCCLASS, PROP,
-        bootstrapDatabase,
+        openDatabase,
         Family, Sense, Language, CombatMechanic, SpecialAbility,
         SpecialQuality, Resistance)
-db = bootstrapDatabase()
+db = openDatabase()
 ## appease pyflakes
 Graph, rdflib, RDFS, NS, CHAR, PROP, DICE, PCCLASS, CombatMechanic, Language
 FAM, SpecialQuality, SpecialAbility, Family, Resistance, Sense
@@ -35,7 +35,7 @@ def reload():
 
 pprint.pprint(sorted(locals().keys()))
 print "NAMESPACE PREFIXES: "
-pprint.pprint(db.prefixes)
+pprint.pprint(list(db.graph.namespaces()))
 
 
 class SandboxPage(athena.LivePage):
@@ -61,7 +61,8 @@ class SparqlSandbox(athena.LiveElement):
 
     def showPrefixes(self, req, tag):
         t = T.table(_class="prefixes")
-        for pfx, iri in db.prefixes.items():
+        prefixes = list(db.graph.namespaces())
+        for pfx, iri in prefixes:
             t[T.tr[T.td[repr(pfx), ':'], T.td['<', str(iri), '>']]]
 
         return tag[t]
