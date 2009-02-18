@@ -14,8 +14,6 @@ class QueryTestCase(unittest.TestCase):
 
         test(10, query.Monster, u'Behemoth Eagle')
         test(10, query.Spell, u'Surelife')
-        test(10, query.Skill, u'Diplomacy')
-        test(10, query.Feat, u'Jack of all Trades')
 
     def test_thingLists(self):
         """

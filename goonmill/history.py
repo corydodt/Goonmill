@@ -7,7 +7,7 @@ import re
 from goonmill import query, rdfquery
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
-from playtools import diceparser, dice
+from playtools import diceparser, dice, util as ptutil
 
 class History(object):
     """
@@ -218,15 +218,15 @@ class Statblock(object):
 
     def acFeats(self):
         """List of feats that can appear next to AC"""
-        return [f for f in self.feats if f.dbFeat.is_ac_feat]
+        return [f for f in self.feats if f.dbFeat.isArmorClassFeat]
 
     def speedFeats(self):
         """List of feats that can appear next to movement"""
-        return [f for f in self.feats if f.dbFeat.is_speed_feat]
+        return [f for f in self.feats if f.dbFeat.isSpeedFeat]
 
     def specialActionFeats(self):
         """List of feats that can appear next to special actions"""
-        return [f for f in self.feats if f.dbFeat.is_special_action_feat]
+        return [f for f in self.feats if f.dbFeat.isSpecialActionFeat]
 
     def specialActions(self):
         """All special actions as a string"""
@@ -247,11 +247,11 @@ class Statblock(object):
 
     def attackOptionFeats(self):
         """List of feats that can appear next to attack options"""
-        return [f for f in self.feats if f.dbFeat.is_attack_option_feat]
+        return [f for f in self.feats if f.dbFeat.isAttackOptionFeat]
 
     def rangedAttackFeats(self):
         """List of feats that can appear next to ranged attacks""" 
-        return [f for f in self.feats if f.dbFeat.is_ranged_attack_feat]
+        return [f for f in self.feats if f.dbFeat.isRangedAttackFeat]
 
     def hitPoints(self):
         """
@@ -496,6 +496,7 @@ class Statblock(object):
         self.overrides['spellbook'] = spellbook
 
 
+@rdfquery.needDatabase
 def parseFeats(featStat):
     """All feats of the monster, as a list of Feat."""
     ret = []
@@ -506,7 +507,9 @@ def parseFeats(featStat):
     parsed = featparser.parseFeats(featStat)[0]
 
     for item in parsed:
-        item.dbFeat = query.lookup(item.name, klass=query.Feat)
+        name = ptutil.rdfName(item.name)
+        key = getattr(rdfquery.FEAT, name)
+        item.dbFeat = rdfquery.Feat(db=rdfquery.db, key=key)
         ret.append(item)
 
     return ret

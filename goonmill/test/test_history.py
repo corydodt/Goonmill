@@ -15,9 +15,14 @@ class HistoryTestCase(unittest.TestCase):
         monsters = query.allMonsters()
         for monster in monsters:
             exp = [monster.name, None]
-            act = [monster.name, history.Statblock.fromId(monster.id) and
-                    None]
+            monster = history.Statblock.fromId(monster.id)
+            act = [monster.get('name'), monster and None]
             self.assertEqual(exp, act)
+
+    def test_parseFeats(self):
+        dbmohrg = query.lookup(u'Mohrg')
+        mohrg = history.Statblock.fromMonster(dbmohrg)
+        self.assertEqual(mohrg.get('acFeats'), 'Dodge, Mobility')
 
 
     # tests

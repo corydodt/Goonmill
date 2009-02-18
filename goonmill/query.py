@@ -51,54 +51,6 @@ class Monster(object):
         return '<%s name=%s>' % (self.__class__.__name__, self.name)
 
 
-class Skill(object):
-    """A skill mapped from the db"""
-    __storm_table__ = 'skill'
-    id = SL.Int(primary=True)                #
-    name = SL.Unicode()                      #
-    subtype = SL.Unicode()                   #
-    key_ability = SL.Unicode()               #
-    psionic = SL.Unicode()                   #
-    trained = SL.Unicode()                   #
-    armor_check = SL.Unicode()               #
-    description = SL.Unicode()               #
-    skill_check = SL.Unicode()               #
-    action = SL.Unicode()                    #
-    try_again = SL.Unicode()                 #
-    special = SL.Unicode()                   #
-    restriction = SL.Unicode()               #
-    synergy = SL.Unicode()                   #
-    epic_use = SL.Unicode()                  #
-    untrained = SL.Unicode()                 #
-    full_text = SL.Unicode()                 #
-    reference = SL.Unicode()                 #
-
-
-class Feat(object):
-    """A skill mapped from the db"""
-    __storm_table__ = 'feat'
-    id = SL.Int(primary=True)                #
-    name = SL.Unicode()                      #
-    type = SL.Unicode()                      #
-    multiple = SL.Unicode()                  #
-    stack = SL.Unicode()                     #
-    choice = SL.Unicode()
-    prerequisite = SL.Unicode()
-    benefit = SL.Unicode()                   #
-    normal = SL.Unicode()                    #
-    special = SL.Unicode()                   #
-    full_text = SL.Unicode()                 #
-    reference = SL.Unicode()                 #
-    is_ac_feat = SL.Bool()                   #
-    is_speed_feat = SL.Bool()                #
-    is_attack_option_feat = SL.Bool()        #
-    is_special_action_feat = SL.Bool()       #
-    is_ranged_attack_feat = SL.Bool()        #
-
-    def __repr__(self):
-        return "<Feat %s>" % (self.name,)
-
-
 class Spell(object):
     """A spell"""
     __storm_table__ = 'spell'
