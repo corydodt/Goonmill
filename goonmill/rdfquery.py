@@ -128,12 +128,6 @@ class Feat(S.SparqItem):
             'ASK { $key a c:EpicFeat}')
     psionic = S.Boolean(
             'ASK { $key a c:PsionicFeat }')
-
-    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
-    benefit = S.Literal('SELECT ?a { $key p:benefit ?a }')
-    choiceText = S.Literal('SELECT ?a { $key p:choiceText ?a }')
-    prerequisiteText = S.Literal('SELECT ?a { $key p:prerequisiteText ?a }')
-    noFeatComment = S.Literal('SELECT ?a { $key p:noFeatCommen ?a }')
     isArmorClassFeat = S.Boolean(
             'ASK { $key a <http://goonmill.org/2009/statblock.n3#ArmorClassFeat> }')
     isAttackOptionFeat = S.Boolean(
@@ -145,6 +139,11 @@ class Feat(S.SparqItem):
     isSpeedFeat = S.Boolean(
             'ASK { $key a <http://goonmill.org/2009/statblock.n3#SpeedFeat> }')
 
+    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
+    benefit = S.Literal('SELECT ?a { $key p:benefit ?a }')
+    choiceText = S.Literal('SELECT ?a { $key p:choiceText ?a }')
+    prerequisiteText = S.Literal('SELECT ?a { $key p:prerequisiteText ?a }')
+    noFeatComment = S.Literal('SELECT ?a { $key p:noFeatCommen ?a }')
 
 
 def needDatabase(f):
@@ -221,7 +220,7 @@ def openDatabase():
     module level.
     """
     global db
-    db = SRDTriplesDatabase('#')
+    db = SRDTriplesDatabase()
     db.open(DB_LOCATION)
 
     return db
