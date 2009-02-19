@@ -1,6 +1,8 @@
 """
 Query the sqlite database of monsters for matching monsters.
 """
+import string
+import re
 
 from storm import locals as SL
 
@@ -51,12 +53,97 @@ class Monster(object):
         return '<%s name=%s>' % (self.__class__.__name__, self.name)
 
 
+def joinRuleCamel(s):
+    """
+    join words in s in camelCase
+    """
+    s = re.sub(r'[^a-zA-Z0-9]', '', s)
+    return s[0].lower() + s[1:]
+
+
+def srdReferenceURL(item):
+    """
+    Return the URL at d20srd.org that describes the thing being looked up
+    """
+    mapper = {
+'SRD 3.5 DivineDomainsandSpells': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 EpicMonsters(G-W)': ('-------%s', lambda s: ''),
+'SRD 3.5 EpicSpells': ('http://www.d20srd.org/srd/epic/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 PsionicSpells': ('http://www.d20srd.org/srd/psionic/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsA-B': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsC': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsD-E': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsF-G': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsH-L': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsM-O': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsP-R': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsS': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 SpellsT-Z': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+}
+    base, rule = mapper[item.reference]
+    return base % (rule(item.name),)
+
+
 class Spell(object):
     """A spell"""
     __storm_table__ = 'spell'
     id = SL.Int(primary=True)                #
     name = SL.Unicode()
     full_text = SL.Unicode()
+    altname = SL.Unicode()
+    school = SL.Unicode()
+    subschool = SL.Unicode()
+    level = SL.Unicode()
+    components = SL.Unicode()
+    casting_time = SL.Unicode()
+    range = SL.Unicode()
+    target = SL.Unicode()
+    area = SL.Unicode()
+    duration = SL.Unicode()
+    saving_throw = SL.Unicode()
+    short_description = SL.Unicode()
+    reference = SL.Unicode()
+
+    def oneLineDescription(self):
+        """
+        Produce a single-line description suitable for pure-text environments
+        """
+        tmpl = string.Template('<<$name>> $school $subschool|| Level: $level || Casting Time: $time || $comps || Range: $range || $areaAndTarget || Duration: $duration $save|| $short || $url'
+                )
+        dct = {'name':self.name,
+                'school': self.school,
+                'level':self.level,
+                'time':self.casting_time,
+                'comps':''.join([s.strip() for s in self.components.split(',')]),
+                'range':self.range,
+                'duration':self.duration,
+                'short':self.short_description,
+                'url':srdReferenceURL(self),
+                }
+        
+        if self.subschool:
+            subschool = '(%s) ' % (self.subschool,)
+        else:
+            subschool = ''
+
+        if self.area and self.target:
+            areaAndTarget = 'Area: %s || Target: %s' % (self.area, self.target)
+        elif self.target:
+            areaAndTarget = 'Target: %s' % (self.target,)
+        elif self.area:
+            areaAndTarget = 'Area: %s' % (self.area,)
+        else:
+            areaAndTarget = 'Target: (none)' 
+
+        if self.saving_throw:
+            save = '|| Save: %s ' % (self.saving_throw,)
+        else:
+            save = ''
+
+        dct['areaAndTarget'] = areaAndTarget
+        dct['subschool'] = subschool 
+        dct['save'] = save
+        return tmpl.safe_substitute(dct)
 
 
 class SRDDatabase(object):
