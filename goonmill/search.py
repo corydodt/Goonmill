@@ -21,6 +21,17 @@ def repSlash(m):
         return '\n'
     return m.group(1)
 
+ALTRX = re.compile(r'[^a-zA-Z0-9\s]')
+
+
+def makeAltName(s):
+    """
+    Normalize s to remove punctuation and case
+    """
+    s = ' '.join(s.strip().split())
+    s = ALTRX.sub('', s).lower()
+    return s
+
 
 def indexItem(database, domain, item):
     """
@@ -37,6 +48,7 @@ def indexItem(database, domain, item):
     doc = hypy.HDocument(uri=u'%s/%s' % (domain, unicode(item.id)))
     doc.addText(full)
     doc[u'@name'] = item.name
+    doc[u'altname'] = makeAltName(item.name)
     doc[u'domain'] = domain
     # add item.name to the text so that it has extra weight in the
     # search results
@@ -64,12 +76,12 @@ def fuzzyQuoteTerm(t):
     return '%s*' % (t,)
 
 
-def find(estdb, domain, terms):
-    """Use an estraier index to find monsters"""
+def find(estdb, domain, terms, max=10):
+    """Use an estraier index to find monsters or other things"""
     fuzzy = [fuzzyQuoteTerm(t) for t in terms]
     phrase = ' '.join(fuzzy)
 
-    query = hypy.HCondition(phrase, matching='simple', max=10)
+    query = hypy.HCondition(phrase, matching='simple', max=max)
     query.addAttr(u'domain STREQ %s' % (domain,))
 
     r = estdb.search(query)
