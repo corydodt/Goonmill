@@ -41,7 +41,8 @@ function testPython()
 
 testPython "PySQLite2" 'import pysqlite2.dbapi2'
 testPython "Playtools" 'import playtools'
-testPython "RDFlib" 'import rdflib.sparql.bison.SPARQLParserc'
+t="from rdflib import __version__ as v; assert v=='2.4.1', 'Have %s' % (v,)"
+testPython "RDFlib 2.4.1" "$t"
 testPython "Storm" 'import storm.locals'
 testPython "zope.interface" 'import zope.interface'
 t="from twisted import __version__ as v; assert v>='2.5.0', 'Have %s' % (v,)"
