@@ -52,6 +52,61 @@ class Monster(object):
     def __repr__(self):
         return '<%s name=%s>' % (self.__class__.__name__, self.name)
 
+    def oneLineDescription(self):
+        """
+        Produce a single-line description suitable for pure-text environments
+        """
+        from . import history
+        sb = history.Statblock.fromMonster(self)
+        get = sb.get
+        tmpl = string.Template(
+                '<<$name>> $alignment $size $creatureType || Init $initiative || $senses Listen $listen Spot $spot || AC $ac || $hitDice HD || Fort $fort Ref $ref Will $will || $speed $attacks$attackOptions$spellLikes|| $abilities || SQ $SQ || $url')
+        dct = {'name': get('name'),
+               'alignment': get('alignment'),
+               'size': get('size'),
+               'creatureType': get('type'),
+               'initiative': get('initiative'),
+               'senses': get('senses'),
+               'listen': get('listen'),
+               'spot': get('spot'),
+               'ac': get('armor_class'),
+               'hitDice': get('hitDice'),
+               'fort': get('fort'),
+               'ref': get('ref'),
+               'will': get('will'),
+               'speed': get('speed'),
+               'attacks': '',
+               'attackOptions': '',
+               'spellLikes': '',
+               'abilities': get('abilities'),
+               'SQ': get('special_qualities'),
+               'url': srdReferenceURL(self),
+               }
+
+        attacks = []
+        attackGroups = sb.get('attackGroups')
+        melees = attackGroups['melee']
+        rangeds = attackGroups['ranged']
+        for melee in melees:
+            attacks.append("MELEE %s" % (melee,))
+        for ranged in rangeds:
+            attacks.append("RANGED %s" % (ranged,))
+        if attacks:
+            dct['attacks'] = '|| %s ' % (''.join(attacks),)
+
+        attackOptions = get('special_attacks')
+        if attackOptions:
+            dct['attackOptions'] = '|| Atk Options %s ' % (attackOptions,)
+
+        spellLikes = get('spellLikeAbilities')
+        if spellLikes:
+            dct['spellLikes'] = '|| Spell-Like: %s ' % (spellLikes,)
+
+        # resistance, immunity, spell resistance, and vulnerability are all
+        # found in the SQ field already, so DRY
+
+        return tmpl.safe_substitute(dct)
+
 
 def joinRuleCamel(s):
     """
@@ -67,7 +122,8 @@ def srdReferenceURL(item):
     """
     mapper = {
 'SRD 3.5 DivineDomainsandSpells': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
-'SRD 3.5 EpicMonsters(G-W)': ('-------%s', lambda s: ''),
+'SRD 3.5 EpicMonsters(A-E)': ('http://www.d20srd.org/srd/epic/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 EpicMonsters(G-W)': ('http://www.d20srd.org/srd/epic/monsters/%s.htm', joinRuleCamel),
 'SRD 3.5 EpicSpells': ('http://www.d20srd.org/srd/epic/spells/%s.htm', joinRuleCamel),
 'SRD 3.5 PsionicSpells': ('http://www.d20srd.org/srd/psionic/spells/%s.htm', joinRuleCamel),
 'SRD 3.5 SpellsA-B': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
@@ -79,6 +135,22 @@ def srdReferenceURL(item):
 'SRD 3.5 SpellsP-R': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
 'SRD 3.5 SpellsS': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
 'SRD 3.5 SpellsT-Z': ('http://www.d20srd.org/srd/spells/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersAnimals': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersB-C': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersD-De': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersDi-Do': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersDr-Dw': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersE-F': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersG': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersH-I': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersIntro-A': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersK-L': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersM-N': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersO-R': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersS': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersT-Z': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 MonstersVermin': ('http://www.d20srd.org/srd/monsters/%s.htm', joinRuleCamel),
+'SRD 3.5 PsionicMonsters': ('http://www.d20srd.org/srd/psionic/monsters/%s.htm', joinRuleCamel),
 }
     base, rule = mapper[item.reference]
     return base % (rule(item.name),)
