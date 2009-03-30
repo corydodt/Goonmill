@@ -47,7 +47,8 @@ testPython "Storm" 'import storm.locals'
 testPython "zope.interface" 'import zope.interface'
 t="from twisted import __version__ as v; assert v>='2.5.0', 'Have %s' % (v,)"
 testPython "Twisted 2.5" "$t"
-testPython "Divmod Nevow" 'import nevow'
+t="from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
+testPython "Divmod Nevow >= 0.9.33"  "$t"
 testPython "simpleparse" 'import simpleparse'
 testPython "Hypy" 'from hypy import *'
 testPython "Python 2.5" 'import xml.etree'
