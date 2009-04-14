@@ -18,3 +18,6 @@ goonmill-stop:
 	echo Stopping goonmill
 	-kill `cat goonmill.pid`
 
+n3:
+	cd goonmill; \
+		cp -av statblock.n3 /var/www/goonmill.org/2009
