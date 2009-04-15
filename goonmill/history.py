@@ -302,13 +302,13 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.resistances:
-                label = s.attackEffect[0].label
-                amt = s.amount
+                label = s.attackEffect.label
+                amt = s.value
                 ret[label] = "%s %s" % (label, amt)
 
         for q in self._parsedSpecialQualities:
             if q.type == 'resistance':
-                ret[q.what.title()] = "%s %s" % (q.what.title(), q.amount)
+                ret[q.what.title()] = "%s %s" % (q.what.title(), q.value)
 
         # spell resistance is covered elsewhere.
         if 'Spell' in ret: del ret['Spell']
@@ -509,7 +509,7 @@ def parseFeats(featStat):
     for item in parsed:
         name = ptutil.rdfName(item.name)
         key = getattr(rdfquery.FEAT, name)
-        item.dbFeat = rdfquery.Feat(db=rdfquery.db, key=key)
+        item.dbFeat = rdfquery.Feat(key)
         ret.append(item)
 
     return ret

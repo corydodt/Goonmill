@@ -1,10 +1,15 @@
 from twisted.python import log
 
+from rdflib.Namespace import Namespace as NS
+from rdflib import RDF
+
+from rdfalchemy import rdfSingle, rdfMultiple
+from rdfalchemy.orm import mapper
+
 from playtools import sparqly as S
 
-from rdflib.Namespace import Namespace as NS
-
 from goonmill.util import RESOURCE
+
 
 FAM = NS('http://goonmill.org/2007/family.n3#')
 CHAR = NS('http://goonmill.org/2007/characteristic.n3#')
@@ -16,135 +21,146 @@ FEAT = NS('http://goonmill.org/2007/feat.n3#')
 
 DB_LOCATION = RESOURCE('rdflib.db')
 
-class SpecialArmorClass(S.SparqItem):
+class SpecialArmorClass(S.rdfsPTClass):
     """Permanent, racial modifier to armor class"""
+    rdf_type = CHAR.SpecialArmorClass
 
 
-class Aura(S.SparqItem):
-    """Permanent effect that extends some distance around the body of the 
+class Aura(S.rdfsPTClass):
+    """
+    Permanent effect that extends some distance around the body of the
     creature.
     """
+    rdf_type = CHAR.Aura
 
 
-class SpecialAction(S.SparqItem):
+class SpecialAction(S.rdfsPTClass):
     """Something a creature can do besides attack"""
+    rdf_type = CHAR.SpecialAction
 
 
-class AttackEffect(S.SparqItem):
+class AttackEffect(S.rdfsPTClass):
     """Some type of damage such as cold or non-magical"""
+    rdf_type = CHAR.AttackEffect
 
 
-class Resistance(S.SparqItem):
+class Resistance(S.rdfsPTClass):
     """A resistance possessed by monsters"""
-    attackEffect = S.Ref(AttackEffect,
-            "SELECT ?ae { $key ?ae [] }")
-    amount = S.Literal("SELECT ?a { ?ae a c:AttackEffect . $key ?ae ?a }")
+    rdf_type = CHAR.Resistance
 
-    def __repr__(self):
-        return '<%s to %s>' % (self.__class__.__name__, self.attackEffect[0].label)
+    attackEffect = rdfSingle(PROP.attackEffect, range_type=CHAR.AttackEffect)
+    value = rdfSingle(RDF.value)
+
+    ## def __repr__(self):
+    ##     return '<%s to %s>' % (self.__class__.__name__, self.attackEffect.label)
 
 
-class Vulnerability(S.SparqItem):
+class Vulnerability(S.rdfsPTClass):
     """A vulnerability possessed by monsters"""
+    rdf_type = CHAR.Vulnerability
 
 
-class Immunity(S.SparqItem):
+class Immunity(S.rdfsPTClass):
     """An immunity possessed by monsters"""
+    rdf_type = CHAR.Immunity
 
 
-class Sense(S.SparqItem):
+class Sense(S.rdfsPTClass):
     """A notable sense possessed by monsters, such as darkvision"""
-    range = S.Literal('SELECT ?r { $key p:range ?r }')
+    rdf_type = CHAR.Sense
+    range = rdfSingle(PROP.range)
 
 
-class Language(S.SparqItem):
+class Language(S.rdfsPTClass):
     """A language understood by monsters"""
+    rdf_type = CHAR.Language
 
 
-class SpecialAbility(S.SparqItem):
+class SpecialAbility(S.rdfsPTClass):
     """A notable ability of any kind that isn't a standard combat mechanic"""
+    rdf_type = CHAR.SpecialAbility
 
 
-class SpecialQuality(S.SparqItem):
+class SpecialQuality(S.rdfsPTClass):
     """A notable quality possessed by the creature that is always on"""
+    rdf_type = CHAR.SpecialQuality
 
 
-class CombatMechanic(S.SparqItem):
+class CombatMechanic(S.rdfsPTClass):
     """A special combat mechanic that applies to this creature"""
+    rdf_type = CHAR.CombatMechanic
 
 
-class Family(S.SparqItem):
+class MoveMechanic(S.rdfsPTClass):
+    """A special move mechanic that applies to this creature"""
+    rdf_type = CHAR.MoveMechanic
+
+
+class Family(S.rdfsPTClass):
     """A family of monster with shared characteristics"""
-    senses = S.Ref(Sense, 
-        'SELECT ?s { $key p:sense ?s }')
-    specialAbilities = S.Ref(SpecialAbility, 
-        'SELECT ?spec { ?spec a c:SpecialAbility . $key p:miscTrait ?spec }')
-    specialQualities = S.Ref(SpecialQuality, 
-        'SELECT ?spec { ?spec a c:SpecialQuality . $key p:miscTrait ?spec }')
-    combatMechanics = S.Ref(SpecialQuality, 
-        'SELECT ?spec { ?spec a c:CombatMechanic . $key p:miscTrait ?spec }')
-    languages = S.Ref(Language,
-        'SELECT ?lng { $key p:language ?lng }')
-    immunities = S.Ref(Immunity,
-        'SELECT ?i { $key p:immunity ?i }')
-    resistances = S.Ref(Resistance,
-        'SELECT ?r { $key p:resistance ?r }')
-    vulnerabilities = S.Ref(Vulnerability,
-        'SELECT ?r { $key p:vulnerabilities ?r }')
+    rdf_type = CHAR.Family
+    senses = rdfMultiple(PROP.sense, range_type=CHAR.Sense)
+    languages = rdfMultiple(PROP.language, range_type=CHAR.Language)
+    immunities = rdfMultiple(PROP.immunity, range_type=CHAR.Immunity)
+    resistances = rdfMultiple(PROP.resistance, range_type=CHAR.Resistance)
+    vulnerabilities = rdfMultiple(PROP.vulnerability,
+            range_type=CHAR.Vulnerability)
+    specialAbilities = rdfMultiple(PROP.specialAbility,
+            range_type=CHAR.SpecialAbility)
+    specialQualities = rdfMultiple(PROP.specialQuality,
+            range_type=CHAR.SpecialQuality)
+    combatMechanics = rdfMultiple(PROP.combatMechanic,
+            range_type=CHAR.CombatMechanic)
 
 
-class Ability(S.SparqItem):
+class Ability(S.rdfsPTClass):
     """An ability score"""
+    rdf_type = CHAR.AbilityScore
 
 
-class SkillSynergy(S.SparqItem):
+class SkillSynergy(S.rdfsPTClass):
     """A skill synergy"""
-    bonus = S.Literal('SELECT ?n { $key p:bonus ?n }')
-    synergyComment = S.Literal('SELECT ?c { $key p:synergyComment ?c }')
+    rdf_type = CHAR.SkillSynergy
+
+    bonus = rdfSingle(PROP.bonus)
+    synergyComment = rdfSingle(PROP.synergyComment)
+    otherSkill = rdfSingle(PROP.fromSkill, range_type=CHAR.Skill)
 
 
-class Skill(S.SparqItem):
+class Skill(S.rdfsPTClass):
     """A skill usable by monsters, such as Diplomacy"""
-    keyAbility = S.Ref(Ability, 'SELECT ?k { ?k a c:AbilityScore . $key p:keyAbility ?k }')
-    synergy = S.Ref(SkillSynergy, 'SELECT ?s { $key p:synergy ?s }')
+    rdf_type = CHAR.Skill
 
-    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
-    epicUse = S.Literal('SELECT ?a { $key p:epicUse ?a }')
-    skillAction = S.Literal('SELECT ?a { $key p:skillAction ?a }')
-    skillCheck = S.Literal('SELECT ?a { $key p:skillCheck ?a }')
-    tryAgainComment = S.Literal('SELECT ?a { $key p:tryAgainComment ?a }')
-    untrained = S.Literal('SELECT ?a { $key p:untrained ?a }')
+    keyAbility = rdfSingle(PROP.keyAbility, range_type=CHAR.AbilityScore)
+    synergy = rdfMultiple(PROP.synergy, range_type=CHAR.SkillSynergy)
+    additional = rdfSingle(PROP.additional)
+    epicUse = rdfSingle(PROP.epicUse)
+    skillAction = rdfSingle(PROP.skillAction)
+    skillCheck = rdfSingle(PROP.skillCheck)
+    tryAgainComment = rdfSingle(PROP.tryAgainComment)
+    untrained = rdfSingle(PROP.untrained)
 
-SkillSynergy.otherSkill = S.Ref(Skill, 'SELECT ?s { $key p:fromSkill ?s }')
 
-
-class Feat(S.SparqItem):
+class Feat(S.rdfsPTClass):
     """A feat usable by monsters, such as Weapon Focus"""
-    stackable = S.Boolean(
-            'ASK { $key a c:StackableFeat }')
-    canTakeMultiple = S.Boolean(
-            'ASK { $key a c:CanTakeMultipleFeat }')
-    epic = S.Boolean(
-            'ASK { $key a c:EpicFeat}')
-    psionic = S.Boolean(
-            'ASK { $key a c:PsionicFeat }')
-    isArmorClassFeat = S.Boolean(
-            'ASK { $key a <http://goonmill.org/2009/statblock.n3#ArmorClassFeat> }')
-    isAttackOptionFeat = S.Boolean(
-            'ASK { $key a <http://goonmill.org/2009/statblock.n3#AttackOptionFeat> }')
-    isSpecialActionFeat = S.Boolean(
-            'ASK { $key a <http://goonmill.org/2009/statblock.n3#SpecialActionFeat> }')
-    isRangedAttackFeat = S.Boolean(
-            'ASK { $key a <http://goonmill.org/2009/statblock.n3#RangedAttackFeat> }')
-    isSpeedFeat = S.Boolean(
-            'ASK { $key a <http://goonmill.org/2009/statblock.n3#SpeedFeat> }')
+    rdf_type = CHAR.Feat
+    stackable = S.rdfIsInstance(CHAR.StackableFeat)
+    canTakeMultiple = S.rdfIsInstance(CHAR.CanTakeMultipleFeat)
+    epic = S.rdfIsInstance(CHAR.EpicFeat)
+    psionic = S.rdfIsInstance(CHAR.PsionicFeat)
+    isArmorClassFeat = S.rdfIsInstance(CHAR.ArmorClassFeat)
+    isAttackOptionFeat = S.rdfIsInstance(CHAR.AttackOptionFeat)
+    isSpecialActionFeat = S.rdfIsInstance(CHAR.SpecialActionFeat)
+    isRangedAttackFeat = S.rdfIsInstance(CHAR.RangedAttackFeat)
+    isSpeedFeat = S.rdfIsInstance(CHAR.SpeedFeat)
 
-    additional = S.Literal('SELECT ?a { $key p:additional ?a }')
-    benefit = S.Literal('SELECT ?a { $key p:benefit ?a }')
-    choiceText = S.Literal('SELECT ?a { $key p:choiceText ?a }')
-    prerequisiteText = S.Literal('SELECT ?a { $key p:prerequisiteText ?a }')
-    noFeatComment = S.Literal('SELECT ?a { $key p:noFeatCommen ?a }')
+    additional = rdfSingle(PROP.additional)
+    benefit = rdfSingle(PROP.benefit)
+    choiceText = rdfSingle(PROP.choiceText)
+    prerequisiteText = rdfSingle(PROP.prerequisiteText)
+    noFeatComment = rdfSingle(PROP.noFeatComment)
 
+mapper()
 
 def needDatabase(f):
     """
@@ -177,36 +193,28 @@ def allAuras():
 class SRDTriplesDatabase(S.TriplesDatabase):
     def allFamilies(self):
         ret = {}
-        for k in db.query("SELECT ?f { ?f a c:Family }"):
-            k = k[0]
-            family = Family(db=db, key=k)
+        for family in Family.ClassInstances():
             ret[family.label] = family
 
         return ret
                 
     def allAuras(self):
         ret = {}
-        for _a in db.query("SELECT ?a { ?a a c:Aura }"):
-            a = _a[0]
-            aura = Aura(db=db, key=a)
+        for aura in Aura.ClassInstances():
             ret[aura.label.lower()] = aura
 
         return ret
 
     def allSpecialAC(self):
         ret = {}
-        for _ac in db.query("SELECT ?ac { ?ac a c:SpecialArmorClass }"):
-            ac = _ac[0]
-            armor = SpecialArmorClass(db=db, key=ac)
+        for armor in SpecialArmorClass.ClassInstances():
             ret[armor.label.lower()] = armor
 
         return ret
 
     def allSpecialActions(self):
         ret = {}
-        for _sa in db.query("SELECT ?sa { ?sa a c:SpecialAction }"):
-            sa = _sa[0]
-            action = SpecialAction(db=db, key=sa)
+        for action in SpecialArmorClass.ClassInstances():
             ret[action.label.lower()] = action
 
         return ret
@@ -223,6 +231,8 @@ def openDatabase():
     db = SRDTriplesDatabase()
     db.open(DB_LOCATION)
 
-    return db
+    # initialize rdfalchemy mapper
+    S.rdfsPTClass.db = db.graph
 
+    return db
 
