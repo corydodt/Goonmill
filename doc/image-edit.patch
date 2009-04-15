@@ -1,0 +1,222 @@
+diff -r 8f477dfad35a goonmill/static/Goonmill/__init__.js
+--- a/goonmill/static/Goonmill/__init__.js	Tue Apr 14 22:56:13 2009 -0700
++++ b/goonmill/static/Goonmill/__init__.js	Tue Apr 14 22:58:36 2009 -0700
+@@ -354,8 +354,9 @@
+                             self.onClickedHit(event, anc, ctx.monsterId);
+                         });
+                         anc.removeAttribute('title');
+-                        var _ignored = new Goonmill.GoonTip(anc, ctx.teaser);
+-                        // anc.tooltip = new Control.ToolTip(anc, ctx.teaser, {});
++                        var _ignored = new Goonmill.GoonTip(anc, {inserter:
++                            function (node) { node.innerHTML = ctx.teaser; }
++                        });
+                     }
+                 };
+             });
+@@ -840,7 +841,7 @@
+ // with hax, subclass control.window and customize it
+ Goonmill.GoonTip = Divmod.Class.subclass('Goonmill.GoonTip');
+ Goonmill.GoonTip.methods(
+-    function __init__(self, node, context) {
++    function __init__(self, node, context, extraConfig) {
+         self.content = self.containerize(context);
+         self.node = node;
+         var TIPCONFIG = {
+@@ -851,6 +852,8 @@
+             hover: self.node,
+             className: 'tipTip2'
+         };
++
++        TIPCONFIG = $H(TIPCONFIG).merge(extraConfig || {}).toObject();
+ 
+         // kludgy but apparently works
+         var tip = new Control.Window(' ', TIPCONFIG);
+@@ -921,21 +924,18 @@
+         event.preventDefault();
+         event.stopPropagation();
+ 
+-
+         iframe = new Element('iframe', {'class': 'ibeIframe ibeIframeInvisible'});
+         ctx1 = {content:iframe};
+ 
+         relative = self.replace;
+ 
+         windowConf = {afterOpen: function () {
+-                var goonwin, coords, left, top;
++                var goonwin, coords;
+                 goonwin = iframe.up('.goonwin');
+                 iframe.writeAttribute('src', '/upload/')
+-                coords = goonwin.cumulativeOffset();
+-                top = coords.top + relative.offsetHeight + 6;
+-                left = coords.left + relative.offsetWidth - goonwin.offsetWidth;
+-                goonwin.style.left = left + 'px';
+-                goonwin.style.top = top + 'px';
++                coords = alignNodes(goonwin, relative, {top:'bottom',right:'right'}, 0, 6);
++                goonwin.style.left = coords[0];
++                goonwin.style.top = coords[1];
+                 goonwin.down('.overlayWindow').removeClassName('invisible');
+                 window.closeUploadFrame = function (message) { self.closeUploadFrame(message); };
+             }
+@@ -949,11 +949,35 @@
+         self.lastWindow = new Goonmill.GoonWin(relative, ctx1, windowConf);
+     },
+ 
++    // display an error next to the reset button when upload/download image failed
++    function showError(self, message) {
++        var clone, extraConfig, ctx, error;
++        clone = body.down('.offstage .ibeError').jstClone({message:message});
++        // TODO - put this in the nifty tooltip box
++        extraConfig = {afterOpen: function () {
++                var ps, coords;
++                ps = {left:'right', top:'top'};
++                coords = alignNodes(clone, self.replace, ps, 4, 3);
++                clone.style.left = coords[0];
++                clone.style.top = coords[1];
++                clone.removeClassName('invisible');
++            }
++        };
++        ctx = {inserter: function (node) {
++                node.insert(clone);
++            }
++        };
++        error = new Goonmill.GoonWin(self.replace, ctx, extraConfig);
++        error.close(); // FIXME
++        // TODO - time this window out (fade out)
++        // TODO - click on this window to close
++    },
++
+     function closeUploadFrame(self, message) {
+         var m = message.toString().toQueryParams();
+         if (m.error) {
+             if (m.error.toLowerCase() != 'cancel') {
+-                Goonmill.messageBox(m.error);
++                self.showError(m.error);
+             }
+         } else if (m.url) {
+             self.clone.down('img').writeAttribute('src', m.url);
+@@ -1003,6 +1027,84 @@
+ /* functions begin here **************************************************/
+ 
+ 
++
++
++// return an absolute position for a node relative to a reference node.
++// Arguments are:
++//    - node which will be positioned
++//    - node relative to which the first node will be positioned
++//    - an Object with the position specification:
++//      - each key is an edge of the subject node
++//      - each value is an edge of the reference node
++//      - example: {top:'bottom', right:'right'} will position the two nodes
++//        such that the bottom of the reference node is the top of the subject
++//        node, and the right edge of the reference node is the right edge of
++//        the subject node:
++//           +----------------------------+
++//           |   reference                | {top:'bottom', right:'right'}
++//           +-----+----------------------+
++//                 |          subject     |
++//                 +----------------------+
++//      - for obvious reasons behavior is undefined if there are more than 2
++//        keys
++//      - if no 'top' or 'bottom' key is specified, assume top:top
++//      - if no 'right' or 'left' key is specified, assume left:left
++//    - for offset spacing, pass in xMargin and yMargin as required.
++//
++// The positions are returned as an array of strings: ["Xpx", "Ypx"]
++function alignNodes(subject, reference, positionSpec, xMargin, yMargin) {
++    reference = $(reference);
++    subject = $(subject);
++    referenceLT = reference.cumulativeOffset();
++    referenceL = referenceLT[0];
++    referenceT = referenceLT[1];
++    referenceW = reference.offsetWidth;
++    referenceH = reference.offsetHeight;
++
++    subjectW = subject.offsetWidth;
++    subjectH = subject.offsetHeight;
++    
++    var ret = [null,null];
++    var ps = positionSpec;
++    for (key in ps) {
++        if (ps.hasOwnProperty(key)) {
++            if (key == 'top') {
++                if (ps[key] == 'top') {
++                    ret[1] = referenceT + yMargin;
++                } else if (ps[key] == 'bottom') {
++                    ret[1] = referenceT + referenceH + yMargin;
++                }
++            } else if (key == 'bottom') {
++                if (ps[key] == 'top') {
++                    ret[1] = referenceT - subjectH - yMargin;
++                } else if (ps[key] == 'bottom') {
++                    ret[1] = referenceT + referenceH - subjectH - yMargin;
++                }
++            } else if (key == 'left') {
++                if (ps[key] == 'left') {
++                    ret[0] = referenceL + xMargin;
++                } else if (ps[key] == 'right') {
++                    ret[0] = referenceL + referenceW + xMargin;
++                }
++            } else if (key == 'right') {
++                if (ps[key] == 'left') {
++                    ret[0] = referenceL - subjectW - xMargin;
++                } else if (ps[key] == 'right') {
++                    ret[0] = referenceL + referenceW - subjectW - xMargin;
++                }
++            }
++        }
++    }
++
++    if (ret[0] === null) {
++        ret[0] = referenceL + xMargin;
++    }
++    if (ret[1] === null) {
++        ret[1] = referenceT + yMargin;
++    }
++
++    return [ret[0] + "px", ret[1] + "px"];
++}
+ 
+ 
+ // display the dialog that disambiguates monster groups and npcs
+diff -r 8f477dfad35a goonmill/static/workspace.css
+--- a/goonmill/static/workspace.css	Tue Apr 14 22:56:13 2009 -0700
++++ b/goonmill/static/workspace.css	Tue Apr 14 22:58:36 2009 -0700
+@@ -209,13 +209,20 @@
+ /* big ImageBox */     font-family: sans-serif;
+ /* big ImageBox */     font-size: 12px;
+ /* big ImageBox */ }
++/* big ImageBox */ 
+ /* big ImageBox */ .imageBoxEditIframe {
+ /* big ImageBox */     position: absolute;
+ /* big ImageBox */     width: 380px;
+ /* big ImageBox */ }
++/* big ImageBox */ 
+ /* big ImageBox */ iframe.ibeIframe { width: 380px; }
++/* big ImageBox */ 
+ /* big ImageBox */ body.ibeIframe { margin: 0px; }
+-
++/* big ImageBox */ 
++/* big ImageBox */ .ibeError {
++/* big ImageBox */     font-family: "Arial Black";
++/* big ImageBox */     color: red;
++/* big ImageBox */ }
+ 
+ .personalName, .constituentGroupName {
+     float: left;
+diff -r 8f477dfad35a goonmill/templates/workspace.xhtml
+--- a/goonmill/templates/workspace.xhtml	Tue Apr 14 22:56:13 2009 -0700
++++ b/goonmill/templates/workspace.xhtml	Tue Apr 14 22:58:36 2009 -0700
+@@ -176,8 +176,11 @@
+         <div class=
+             "ttArrow1"><img src="/static/leftarrow-10x10-fffdc0.png" /></div>
+         <!-- can't use jscontent because $this is a string of markup, not a node -->
+-        <div class="content" jseval="this.innerHTML=$this" />
++        <div class="content" jseval="$this.inserter(this)" />
+       </span>
++
++      <!-- image box error -->
++      <div class="ibeError invisible" jscontent="message"></div>
+ 
+     </div>
+   </body>
