@@ -34,7 +34,6 @@ class SearchTestCase(unittest.TestCase):
         self.assertEqual(type(t2), unicode)
         self.assertEqual(t2, u"")
 
-
     def test_makeAltName(self):
         """
         makeAltName can convert title-cased text into altnames and handles
