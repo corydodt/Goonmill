@@ -33,7 +33,7 @@ def makeAltName(s):
     return s
 
 
-def indexItem(database, domain, item):
+def indexItem(database, domain, item, quiet=False):
     """
     Take a row from an srd35 table and index it.  Assumes the table conforms
     to the norm of:
@@ -56,13 +56,18 @@ def indexItem(database, domain, item):
 
     database.putDoc(doc, 0)
 
-    sys.stdout.write(".")
-    sys.stdout.flush()
+    if not quiet:
+        sys.stdout.write(".")
+        sys.stdout.flush()
 
 
 def textFromHtml(htmlText):
+    """
+    Convert html text into its text nodes, with extreme leniency.  If the input
+    is unicode, keep it unicode.
+    """
     d = microdom.parseString(htmlText, beExtremelyLenient=1)
-    s = domhelpers.gatherTextNodes(d, joinWith=" ")
+    s = domhelpers.gatherTextNodes(d, joinWith=u" ")
     ## print '\n'.join('| ' + l for l in s.splitlines())
     return s
 
@@ -89,12 +94,21 @@ def find(estdb, domain, terms, max=10):
     return r
 
 
-def buildIndex(estdb, domain, items):
+def buildIndex(estdb, domain, items, quiet=False):
+    """
+    Build an on-disk estraier index of all the items passed in; see
+    textFromHtml for assumptions about the items.  Use the passed-in domain as
+    the domain attribute.
+
+    TODO: add a zope Interface to the classes of things that can be indexed,
+    and adapt to that.
+    """
     for n, item in enumerate(items):
         if n%100 == 0:
-            sys.stdout.write("%s" % (n,))
+            if not quiet:
+                sys.stdout.write("%s" % (n,))
             estdb.flush()
-        indexItem(estdb, domain, item)
+        indexItem(estdb, domain, item, quiet=quiet)
 
 
 class Options(usage.Options):
