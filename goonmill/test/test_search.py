@@ -36,6 +36,10 @@ class SearchTestCase(unittest.TestCase):
 
 
     def test_makeAltName(self):
+        """
+        makeAltName can convert title-cased text into altnames and handles
+        punctuation appropriately
+        """
         mk = search.makeAltName
         self.assertEqual(mk("hello"), "hello")
         self.assertEqual(mk("Hello"), "hello")
@@ -45,12 +49,19 @@ class SearchTestCase(unittest.TestCase):
         self.assertEqual(mk("<Cat</>'s Grace, Mass"), "cats grace mass")
 
     def test_fuzzyQuoteTerm(self):
+        """
+        fuzzyQuoteTerm adds * appropriately and omits it for exact phrase
+        searches
+        """
         qt = search.fuzzyQuoteTerm
         self.assertEqual(qt("hi"), "hi*")
         self.assertEqual(qt("hi there"), "hi there")
         self.assertEqual(qt("cat's"), "cat's*")
 
     def test_indexItem(self):
+        """
+        indexItem indexes a single item which can be found
+        """
         self.index.open(TEST_INDEX_DIRECTORY, 'w')
         dbNinja = query.Spell()
         dbNinja.id = 23; dbNinja.full_text = u"Hello<div>\\nhi"; dbNinja.name = u"Ninja"
@@ -62,6 +73,10 @@ class SearchTestCase(unittest.TestCase):
         self.assertEqual(idxNinja.encode('ascii'), 'Hello hi')
 
     def test_find(self):
+        """
+        After indexing a bunch of items, we can find the again in various
+        ways, and max is respected
+        """
         self.index.open(TEST_INDEX_DIRECTORY, 'w')
 
         tests = [ # {{{
@@ -90,6 +105,9 @@ class SearchTestCase(unittest.TestCase):
         self.assertEqual(pluck(f([u"insan"]), u"@uri"), [u'ninja/5'])
 
     def test_buildIndex(self):
+        """
+        An index can be built and it has spells and stuff in it.
+        """
         from .. import query
         self.index.open(TEST_INDEX_DIRECTORY, 'w')
         search.buildIndex(self.index, u'spell', query.db.allSpells(), quiet=True)
