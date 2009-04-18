@@ -38,16 +38,6 @@ class WebServer(internet.TCPServer):
         from . import user, auth, search
         from hypy import HDatabase, OpenFailed
 
-        # build the search index.  block on this, it has to happen before app
-        hdb = HDatabase()
-        try:
-            hdb.open(search.INDEX_DIRECTORY, 'r')
-        except OpenFailed:
-            hdb.open(search.INDEX_DIRECTORY, 'w')
-            search.buildIndex(hdb, u'monster', db.allMonsters())
-            hdb.close()
-            hdb.open(search.INDEX_DIRECTORY, 'r')
-
         r = self.site.resource
         userdb = user.userDatabase()
         # r.userDatabase = userdb
