@@ -53,6 +53,7 @@ def indexItem(database, domain, item, quiet=False):
     # add item.name to the text so that it has extra weight in the
     # search results
     doc.addHiddenText(item.name)
+    doc.addHiddenText(doc[u'altname'])
 
     database.putDoc(doc, 0)
 

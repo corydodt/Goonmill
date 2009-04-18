@@ -2,6 +2,7 @@
 Test search functionality
 """
 import unittest
+import re
 
 from hypy import HDatabase, OpenFailed, CloseFailed
 
@@ -59,17 +60,24 @@ class SearchTestCase(unittest.TestCase):
 
     def test_indexItem(self):
         """
-        indexItem indexes a single item which can be found
+        indexItem indexes a single item which can be found, and make sure it's
+        possible to search by altname
         """
         self.index.open(TEST_INDEX_DIRECTORY, 'w')
         dbNinja = query.Spell()
-        dbNinja.id = 23; dbNinja.full_text = u"Hello<div>\\nhi"; dbNinja.name = u"Ninja"
+        dbNinja.id = 23; dbNinja.full_text = u"Hello<div>\\nmy pretty"
+        dbNinja.name = u"Ninja's Attack"
 
         search.indexItem(self.index, u'ninja', dbNinja, quiet=True)
 
         self.assertEqual(len(self.index), 1)
         idxNinja = self.index[u'ninja/23']
-        self.assertEqual(idxNinja.encode('ascii'), 'Hello hi')
+        self.assertEqual(idxNinja.encode('ascii'), "Hello my pretty")
+
+        # altname will be "ninjas attack" - verify this is in the draft
+        draft = str(idxNinja)
+        self.assertTrue(re.search(r'\n\t.*ninjas attack\n', draft), 
+                "did not find 'ninjas attack' in the draft document")
 
     def test_find(self):
         """
@@ -79,7 +87,7 @@ class SearchTestCase(unittest.TestCase):
         self.index.open(TEST_INDEX_DIRECTORY, 'w')
 
         tests = [ # {{{
-                (u"Hello<div>\\nhi",                                               u"Ninja", ),
+                (u"Hello<div>\\nmy pretty",                                        u"Ninja's Attack"),
                 (ur"\n<div topic=\"Heal, Mass\" level=\"5\">heal mass<p><",        u"Heal, Mass"),
                 (ur"\n<div topic=\"Hold Animal\" level=\"5\">hold animal<p>",      u"Hold Animal"),
                 (ur"\n<div topic=\"Horrid Wilting\" level=\"5\">horrid wilting",   u"Horrid Wilting"),
@@ -102,6 +110,7 @@ class SearchTestCase(unittest.TestCase):
         self.assertEqual(pluck(f([u"ho"]), u"@uri"), [u'ninja/2', u'ninja/3'])
         self.assertEqual(pluck(f([u"ho"], max=1), u"@uri"), [u'ninja/2', ])
         self.assertEqual(pluck(f([u"insan"]), u"@uri"), [u'ninja/5'])
+        self.assertEqual(pluck(f([u"ninjas attack"]), u"@uri"), [u'ninja/0'])
 
     def test_buildIndex(self):
         """
