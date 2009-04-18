@@ -1,1 +1,0 @@
-bash `hg root`/hook.d/10restart.changegroup 1>&2
