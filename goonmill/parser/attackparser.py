@@ -1,5 +1,4 @@
-from playtools import diceparser
-from .. import query
+from playtools import diceparser, query
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes

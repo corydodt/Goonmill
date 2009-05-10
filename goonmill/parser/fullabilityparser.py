@@ -4,7 +4,7 @@ Parse the HTML of the full_text, extracting the description of the full abilitie
 
 from xml.etree import ElementTree
 
-from goonmill import query
+from playtools import query
 
 def unescape(s):
     return s.replace(r'\n', '\n').replace(r'\"', '"')

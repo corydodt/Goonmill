@@ -11,7 +11,7 @@ from simpleparse.common import chartypes, numbers
 ## appease pyflakes
 chartypes, numbers
 
-from goonmill import query
+from playtools import query
 
 
 grammar = ( # {{{

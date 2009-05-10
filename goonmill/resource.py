@@ -19,10 +19,11 @@ from twisted.cred.checkers import AllowAnonymousAccess
 from .util import RESOURCE
 from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
-from . import search
 from .history import Statblock
 from .fileupload import FileUploadPage
 from .userfile import StaticImage
+
+from playtools import search
 
 
 # only need one of these.

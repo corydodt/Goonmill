@@ -2,12 +2,13 @@
 The history of statblocks for this session
 """
 
+import string
 import re
 
-from goonmill import query, rdfquery
+from goonmill import rdfquery
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
-from playtools import diceparser, dice, util as ptutil
+from playtools import diceparser, dice, util as ptutil, query
 
 class History(object):
     """
@@ -566,4 +567,58 @@ def parseFullAbilities(fullTextStat):
 def parseSpecialQualities(specialQualitiesStats):
     """All full ability markup as a list of strings"""
     return specialparser.parseSpecialQualities(specialQualitiesStats)
+
+def oneLineDescription(monster):
+    """
+    Produce a single-line description suitable for pure-text environments
+    """
+    sb = Statblock.fromMonster(monster)
+    get = sb.get
+    tmpl = string.Template(
+            '<<$name>> $alignment $size $creatureType || Init $initiative || $senses Listen $listen Spot $spot || AC $ac || $hitDice HD || Fort $fort Ref $ref Will $will || $speed $attacks$attackOptions$spellLikes|| $abilities || SQ $SQ || $url')
+    dct = {'name': get('name'),
+           'alignment': get('alignment'),
+           'size': get('size'),
+           'creatureType': get('type'),
+           'initiative': get('initiative'),
+           'senses': get('senses'),
+           'listen': get('listen'),
+           'spot': get('spot'),
+           'ac': get('armor_class'),
+           'hitDice': get('hitDice'),
+           'fort': get('fort'),
+           'ref': get('ref'),
+           'will': get('will'),
+           'speed': get('speed'),
+           'attacks': '',
+           'attackOptions': '',
+           'spellLikes': '',
+           'abilities': get('abilities'),
+           'SQ': get('special_qualities'),
+           'url': query.srdReferenceURL(monster),
+           }
+
+    attacks = []
+    attackGroups = sb.get('attackGroups')
+    melees = attackGroups['melee']
+    rangeds = attackGroups['ranged']
+    for melee in melees:
+        attacks.append("MELEE %s" % (melee,))
+    for ranged in rangeds:
+        attacks.append("RANGED %s" % (ranged,))
+    if attacks:
+        dct['attacks'] = '|| %s ' % (''.join(attacks),)
+
+    attackOptions = get('special_attacks')
+    if attackOptions:
+        dct['attackOptions'] = '|| Atk Options %s ' % (attackOptions,)
+
+    spellLikes = get('spellLikeAbilities')
+    if spellLikes:
+        dct['spellLikes'] = '|| Spell-Like: %s ' % (spellLikes,)
+
+    # resistance, immunity, spell resistance, and vulnerability are all
+    # found in the SQ field already, so DRY
+
+    return tmpl.safe_substitute(dct)
 
