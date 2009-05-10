@@ -50,8 +50,6 @@ testPython "Twisted 2.5" "$t"
 t="import warnings; warnings.filterwarnings('ignore')
 from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
 testPython "Divmod Nevow >= 0.9.33"  "$t"
-testPython "simpleparse" 'import simpleparse'
-testPython "Hypy" 'from hypy import *'
 testPython "Python 2.5" 'import xml.etree'
 
 if [ "$errorStatus" == "error" ]; then
@@ -64,8 +62,6 @@ if [ -n "$force" ]; then
     echo ':: force is in effect: removing database files!'
     set -x
     rm -f goonmill/user.db*
-    rm -f goonmill/rdflib.db*
-    rm -rf goonmill/search-index/
     set +x
 fi
 
@@ -78,40 +74,6 @@ if [ ! -r "$userdb" ]; then
     chmod 664 $userdb
 else
     echo "** ${userdb} already exists, not willing to overwrite it!"
-    echo ::
-    echo :: If you have already run bootstrap.sh once, this is not an error.
-    echo ::
-fi
-
-tripledb=goonmill/rdflib.db
-if [ ! -r "$tripledb" ]; then
-    echo ::
-    echo :: $tripledb
-    ptstore create $tripledb
-    ns=("--n3 http://www.w3.org/2000/01/rdf-schema#"
-        "--n3 http://goonmill.org/2007/family.n3#"
-        "--n3 http://goonmill.org/2007/characteristic.n3#"
-        "--n3 http://goonmill.org/2007/property.n3#"
-        "--n3 http://goonmill.org/2007/skill.n3#"
-        "--n3 http://goonmill.org/2007/feat.n3#"
-        "--n3 http://goonmill.org/2009/statblock.n3#"
-        )
-    ptstore pull --verbose ${ns[@]} $tripledb || exit 1
-else
-    echo "** ${tripledb} already exists, not willing to overwrite it!"
-    echo ::
-    echo :: If you have already run bootstrap.sh once, this is not an error.
-    echo ::
-fi
-
-estraierindex=goonmill/search-index/_idx
-if [ ! -d "$estraierindex" ]; then
-    echo ::
-    echo :: $estraierindex
-    python goonmill/search.py --build-index
-    echo
-else
-    echo "** ${estraierindex} already exists, not willing to overwrite it!"
     echo ::
     echo :: If you have already run bootstrap.sh once, this is not an error.
     echo ::
