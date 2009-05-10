@@ -2,10 +2,8 @@
 (/|\\|)dropin\.cache$
 (/|\\|^)twistd\.log$
 (/|\\|^)dnotify\.log$
-(/|\\)srd35\.db$
 (/|\\|^).*\.pid$
 ^goonmill/html/.*$
-^goonmill/search-index/.*$
 ^options\.local$
 ^hook.d/.*$
 ^doc/goonmill-shots\.graffle.*$
