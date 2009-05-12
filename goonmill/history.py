@@ -8,7 +8,8 @@ import re
 from goonmill import rdfquery
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
-from playtools import diceparser, dice, util as ptutil, query
+from playtools import diceparser, dice, util as ptutil, fact
+from playtools.plugins import d20srd35
 
 class History(object):
     """
@@ -36,6 +37,7 @@ class History(object):
     def unpendStatblocks(self, statblocks):
         self.pending = list(set(self.pending) - set(statblocks))
 
+SRD = fact.systems['D20 SRD']
 
 hpParser = re.compile(r'(\S+)\s[^(]*\(([\d,]+) hp\)')
 
@@ -49,7 +51,7 @@ class Statblock(object):
         assert isinstance(id, int)
         sb = Statblock()
         sb.id = id
-        sb.monster = query.lookup(id)
+        sb.monster = SRD.facts['monster'][id]
         sb.initStats()
         return sb
 
@@ -595,7 +597,7 @@ def oneLineDescription(monster):
            'spellLikes': '',
            'abilities': get('abilities'),
            'SQ': get('special_qualities'),
-           'url': query.srdReferenceURL(monster),
+           'url': d20srd35.srdReferenceURL(monster),
            }
 
     attacks = []

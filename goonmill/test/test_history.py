@@ -4,7 +4,10 @@ Use the history module to format monsters
 
 import unittest
 from .. import history
-from playtools import query
+from playtools import fact
+
+SRD = fact.systems['D20 SRD']
+MONSTERS = SRD.facts['monster']
 
 class HistoryTestCase(unittest.TestCase):
     def test_statblock(self):
@@ -13,7 +16,7 @@ class HistoryTestCase(unittest.TestCase):
         self.assertEqual(sb.get('hitDice'), '2d12')
 
         # just load all the monsters
-        monsters = query.allMonsters()
+        monsters = MONSTERS.dump()
         for monster in monsters:
             exp = [monster.name, None]
             monster = history.Statblock.fromId(monster.id)
@@ -21,7 +24,7 @@ class HistoryTestCase(unittest.TestCase):
             self.assertEqual(exp, act)
 
     def test_parseFeats(self):
-        dbmohrg = query.lookup(u'Mohrg')
+        dbmohrg = MONSTERS[u'Mohrg']
         mohrg = history.Statblock.fromMonster(dbmohrg)
         self.assertEqual(mohrg.get('acFeats'), 'Dodge, Mobility')
 
@@ -29,13 +32,13 @@ class HistoryTestCase(unittest.TestCase):
         """
         Make sure one-line descriptions are correctly formatted
         """
-        mohrg = query.lookup(501, query.Monster)
+        mohrg = MONSTERS.lookup(501)
         self.assertEqual(history.oneLineDescription(mohrg),
                 u'<<Mohrg>> Chaotic Evil Medium Undead || Init +9 || Darkvision 60 ft., Darkvision 60 ft. Listen +11 Spot +15 || AC 23 (+4 Dex, +9 natural), touch 14, flat-footed 14 || 14d12 HD || Fort +4 Ref +10 Will +9 || 30 ft. (6 squares) || MELEE Slam +12 (1d6+7) melee, and tongue +12 (paralysis) melee || Atk Options Improved grab, paralyzing touch, create spawn || Str 21, Dex 19, Con -, Int 11, Wis 10, Cha 10 || SQ Darkvision 60 ft., undead traits || http://www.d20srd.org/srd/monsters/mohrg.htm'
                 )
 
     def test_statblockSkill(self):
-        skillStats = query._allSkillStats()
+        skillStats = [m.skills for m in MONSTERS.dump()]
         for s in skillStats:
             if s is None:
                 continue
@@ -45,10 +48,10 @@ class HistoryTestCase(unittest.TestCase):
             exp = [s, {}]
             act = [s, history.parseSkills(s) and {}]
             self.assertEqual(exp, act)
-            
+        #
 
     def test_statblockFeat(self):
-        featStats = query._allFeatStats()
+        featStats = [m.feats for m in MONSTERS.dump()]
         for f in featStats:
             if f is None:
                 continue
@@ -60,7 +63,7 @@ class HistoryTestCase(unittest.TestCase):
             self.assertEqual(exp, act)
 
     def test_hitPoints(self):
-        hpStats = query._allHPStats()
+        hpStats = [m.hit_dice for m in MONSTERS.dump()]
         for hp in hpStats:
             if hp is None:
                 continue
@@ -72,7 +75,7 @@ class HistoryTestCase(unittest.TestCase):
             self.assertEqual(exp, act)
 
     def test_saves(self):
-        saveStats = query._allSaveStats()
+        saveStats = [m.saves for m in MONSTERS.dump()]
         for saves in saveStats:
             if saves is None:
                 continue
