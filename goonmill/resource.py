@@ -23,7 +23,7 @@ from .history import Statblock
 from .fileupload import FileUploadPage
 from .userfile import StaticImage
 
-from playtools import search
+from playtools import search, fact
 
 
 # only need one of these.
@@ -425,7 +425,7 @@ def searched(searchTerms):
     """
     terms = tuple(searchTerms.split())
     estdb = hypy.HDatabase()
-    estdb.open(search.INDEX_DIRECTORY, 'r')
+    estdb.open(fact.systems['D20 SRD'].searchIndexPath, 'r')
     lastFound = search.find(estdb, 'monster', terms)
     def unpack(t):
         num = int(t[u'@uri'].split('/')[1])
