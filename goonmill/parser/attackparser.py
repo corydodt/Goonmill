@@ -1,4 +1,4 @@
-from playtools import diceparser, query
+from playtools import diceparser
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
@@ -222,7 +222,10 @@ def parseAttacks(s):
 
 
 if __name__ == '__main__': # {{{
-    tests = query._allAttackStats()
+    FIXME # this test sucks.
+    from playtools import fact
+    monsters = fact.systems['D20 SRD'].facts['monster']
+    tests = [m.full_attack for m in monster.dump()]
     for id, test in tests:
         print id, test
         suc, children, next = attackParser.parse(test, processor=Processor())

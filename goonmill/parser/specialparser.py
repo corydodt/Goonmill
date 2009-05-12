@@ -11,8 +11,6 @@ from simpleparse.common import chartypes, numbers
 ## appease pyflakes
 chartypes, numbers
 
-from playtools import query
-
 
 grammar = ( # {{{
 r'''# special quality stat
@@ -321,6 +319,10 @@ def printFrequenciesOfUnknowns():
 
 
 if __name__ == '__main__': # {{{
+    FIXME # this test sucks.
+    from playtools import fact
+    monsters = fact.systems['D20 SRD'].facts['monster']
+    tests = [m.special_qualities for m in monster.dump()]
     tests = query._allSQStats()
     for id, test in tests:
         #print id, test

@@ -4,8 +4,6 @@ Parse the HTML of the full_text, extracting the description of the full abilitie
 
 from xml.etree import ElementTree
 
-from playtools import query
-
 def unescape(s):
     return s.replace(r'\n', '\n').replace(r'\"', '"')
 
@@ -67,7 +65,10 @@ def parseFullAbilities(s):
     return (specAbs, spellLikes)
 
 if __name__ == '__main__': # {{{
-    tests = query._allFullTextStats()
+    FIXME # this test sucks.
+    from playtools import fact
+    monsters = fact.systems['D20 SRD'].facts['monster']
+    tests = [m.full_text for m in monster.dump()]
     for n, ft in tests:
         ft = prepFullText(ft)
         print n, ft[:70]
