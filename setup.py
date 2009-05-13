@@ -6,7 +6,7 @@ except ImportError:
 
 from setuptools import setup, find_packages
 setup(name='Goonmill',
-      version='0.2',
+      version='0.2.1',
       author='Cory Dodt',
       description='Goonmill Monster Generator',
       url='http://goonmill.goonmill.org/',
