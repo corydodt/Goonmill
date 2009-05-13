@@ -12,32 +12,6 @@ from goonmill.parser import (skillparser, featparser,
 from playtools import diceparser, dice, util as ptutil, fact, rdfquery
 from playtools.plugins import d20srd35
 
-class History(object):
-    """
-    A container for all the statblocks we have generated so far in this session
-    """
-    def __init__(self):
-        self.result = None
-        self.statblocks = []
-        self.pending = []
-
-    def setView(self, view):
-        """
-        Set the output result element, which will be notified when I change.
-        """
-        self.view = view
-
-    def addStatblock(self, statblock):
-        self.statblocks.append(statblock)
-        self.pending.append(statblock)
-        self.view.historyUpdated(self)
-
-    def pendingStatblocks(self):
-        return self.pending
-
-    def unpendStatblocks(self, statblocks):
-        self.pending = list(set(self.pending) - set(statblocks))
-
 SRD = fact.systems['D20 SRD']
 
 hpParser = re.compile(r'(\S+)\s[^(]*\(([\d,]+) hp\)')
