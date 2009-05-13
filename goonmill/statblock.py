@@ -9,7 +9,7 @@ import re
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
 
-from playtools import diceparser, dice, util as ptutil, fact, rdfquery
+from playtools import diceparser, dice, util as ptutil, fact
 from playtools.plugins import d20srd35
 
 SRD = fact.systems['D20 SRD']
@@ -96,7 +96,7 @@ class Statblock(object):
         self.determineFamilies()
 
     def specialAC(self):
-        specArmors = rdfquery.allSpecialAC()
+        specArmors = SRD.facts['specialAC'].dump()
 
         extraArmors = []
         for q in self._parsedSpecialQualities:
@@ -117,7 +117,7 @@ class Statblock(object):
 
     def determineFamilies(self):
         """From several of the monster's attributes, compute its families."""
-        knownFamilies = rdfquery.allFamilies()
+        knownFamilies = SRD.facts['family'].dump()
         foundFamilies = set()
 
         _f = self.monster.family.title()
@@ -208,7 +208,7 @@ class Statblock(object):
 
     def specialActions(self):
         """All special actions as a string"""
-        specActions = rdfquery.allSpecialActions()
+        specActions = SRD.facts['specialAction'].dump()
 
         extraActions = []
         for q in self._parsedSpecialQualities:
@@ -381,7 +381,7 @@ class Statblock(object):
 
     def aura(self):
         """Return the creature's aura, if any"""
-        all = rdfquery.allAuras()
+        all = SRD.facts['aura'].dump()
 
         ret = []
         for q in self._parsedSpecialQualities:
@@ -474,7 +474,6 @@ class Statblock(object):
         self.overrides['spellbook'] = spellbook
 
 
-@rdfquery.needDatabase
 def parseFeats(featStat):
     """All feats of the monster, as a list of Feat."""
     ret = []
@@ -486,8 +485,8 @@ def parseFeats(featStat):
 
     for item in parsed:
         name = ptutil.rdfName(item.name)
-        key = getattr(rdfquery.FEAT, name)
-        item.dbFeat = rdfquery.Feat(key)
+        key = getattr(d20srd35.FEAT, name)
+        item.dbFeat = SRD.facts['feat'][key]
         ret.append(item)
 
     return ret
