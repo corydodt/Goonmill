@@ -19,7 +19,7 @@ setup(name='Goonmill',
       install_requires=[
           'pysqlite>=2',
           'storm>=0.13',
-          'playtools',
+          'playtools>=0.3.0',
           'zope.interface',
           'twisted',
           'nevow',
