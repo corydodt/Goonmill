@@ -39,7 +39,9 @@ function testPython()
     fi
 }
 
-testPython "Playtools" 'import playtools'
+t="import warnings; warnings.filterwarnings('ignore')
+from playtools import fact"
+testPython "Playtools" "$t"
 t="import warnings; warnings.filterwarnings('ignore')
 from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
 testPython "Divmod Nevow >= 0.9.33"  "$t"
