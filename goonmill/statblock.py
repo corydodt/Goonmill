@@ -1,14 +1,15 @@
 """
-The history of statblocks for this session
+The model representation of a monster suitable for piping into something that
+formats it.
 """
 
 import string
 import re
 
-from goonmill import rdfquery
 from goonmill.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
-from playtools import diceparser, dice, util as ptutil, fact
+
+from playtools import diceparser, dice, util as ptutil, fact, rdfquery
 from playtools.plugins import d20srd35
 
 class History(object):

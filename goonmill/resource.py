@@ -19,7 +19,7 @@ from twisted.cred.checkers import AllowAnonymousAccess
 from .util import RESOURCE
 from .user import (Groupie, Workspace, Constituent, TOO_MANY_GROUPIES,
         KIND_NPC, KIND_MONSTERGROUP)
-from .history import Statblock
+from .statblock import Statblock
 from .fileupload import FileUploadPage
 from .userfile import StaticImage
 

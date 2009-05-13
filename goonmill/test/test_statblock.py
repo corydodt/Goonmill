@@ -1,17 +1,17 @@
 """
-Use the history module to format monsters
+Use the statblock module to format monsters
 """
 
 import unittest
-from .. import history
+from .. import statblock
 from playtools import fact
 
 SRD = fact.systems['D20 SRD']
 MONSTERS = SRD.facts['monster']
 
-class HistoryTestCase(unittest.TestCase):
+class StatblockTestCase(unittest.TestCase):
     def test_statblock(self):
-        sb = history.Statblock.fromId(379)
+        sb = statblock.Statblock.fromId(379)
         self.assertEqual(sb.get('alignment'), 'Chaotic Evil') 
         self.assertEqual(sb.get('hitDice'), '2d12')
 
@@ -19,13 +19,13 @@ class HistoryTestCase(unittest.TestCase):
         monsters = MONSTERS.dump()
         for monster in monsters:
             exp = [monster.name, None]
-            monster = history.Statblock.fromId(monster.id)
+            monster = statblock.Statblock.fromId(monster.id)
             act = [monster.get('name'), monster and None]
             self.assertEqual(exp, act)
 
     def test_parseFeats(self):
         dbmohrg = MONSTERS[u'Mohrg']
-        mohrg = history.Statblock.fromMonster(dbmohrg)
+        mohrg = statblock.Statblock.fromMonster(dbmohrg)
         self.assertEqual(mohrg.get('acFeats'), 'Dodge, Mobility')
 
     def test_oneLine(self):
@@ -33,7 +33,7 @@ class HistoryTestCase(unittest.TestCase):
         Make sure one-line descriptions are correctly formatted
         """
         mohrg = MONSTERS.lookup(501)
-        self.assertEqual(history.oneLineDescription(mohrg),
+        self.assertEqual(statblock.oneLineDescription(mohrg),
                 u'<<Mohrg>> Chaotic Evil Medium Undead || Init +9 || Darkvision 60 ft., Darkvision 60 ft. Listen +11 Spot +15 || AC 23 (+4 Dex, +9 natural), touch 14, flat-footed 14 || 14d12 HD || Fort +4 Ref +10 Will +9 || 30 ft. (6 squares) || MELEE Slam +12 (1d6+7) melee, and tongue +12 (paralysis) melee || Atk Options Improved grab, paralyzing touch, create spawn || Str 21, Dex 19, Con -, Int 11, Wis 10, Cha 10 || SQ Darkvision 60 ft., undead traits || http://www.d20srd.org/srd/monsters/mohrg.htm'
                 )
 
@@ -46,7 +46,7 @@ class HistoryTestCase(unittest.TestCase):
             # just run the code - embed the stat into the assert so we can
             # read it.
             exp = [s, {}]
-            act = [s, history.parseSkills(s) and {}]
+            act = [s, statblock.parseSkills(s) and {}]
             self.assertEqual(exp, act)
         #
 
@@ -59,7 +59,7 @@ class HistoryTestCase(unittest.TestCase):
             # just run the code - embed the stat into the assert so we can
             # read it.
             exp = [f, []]
-            act = [f, history.parseFeats(f) and []]
+            act = [f, statblock.parseFeats(f) and []]
             self.assertEqual(exp, act)
 
     def test_hitPoints(self):
@@ -71,7 +71,7 @@ class HistoryTestCase(unittest.TestCase):
             # just run the code - embed the stat into the assert so we can
             # read it.
             exp = [hp, None]
-            act = [hp, history.parseHitPoints(hp) and None]
+            act = [hp, statblock.parseHitPoints(hp) and None]
             self.assertEqual(exp, act)
 
     def test_saves(self):
@@ -83,6 +83,6 @@ class HistoryTestCase(unittest.TestCase):
             # just run the code - embed the stat into the assert so we can
             # read it.
             exp = [saves, []]
-            act = [saves, history.parseSaves(saves) and []]
+            act = [saves, statblock.parseSaves(saves) and []]
             self.assertEqual(exp, act)
 
