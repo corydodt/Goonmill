@@ -117,7 +117,7 @@ class Statblock(object):
 
     def determineFamilies(self):
         """From several of the monster's attributes, compute its families."""
-        knownFamilies = SRD.facts['family'].dump()
+        knownFamilies = dict((unicode(x.label), x) for x in SRD.facts['family'].dump())
         foundFamilies = set()
 
         _f = self.monster.family.title()
@@ -131,8 +131,8 @@ class Statblock(object):
         _d = self.monster.descriptor
         if _d is not None:
             for descriptor in _d.split(', '):
-                if _d in knownFamilies:
-                    foundFamilies.add(knownFamilies[_d])
+                if descriptor in knownFamilies:
+                    foundFamilies.add(knownFamilies[descriptor])
 
         for q in self._parsedSpecialQualities:
             if q.type == 'family':
@@ -143,7 +143,9 @@ class Statblock(object):
         self.families = sorted(foundFamilies)
 
     def update(self, attribute, newValue):
-        """I will call this to notify handlers ot changed attributes"""
+        """
+        I will call this to notify handlers of changed attributes
+        """
         if self._handler is None:
             return
 
@@ -171,16 +173,51 @@ class Statblock(object):
         return s
 
     def parseFullAbilities(self):
-        return parseFullAbilities(self.monster.full_text)
+        """All full ability markup as a 2-tuple of strings"""
+        ft = self.monster.full_text
+        specs, spellLikes = fullabilityparser.parseFullAbilities(ft)
+        if specs is None:
+            specs = ''
+        else:
+            specs = ''.join(specs)
+
+        if spellLikes is None:
+            spellLikes = ''
+
+        return (specs, spellLikes)
 
     def parseSpecialQualities(self):
-        return parseSpecialQualities(self.monster.special_qualities)
+        """All full ability markup as a list of strings"""
+        return specialparser.parseSpecialQualities(self.monster.special_qualities)
 
     def parseFeats(self):
-        return parseFeats(self.monster.feats)
+        """All feats of the monster, as a list of Feat."""
+        ret = []
+        st = self.monster.feats
+        # check this before trying to parse
+        if st is None:
+            return ret
+
+        parsed = featparser.parseFeats(st)[0]
+
+        for item in parsed:
+            name = ptutil.rdfName(item.name)
+            key = getattr(d20srd35.FEAT, name)
+            item.dbFeat = SRD.facts['feat'][key]
+            ret.append(item)
+
+        return ret
 
     def parseSkills(self):
-        return parseSkills(self.monster.skills)
+        """All skills of the monster as a dict of strings"""
+        st = self.monster.skills
+        # check this before trying to parse
+        if st is None:
+            return {}
+
+        parsed = skillparser.parseSkills(st)[0]
+
+        return dict([(item.skillName, str(item)) for item in parsed])
 
     def formatSkills(self):
         if self.skills == {}:
@@ -188,7 +225,8 @@ class Statblock(object):
         return u', '.join(sorted(self.skills.values()))
 
     def parseSaves(self):
-        return parseSaves(self.monster.saves)
+        """Fort, Ref and Will saves as dict of StatblockSave objects"""
+        return saveparser.parseSaves(self.monster.saves)[0]
 
     def formatFeats(self, callable):
         featList = callable()
@@ -204,6 +242,7 @@ class Statblock(object):
 
     def specialActionFeats(self):
         """List of feats that can appear next to special actions"""
+        TODO # no monsters actually have this
         return [f for f in self.feats if f.dbFeat.isSpecialActionFeat]
 
     def specialActions(self):
@@ -236,8 +275,8 @@ class Statblock(object):
         @return: A string of multiple hit points
         """
         rolled = [self.singleHitPoints() for n in range(self._count)]
-        for n in enumerate(rolled):
-            if n == -1:
+        for n, roll in enumerate(rolled):
+            if roll == -1:
                 rolled[n] = 'Special'
 
         return u', '.join(map(str, rolled))
@@ -432,12 +471,26 @@ class Statblock(object):
         return str(self._parsedHitDice)
 
     def parseHitPoints(self):
-        """Roll hit points for one monster of this type"""
-        return parseHitPoints(self.monster.hit_dice)
+        """Hit points of the monster as a ParseResults object (should be a
+        StatblockHitPoints object!)
+        """
+        m = hpParser.match(self.monster.hit_dice)
+        if m is None:
+            # monster has very non-standard hit dice (e.g. Psicrystal)
+            return 
+
+        p = lambda s: diceparser.parseDice(s)
+        # try parsing the first group as a dice expression. if that fails,
+        # return the second group as non-random hit points.
+        try:
+            _parsed = p(m.group(1))
+            return _parsed
+        except RuntimeError:
+            return p(m.group(2))
 
     def parseAttackGroups(self):
-        """Get the attack options dict"""
-        return parseAttackGroups(self.monster.full_attack)
+        """All grouped attack options as strings"""
+        return attackparser.parseAttacks(self.monster.full_attack)[0]
 
     def get(self, attribute):
         """
@@ -473,76 +526,6 @@ class Statblock(object):
     def setSpellbook(self, spellbook):
         self.overrides['spellbook'] = spellbook
 
-
-def parseFeats(featStat):
-    """All feats of the monster, as a list of Feat."""
-    ret = []
-    # check this before trying to parse
-    if featStat is None:
-        return ret
-
-    parsed = featparser.parseFeats(featStat)[0]
-
-    for item in parsed:
-        name = ptutil.rdfName(item.name)
-        key = getattr(d20srd35.FEAT, name)
-        item.dbFeat = SRD.facts['feat'][key]
-        ret.append(item)
-
-    return ret
-
-def parseHitPoints(hpStat):
-    """Hit points of the monster as a ParseResults object (should be a
-    StatblockHitPoints object!)
-    """
-    m = hpParser.match(hpStat)
-    if m is None:
-        # monster has very non-standard hit dice (e.g. Psicrystal)
-        return 
-
-    p = lambda s: diceparser.parseDice(s)
-    # try parsing the first group as a dice expression. if that fails,
-    # return the second group as non-random hit points.
-    try:
-        _parsed = p(m.group(1))
-        return _parsed
-    except RuntimeError:
-        return p(m.group(2))
-
-def parseSkills(skillStat):
-    """All skills of the monster as a dict of strings"""
-    # check this before trying to parse
-    if skillStat is None:
-        return {}
-
-    parsed = skillparser.parseSkills(skillStat)[0]
-
-    return dict([(item.skillName, str(item)) for item in parsed])
-
-def parseSaves(saveStat):
-    """Fort, Ref and Will saves as dict of StatblockSave objects"""
-    return saveparser.parseSaves(saveStat)[0]
-
-def parseAttackGroups(attackStat):
-    """All grouped attack options as strings"""
-    return attackparser.parseAttacks(attackStat)[0]
-
-def parseFullAbilities(fullTextStat):
-    """All full ability markup as a 2-tuple of strings"""
-    specs, spellLikes = fullabilityparser.parseFullAbilities(fullTextStat)
-    if specs is None:
-        specs = ''
-    else:
-        specs = ''.join(specs)
-
-    if spellLikes is None:
-        spellLikes = ''
-
-    return (specs, spellLikes)
-
-def parseSpecialQualities(specialQualitiesStats):
-    """All full ability markup as a list of strings"""
-    return specialparser.parseSpecialQualities(specialQualitiesStats)
 
 def oneLineDescription(monster):
     """
