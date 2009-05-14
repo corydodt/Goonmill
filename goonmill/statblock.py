@@ -566,7 +566,7 @@ def oneLineDescription(monster):
     for ranged in rangeds:
         attacks.append("RANGED %s" % (ranged,))
     if attacks:
-        dct['attacks'] = '|| %s ' % (''.join(attacks),)
+        dct['attacks'] = '|| %s ' % (' '.join(attacks),)
 
     attackOptions = get('special_attacks')
     if attackOptions:
