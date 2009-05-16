@@ -29,7 +29,7 @@ function testPython()
 #  redirect to stdout.
 {
     software="$1"
-    line=$(python -c "$2" 2>&1 | tail -1)
+    line=$(python -Wignore -c "$2" 2>&1 | tail -1)
 
     if [ -n "$line" ]; then
         echo "** Install $software ($line)"
@@ -39,11 +39,9 @@ function testPython()
     fi
 }
 
-t="import warnings; warnings.filterwarnings('ignore')
-from playtools import fact"
+t="from playtools import fact"
 testPython "Playtools" "$t"
-t="import warnings; warnings.filterwarnings('ignore')
-from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
+t="from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
 testPython "Divmod Nevow >= 0.9.33"  "$t"
 testPython "Python 2.5" 'import xml.etree'
 
