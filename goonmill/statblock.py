@@ -411,11 +411,10 @@ class Statblock(object):
         for q in self._parsedSpecialQualities:
             if q.type == 'aura':
                 ret.append(q.what)
-
-        for q in self._parsedSpecialQualities:
-            qname = (q.name.lower() if q.name else '')
-            if qname in all:
-                ret.append(all[qname].label)
+            else:
+                qname = (q.name.lower() if q.name else '')
+                if qname in all:
+                    ret.append(all[qname].label)
 
         return u', '.join(sorted(ret)) or None
 

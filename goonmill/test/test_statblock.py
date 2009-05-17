@@ -277,6 +277,13 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'negative energy'
         self.assertEqual(actual, expected)
 
+        # odd auras..
+        phane = statblock.Statblock.fromId(8)
+        actual = phane.get('aura')
+        expected = u'Null Time Field'
+        self.assertEqual(actual, expected)
+
+
     def test_senses(self):
         """
         Beasties with senses show that
