@@ -229,6 +229,12 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'Death Effects, Mind-Affecting Attacks, Disease, Magic , Paralysis, Poison, Sleep, Stunning, cold, electricity, mind-affecting attacks, polymorph'
         self.assertEqual(actual, expected)
 
+        # none...
+        hobgoblin = statblock.Statblock.fromId(413)
+        actual = hobgoblin.get('immunities')
+        expected = None
+        self.assertEqual(actual, expected)
+
     def test_regeneration(self):
         """
         Beasties with regeneration show that
@@ -286,6 +292,12 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'-'
         self.assertEqual(actual, expected)
 
+        # non-ranged senses
+        forceDragon = statblock.Statblock.fromId(21)
+        actual = forceDragon.get('senses')
+        expected = u'Blindsense 60 ft., Darkvision 120 ft., Keen Senses, Low-Light Vision'
+        self.assertEqual(actual, expected)
+
     def test_vulnerabilities(self):
         """
         Beasties with vulnerabilities show that
@@ -315,8 +327,8 @@ class StatblockTestCase(unittest.TestCase):
         expected = 'Any'
         self.assertEqual(actual, expected)
 
-    ## parseFeats with none, parseSkills/formatSkills with none,
-    ## cached attackGroups, setCount/Label/Alignment/Spells/Spellbook
+    ## parseFeats with none
+    ## cached attackGroups
 
 
 class HugeStatblockTestCase(unittest.TestCase):

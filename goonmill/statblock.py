@@ -492,24 +492,6 @@ class Statblock(object):
             return att
         return getattr(self.monster, attribute)
 
-    def setCount(self, count):
-        count = int(count)
-        self.overrides['count'] = count
-        self._count = count
-        hp = self.hitPoints()
- 
-    def setLabel(self, label):
-        self.overrides['label'] = label
-
-    def setAlignment(self, alignment):
-        self.overrides['alignment'] = alignment
-
-    def setSpells(self, spells):
-        self.overrides['spells'] = spells
-
-    def setSpellbook(self, spellbook):
-        self.overrides['spellbook'] = spellbook
-
 
 def oneLineDescription(monster):
     """
