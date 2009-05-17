@@ -139,9 +139,15 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'Special'
         self.assertEqual(actual, expected)
 
+        # regular hit points
         anaxim = statblock.Statblock.fromId(1)
         actual = int(anaxim.get('hitPoints'))
         self.assertTrue(150 < actual < 300, actual)
+
+        # fractional hit dice
+        toad = statblock.Statblock.fromId(137)
+        actual = int(toad.get('hitPoints'))
+        self.assertEqual(actual, 1)
 
     def test_hitDice(self):
         """
