@@ -209,9 +209,13 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'Acid 20, Fire 20, Sonic 20, Turn +20'
         self.assertEqual(actual, expected)
 
+        # family resistances
+        babau = statblock.Statblock.fromId(165)
+        self.assertEqual(babau.get('resistances'), u'Acid 10, Cold 10, Fire 10')
+
         # no resistances..
-        shrieker = statblock.Statblock.fromId(372)
-        self.assertEqual(shrieker.get('skills'), u'-')
+        anaxim = statblock.Statblock.fromId(1)
+        self.assertEqual(anaxim.get('resistances'), None)
 
     def test_spellResistance(self):
         """
@@ -356,7 +360,7 @@ class StatblockTestCase(unittest.TestCase):
 
 class HugeStatblockTestCase(unittest.TestCase):
     """
-    Crude tests that run some of the code on all the monsters
+    Crude test that runs some of the code on all the monsters
     """
     def test_statblockALL(self):
         # just load all the monsters
@@ -366,61 +370,3 @@ class HugeStatblockTestCase(unittest.TestCase):
             monster = statblock.Statblock.fromId(monster.id)
             act = [monster.get('name'), monster and None]
             self.assertEqual(exp, act)
-
-    def test_statblockSkillALL(self):
-        for m in MONSTERS.dump():
-            s = m.skills
-            if s is None:
-                continue
-
-            sb = statblock.Statblock.fromMonster(m)
-
-            # just run the code - embed the stat into the assert so we can
-            # read it.
-            exp = [s, {}]
-            act = [s, sb.parseSkills() and {}]
-            self.assertEqual(exp, act)
-        #
-
-    def test_statblockFeatALL(self):
-        for m in MONSTERS.dump():
-            f = m.feats
-            if f is None:
-                continue
-
-            sb = statblock.Statblock.fromMonster(m)
-
-            # just run the code - embed the stat into the assert so we can
-            # read it.
-            exp = [f, []]
-            act = [f, sb.parseFeats() and []]
-            self.assertEqual(exp, act)
-
-    def test_hitPointsALL(self):
-        for m in MONSTERS.dump():
-            hp = m.hit_dice
-            if hp is None:
-                continue
-
-            sb = statblock.Statblock.fromMonster(m)
-
-            # just run the code - embed the stat into the assert so we can
-            # read it.
-            exp = [hp, None]
-            act = [hp, sb.parseHitPoints() and None]
-            self.assertEqual(exp, act)
-
-    def test_savesALL(self):
-        for m in MONSTERS.dump():
-            saves = m.saves
-            if saves is None:
-                continue
-
-            sb = statblock.Statblock.fromMonster(m)
-
-            # just run the code - embed the stat into the assert so we can
-            # read it.
-            exp = [saves, []]
-            act = [saves, sb.parseSaves() and []]
-            self.assertEqual(exp, act)
-

@@ -302,7 +302,6 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.resistances:
-                FIXME  # fuck, nothing reaches this code?
                 label = s.attackEffect.label
                 amt = s.value
                 ret[label] = "%s %s" % (label, amt)
@@ -316,7 +315,6 @@ class Statblock(object):
 
         if len(ret) > 0:
             return u', '.join(sorted(ret.values()))
-        FIXME  # fuck, nothing reaches this code?
         return None
 
     def immunities(self):
