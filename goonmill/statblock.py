@@ -426,6 +426,7 @@ class Statblock(object):
         """
         ret = {'melee':[], 'ranged':[]}
 
+        # cache parsed attack groups for repeated access
         if getattr(self, '_parsedAttackGroups', None) is None:
             options = self._parsedAttackGroups = self.parseAttackGroups()
         else:

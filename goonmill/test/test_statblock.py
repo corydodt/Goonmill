@@ -250,6 +250,20 @@ class StatblockTestCase(unittest.TestCase):
         expected = None
         self.assertEqual(actual, expected)
 
+    def test_attackGroups(self):
+        """
+        Attack groups can be parsed correctly, and cache correctly
+        """
+        deva = statblock.Statblock.fromId(431)
+        actual = deva.get('attackGroups')
+        expected = {'melee': ['plus3 heavy mace of disruption +21/+16/+11 (1d8+12 plus stun) melee',
+           'slam +18 (1d8+9) melee'], 'ranged': []}
+        self.assertEqual(actual, expected)
+
+        # cached
+        actual = deva.get('attackGroups')
+        self.assertEqual(actual, expected)
+
     def test_fastHealing(self):
         """
         Beasties with fast healing show that
@@ -282,7 +296,6 @@ class StatblockTestCase(unittest.TestCase):
         actual = phane.get('aura')
         expected = u'Null Time Field'
         self.assertEqual(actual, expected)
-
 
     def test_senses(self):
         """
@@ -333,9 +346,6 @@ class StatblockTestCase(unittest.TestCase):
         actual = leshay.formatAlignment()
         expected = 'Any'
         self.assertEqual(actual, expected)
-
-    ## parseFeats with none
-    ## cached attackGroups
 
 
 class HugeStatblockTestCase(unittest.TestCase):
