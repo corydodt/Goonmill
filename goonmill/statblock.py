@@ -88,7 +88,6 @@ class Statblock(object):
         spot = self.skills.get('Spot', None)
         if spot is not None: self.overrides['spot'] = spot[5:]
 
-        self._handler = None
         self._parsedHitDice = None
 
         self._parsedSpecialQualities = self.parseSpecialQualities()
@@ -141,23 +140,6 @@ class Statblock(object):
                     foundFamilies.add(knownFamilies[what])
 
         self.families = sorted(foundFamilies)
-
-    def update(self, attribute, newValue):
-        """
-        I will call this to notify handlers of changed attributes
-        """
-        if self._handler is None:
-            return
-
-        return self._handler(attribute, newValue)
-
-    def updateHandler(self, handler):
-        """
-        Call with a function with the signature: handler(attribute, newValue)
-
-        It will be called when an attribute of the statblock changes
-        """
-        self._handler = handler
 
     alignmentRx = re.compile(r'Always (.*)')
 
@@ -515,7 +497,6 @@ class Statblock(object):
         self.overrides['count'] = count
         self._count = count
         hp = self.hitPoints()
-        self.update('hp', hp)
  
     def setLabel(self, label):
         self.overrides['label'] = label

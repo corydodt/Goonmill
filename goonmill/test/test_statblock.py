@@ -315,7 +315,6 @@ class StatblockTestCase(unittest.TestCase):
         expected = 'Any'
         self.assertEqual(actual, expected)
 
-    ## need to test: update, updateHandler,
     ## parseFeats with none, parseSkills/formatSkills with none,
     ## cached attackGroups, setCount/Label/Alignment/Spells/Spellbook
 
