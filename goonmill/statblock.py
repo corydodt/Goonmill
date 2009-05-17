@@ -96,7 +96,7 @@ class Statblock(object):
         self.determineFamilies()
 
     def specialAC(self):
-        specArmors = SRD.facts['specialAC'].dump()
+        specArmors = dict((unicode(x.label).lower(), x) for x in SRD.facts['specialAC'].dump())
 
         extraArmors = []
         for q in self._parsedSpecialQualities:
@@ -242,12 +242,12 @@ class Statblock(object):
 
     def specialActionFeats(self):
         """List of feats that can appear next to special actions"""
-        TODO # no monsters actually have this
         return [f for f in self.feats if f.dbFeat.isSpecialActionFeat]
 
     def specialActions(self):
         """All special actions as a string"""
-        specActions = SRD.facts['specialAction'].dump()
+        specActions = dict((unicode(x.label).lower(), x) for x in
+                SRD.facts['specialAction'].dump())
 
         extraActions = []
         for q in self._parsedSpecialQualities:
@@ -300,7 +300,8 @@ class Statblock(object):
         return (hp if hp >= 1 else 1)
 
     def languages(self):
-        """Return the languages a creature knows, determined by inspecting
+        """
+        Return the languages a creature knows, determined by inspecting
         creature's families.
         """
         ret = set()
@@ -319,19 +320,21 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.resistances:
+                FIXME  # fuck, nothing reaches this code?
                 label = s.attackEffect.label
                 amt = s.value
                 ret[label] = "%s %s" % (label, amt)
 
         for q in self._parsedSpecialQualities:
             if q.type == 'resistance':
-                ret[q.what.title()] = "%s %s" % (q.what.title(), q.value)
+                ret[q.what.title()] = "%s %s" % (q.what.title(), q.amount)
 
         # spell resistance is covered elsewhere.
         if 'Spell' in ret: del ret['Spell']
 
         if len(ret) > 0:
             return u', '.join(sorted(ret.values()))
+        FIXME  # fuck, nothing reaches this code?
         return None
 
     def immunities(self):
@@ -379,16 +382,16 @@ class Statblock(object):
         for f in self.families:
             for s in f.senses:
                 if s.range:
-                    ret[s.label] = "%s %s" % (s.label, s.range)
+                    ret[s.label.title()] = "%s %s" % (s.label.title(), s.range)
                 else:
-                    ret[s.label] = s.label
+                    ret[s.label.title()] = s.label.title()
 
         for q in self._parsedSpecialQualities:
             if q.type == 'sense':
                 if q.range:
-                    ret[q.name.title()] = "%s %s" % (q.name, q.range)
+                    ret[q.name.title()] = "%s %s" % (q.name.title(), q.range)
                 else:
-                    ret[q.name.title()] = q.name
+                    ret[q.name.title()] = q.name.title()
 
         if len(ret) > 0:
             return u', '.join(sorted(ret.values()))
@@ -420,7 +423,7 @@ class Statblock(object):
 
     def aura(self):
         """Return the creature's aura, if any"""
-        all = SRD.facts['aura'].dump()
+        all = dict((unicode(x.label).lower(), x) for x in SRD.facts['aura'].dump())
 
         ret = []
         for q in self._parsedSpecialQualities:
