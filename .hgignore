@@ -7,11 +7,10 @@
 ^options\.local$
 ^hook.d/.*$
 ^doc/goonmill-shots\.graffle.*$
-^goonmill/user.db$
+^goonmill/user\.db(-journal)?$
 ^wingdbstub.py$
 ^goonmill.wpu$
 ^goonmill/static/monster$
-^goonmill/rdflib\.db.*$
 ^goonmill/static/upload/.*\.png$
 ^Goonmill.egg-info
 ^_trial_temp

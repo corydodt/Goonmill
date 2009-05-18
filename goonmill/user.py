@@ -4,7 +4,7 @@ Users and user acquisition
 from storm import locals
 
 from .util import RESOURCE
-from .history import Statblock
+from .statblock import Statblock
 
 KIND_NPC = u'npc'
 KIND_MONSTERGROUP = u'monsterGroup'

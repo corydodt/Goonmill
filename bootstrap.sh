@@ -29,7 +29,7 @@ function testPython()
 #  redirect to stdout.
 {
     software="$1"
-    line=$(python -c "$2" 2>&1 | tail -1)
+    line=$(python -Wignore -c "$2" 2>&1 | tail -1)
 
     if [ -n "$line" ]; then
         echo "** Install $software ($line)"
@@ -39,16 +39,9 @@ function testPython()
     fi
 }
 
-testPython "PySQLite2" 'import pysqlite2.dbapi2'
-testPython "Playtools" 'import playtools'
-t="from rdflib import __version__ as v; assert v=='2.4.1', 'Have %s' % (v,)"
-testPython "RDFlib 2.4.1" "$t"
-testPython "Storm" 'import storm.locals'
-testPython "zope.interface" 'import zope.interface'
-t="from twisted import __version__ as v; assert v>='2.5.0', 'Have %s' % (v,)"
-testPython "Twisted 2.5" "$t"
-t="import warnings; warnings.filterwarnings('ignore')
-from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
+t="from playtools import fact"
+testPython "Playtools" "$t"
+t="from nevow import __version__ as v; assert v>='0.9.33', 'Have %s' % (v,)"
 testPython "Divmod Nevow >= 0.9.33"  "$t"
 testPython "Python 2.5" 'import xml.etree'
 
