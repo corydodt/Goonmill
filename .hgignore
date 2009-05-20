@@ -14,3 +14,4 @@
 ^goonmill/static/upload/.*\.png$
 ^Goonmill.egg-info
 ^_trial_temp
+^build/
