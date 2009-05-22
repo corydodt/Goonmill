@@ -36,6 +36,7 @@ class GoonmillServerMaker(object):
         if options['dev']:
             try:
                 import wingdbstub
+                wingdbstub
             except ImportError:
                 pass
         from goonmill.webserver import WebServer, WebSite

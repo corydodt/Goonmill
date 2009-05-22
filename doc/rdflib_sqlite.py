@@ -5,7 +5,7 @@ Demonstrating how to instantiate and use a sqlite-based triplestore
 import rdflib
 from rdflib.Graph import ConjunctiveGraph as Graph
 from rdflib import plugin
-from rdflib.store import Store, NO_STORE, VALID_STORE
+from rdflib.store import Store, VALID_STORE
 from rdflib import Namespace
 from rdflib import Literal
 from rdflib import URIRef
@@ -36,9 +36,9 @@ graph = Graph(store, identifier = URIRef(default_graph_uri))
 print "Triples in graph before add: ", len(graph)
 
 # Now we'll add some triples to the graph & commit the changes
-rdflib = Namespace('http://rdflib.net/test/')
-graph.add((rdflib['pic:1'], rdflib['name'], Literal('Jane & Bob')))
-graph.add((rdflib['pic:2'], rdflib['name'], Literal('Squirrel in Tree')))
+rdflibNS = Namespace('http://rdflib.net/test/')
+graph.add((rdflibNS['pic:1'], rdflibNS['name'], Literal('Jane & Bob')))
+graph.add((rdflibNS['pic:2'], rdflibNS['name'], Literal('Squirrel in Tree')))
 graph.commit()
 
 print "Triples in graph after add: ", len(graph)

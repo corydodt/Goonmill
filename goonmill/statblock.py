@@ -3,7 +3,6 @@ The model representation of a monster suitable for piping into something that
 formats it.
 """
 
-import string
 import re
 
 from goonmill.parser import (skillparser, featparser, 

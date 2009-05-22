@@ -318,17 +318,3 @@ def printFrequenciesOfUnknowns():
     print Quality.count, "total qualities parsed"
 
 
-if __name__ == '__main__': # {{{
-    FIXME # this test sucks.
-    from playtools import fact
-    monsters = fact.systems['D20 SRD'].facts['monster']
-    tests = [m.special_qualities for m in monster.dump()]
-    tests = query._allSQStats()
-    for id, test in tests:
-        #print id, test
-        suc, children, next = specialQualityParser.parse(test, processor=Processor())
-        #print children
-        assert next==len(test),  test[:next] + '\n--\n' + test[next:]
-
-    printFrequenciesOfUnknowns()
-# }}}

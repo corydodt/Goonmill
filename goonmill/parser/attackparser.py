@@ -1,4 +1,5 @@
 from playtools import diceparser
+diceparser
 
 from simpleparse import parser, dispatchprocessor as disp
 from simpleparse.common import numbers, chartypes
@@ -220,18 +221,3 @@ def parseAttacks(s):
         raise RuntimeError('%s is not a valid attack expression' % (s,))
     return children
 
-
-if __name__ == '__main__': # {{{
-    FIXME # this test sucks.
-    from playtools import fact
-    monsters = fact.systems['D20 SRD'].facts['monster']
-    tests = [m.full_attack for m in monster.dump()]
-    for id, test in tests:
-        print id, test
-        suc, children, next = attackParser.parse(test, processor=Processor())
-        for option in children[0]:
-            print option
-            for form in option.attackForms:
-                print ' -> %s' % (str(form),)
-        assert next==len(test),  test[:next]
-# }}}

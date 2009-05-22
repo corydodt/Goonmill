@@ -4,6 +4,7 @@ from urlparse import urlparse
 
 from twisted.internet import reactor, task, defer
 from twisted.web.client import HTTPPageGetter, _parse, HTTPClientFactory, PartialDownloadError
+from twisted.web import error
 from twisted.python import log, failure
 
 import simplejson

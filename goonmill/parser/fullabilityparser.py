@@ -64,18 +64,3 @@ def parseFullAbilities(s):
  
     return (specAbs, spellLikes)
 
-if __name__ == '__main__': # {{{
-    FIXME # this test sucks.
-    from playtools import fact
-    monsters = fact.systems['D20 SRD'].facts['monster']
-    tests = [m.full_text for m in monster.dump()]
-    for n, ft in tests:
-        ft = prepFullText(ft)
-        print n, ft[:70]
-        fulls, spellLikes = parseFullAbilities(ft)
-        for i in fulls if fulls else []:
-            print ' ->', i[:70]
-
-        print ' SLA ->', spellLikes[:70] if spellLikes else ''
-# }}}
-

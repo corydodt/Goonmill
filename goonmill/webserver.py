@@ -34,9 +34,7 @@ class WebSite(appserver.NevowSite):
 
 class WebServer(internet.TCPServer):
     def startService(self, *a, **kw):
-        from .query import db
-        from . import user, auth, search
-        from hypy import HDatabase, OpenFailed
+        from . import user, auth
 
         r = self.site.resource
         userdb = user.userDatabase()

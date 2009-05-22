@@ -10,7 +10,12 @@ class IMPORTTestCase(unittest.TestCase):
     """
     def test_importStuff(self):
         from ..util import RESOURCE
+        RESOURCE
         from ..userfile import StaticImage, userFolder
+        StaticImage, userFolder
         from ..fileupload import FileUploadPage
+        FileUploadPage
         from ..statblock import Statblock
+        Statblock
         from ..resource import Root
+        Root
