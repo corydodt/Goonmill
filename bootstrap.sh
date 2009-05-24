@@ -62,7 +62,7 @@ userdb=goonmill/user.db
 if [ ! -r "$userdb" ]; then
     echo ::
     echo :: $userdb
-    sqlite3 -init goonmill/sql/user.sql $userdb '.exit' || exit 1
+    sqlite3 -init <(python goonmill/usersql.py) $userdb '.exit' || exit 1
     sqlite3 -init goonmill/sql/dummy.sql $userdb '.exit' || exit 1
     chmod 664 $userdb
 else
