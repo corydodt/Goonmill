@@ -6,6 +6,10 @@ from storm import locals
 from .util import RESOURCE
 from .statblock import Statblock
 
+from playtools import fact
+
+SRD = fact.systems['D20 SRD']
+
 KIND_NPC = u'npc'
 KIND_MONSTERGROUP = u'monsterGroup'
 KIND_ENCOUNTER = u'encounter'
@@ -64,58 +68,56 @@ class Constituent(object):
     # we need a search-findable form of the data as an attribute (?)
     # image = locals.Unicode()
 
-    @classmethod
-    def monsterGroupKind(cls, monster, count, workspace):
+    def buildMonsterGroup(self, monster, count, workspace):
         """
-        Return a Constituent instance that is configured as a monsterGroup
+        Set up this Constituent instance as a monsterGroup
         (c.kind=monsterGroup and c.data is a json-ized
         goonmill.user.MonsterGroup)
         """
-        c = cls()
-        c.workspace = workspace
+        self.workspace = workspace
+
+        store = locals.Store.of(self)
 
         mg = MonsterGroup()
         mg.stencilId = monster.id
         mg.id = locals.AutoReload
-        theStore.add(mg)
-        c.monsterGroupId = mg.id
+        store.add(mg)
+        self.monsterGroupId = mg.id
         
         assert count < TOO_MANY_GROUPIES
 
         for n in range(count):
             groupie = Groupie()
             groupie.monsterGroup = mg
-            theStore.add(groupie)
+            store.add(groupie)
 
-        theStore.add(c)
-        theStore.commit()
+        store.commit()
 
-        assert c.fuckComponentArchitecture() is mg
-        assert c.fuckComponentArchitecture().stencilId == monster.id
+        assert self.fuckComponentArchitecture() is mg
+        assert self.fuckComponentArchitecture().stencilId == monster.id
 
-        return c
+        return self
 
-    @classmethod
-    def npcKind(cls, monster, workspace):
-        c = cls()
-        c.workspace = workspace
+    def buildNPC(self, monster, workspace):
+        self.workspace = workspace
         
+        store = locals.Store.of(self)
+
         npc = NPC()
         npc.stencilId = monster.id
         npc.id = locals.AutoReload
-        theStore.add(npc)
-        c.npcId = npc.id
+        store.add(npc)
+        self.npcId = npc.id
 
         npc.classes = u'(classes)'
         npc.name = u'Nameless NPC %s' % (monster.name.capitalize(),)
 
-        theStore.add(c)
-        theStore.commit()
+        store.commit()
         
-        assert c.fuckComponentArchitecture() is npc
-        assert c.fuckComponentArchitecture().stencilId == monster.id
+        assert self.fuckComponentArchitecture() is npc
+        assert self.fuckComponentArchitecture().stencilId == monster.id
 
-        return c
+        return self
 
     def isLibraryKind(self):
         """
@@ -136,12 +138,13 @@ class Constituent(object):
         Return the inner monster
         """
         kind = self.kind
+        store = locals.Store.of(self)
         if self.monsterGroupId:
-            return theStore.get(MonsterGroup, self.monsterGroupId)
+            return store.get(MonsterGroup, self.monsterGroupId)
         elif self.npcId:
-            return theStore.get(NPC, self.npcId)
+            return store.get(NPC, self.npcId)
         elif self.encounterId:
-            return theStore.get(Encounter, self.encounterId)
+            return store.get(Encounter, self.encounterId)
 
     def getStencilBase(self):
         """
@@ -182,8 +185,7 @@ class Constituent(object):
         return self.getStencilBase().image
 
 def getStencil(id):
-    from . import query
-    return query.lookup(id)
+    return SRD.facts['monster'].lookup(id)
 
 
 Workspace.constituents = locals.ReferenceSet(
@@ -282,16 +284,49 @@ class NPC(object):
         return '<NPC|%s of %s at 0x%x>' % (self.id, base, id(self))
 
 
-# the global store object. yay, global mutable state!
-theStore = None
+def parseURI(uri):
+    """
+    Return a (filename, uri) tuple from the URI, adding sqlite: if it was
+    missing or removing it for the filename if it was present
+    """
+    if uri.startswith('sqlite:'):
+        if uri[7:]:
+            fn = uri[7:].strip()
+            if fn.startswith('/'):
+                fn = '/' + fn.lstrip('/')
+        else:
+            fn = None
+    else:
+        uri = 'sqlite:%s' % (uri,)
+        fn = uri[7:]
+    return (fn, uri)
 
+DB_FILE_NAME = 'sqlite:' + RESOURCE('user.db')
 
-def userDatabase():
-    """Give a user database"""
-    global theStore
-    if theStore is not None:
-        raise RuntimeError("Already created a db store")
-    db = locals.create_database('sqlite:///' + RESOURCE('user.db'))
-    theStore = locals.Store(db)
-    return theStore
+def userDatabase(uri=DB_FILE_NAME):
+    """
+    Give a user database
+    """
+    filename, uri = parseURI(uri)
+    db = locals.create_database(uri)
+    if filename is not None:
+        # test existence of the database file so as to throw an exception when
+        # the bootstrap script was not run.  Test it before creating the Store
+        # because creating the Store creates the file whether it makes sense
+        # to or not.
+        open(filename).close()
+        store = locals.Store(db)
+    else:
+        store = locals.Store(db)
+        from .usersql import SQL_SCRIPT
+        for sql in SQL_SCRIPT:
+            store.execute(sql)
+    assert store is not None
 
+    global theStore  # UGLY but necessary?  many many things in resource need
+                     # this; passing it around would be heinous.
+    theStore = store
+
+    return store
+
+theStore = None # this gets set as a side-effect of calling userDatabase

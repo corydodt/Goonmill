@@ -450,9 +450,12 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def newMonsterGroup(self, stencilId, count):
-        from . import query
-        m = query.lookup(stencilId)
-        c = Constituent.monsterGroupKind(m, count, self.workspace)
+        from .user import theStore
+        monsters = fact.systems['D20 SRD'].facts['monster']
+        m = monsters.lookup(stencilId)
+        c = Constituent()
+        theStore.add(c)
+        c.buildMonsterGroup(m, count, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId
         mgv = MonsterGroupView(c)
         mgv.setFragmentParent(self.fragmentParent.eventBus)
@@ -467,9 +470,12 @@ class BasicSearch(athena.LiveElement):
 
     @athena.expose
     def newNPC(self, stencilId):
-        from . import query
-        m = query.lookup(stencilId)
-        c = Constituent.npcKind(m, self.workspace)
+        from .user import theStore
+        monsters = fact.systems['D20 SRD'].facts['monster']
+        m = monsters.lookup(stencilId)
+        c = Constituent()
+        theStore.add(c)
+        c.buildMonsterGroup(m, self.workspace)
         assert c.fuckComponentArchitecture().stencilId == stencilId
         npcv = NPCView(c)
         npcv.setFragmentParent(self.fragmentParent.eventBus)
