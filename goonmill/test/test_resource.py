@@ -2,9 +2,15 @@
 Test various functionality in resource
 """
 import re
-import unittest
 
-from .. import resource
+from storm.locals import Store
+
+from twisted.trial import unittest
+from twisted.internet import defer
+
+import fudge
+
+from .. import resource, user
 
 class ResourceTestCase(unittest.TestCase):
     def test_searched(self):
@@ -34,4 +40,39 @@ class ResourceTestCase(unittest.TestCase):
                 (u'Gold Dragon, Juvenile',         308,   '.*Hit Dice: 17.*'),
                 (u'Gold Dragon, Young adult',      309,   '.*Hit Dice: 20.*'),
                 )
+
+
+class BasicSearchTest(unittest.TestCase):
+    def setUp(self):
+        workspace = user.Workspace()
+        self.bs = resource.BasicSearch(workspace)
+        fragmentParent = fudge.Fake("WorkspacePage")
+        fragmentParent.provides("page")
+        fragmentParent.liveFragmentChildren = []
+        cl = fragmentParent.constituentList = resource.ConstituentList(workspace)
+        d = defer.succeed(None)
+        cl.page = fudge.Fake("Page").provides("callRemote").returns(d)
+        cl._athenaID = fudge.Fake("_athenaID")
+        fragmentParent.eventBus = resource.EventBus()
+        self.bs.setFragmentParent(fragmentParent)
+        self.store = user.userDatabase('sqlite:')
+
+    def test_newMonsterGroup(self):
+        """
+        We can get a monster by calling newMonsterGroup
+        """
+        mohrg = 501
+        count = 2
+        d = self.bs.newMonsterGroup(mohrg, count)
+        def check(mgv):
+            con = mgv.constituent
+            m = con.fuckComponentArchitecture()
+            self.assertEqual(m.stencilId, 501)
+            self.assertEqual(m.id, 1)
+            store = Store.of(con)
+            count = store.find(user.Groupie, user.Groupie.constituent ==
+                    con).count()
+            self.assertEqual(count, 2)
+        d.addCallback(check)
+        return d
 
