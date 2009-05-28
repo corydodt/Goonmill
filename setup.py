@@ -18,14 +18,8 @@ setup(name='Goonmill',
           ]),
 
       install_requires=[
-          'pysqlite>=2',
-          'storm>=0.13',
           'playtools>=0.3.0',
-          'zope.interface',
-          'twisted',
           'nevow',
-          'simpleparse',
-          'hypy',
           ],
 
       package_data={
