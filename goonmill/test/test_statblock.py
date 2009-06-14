@@ -375,10 +375,20 @@ class HugeStatblockTestCase(unittest.TestCase):
     Crude test that runs some of the code on all the monsters
     """
     def test_statblockALL(self):
-        # just load all the monsters
+        """
+        Just load all the monsters through Statblock
+        """
         monsters = MONSTERS.dump()
         for monster in monsters:
+            # we aren't actually making any assertions about monster except
+            # that it can be processed.  The "exp" construction is here so
+            # that the assertEqual at the end will have a string to tell us
+            # *which* monster failed, if one does.
             exp = [monster.name, None]
+
             monster = statblock.Statblock.fromId(monster.id)
+
+            # get('name') as a proxy for checking that the monster actually
+            # loaded ok.
             act = [monster.get('name'), monster and None]
             self.assertEqual(exp, act)
