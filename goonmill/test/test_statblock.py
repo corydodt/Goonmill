@@ -299,6 +299,12 @@ class StatblockTestCase(unittest.TestCase):
         expected = u'negative energy'
         self.assertEqual(actual, expected)
 
+        # auras parsed from "special attacks"
+        pitFiend = statblock.Statblock.fromId(188)
+        actual = pitFiend.get('aura')
+        expected = u'fear'
+        self.assertEqual(actual, expected)
+
         # odd auras..
         phane = statblock.Statblock.fromId(8)
         actual = phane.get('aura')
