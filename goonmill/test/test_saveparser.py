@@ -33,6 +33,7 @@ class SaveParserTest(unittest.TestCase):
         actual = dict([(k, v.bonus) for k,v in parsed.items()])
         expected = {'fort':9, 'ref':0, 'will':6}
         self.assertEqual(actual, expected)
+        self.assertEqual(parsed['ref'].other, '-')
 
     def test_whitespace(self):
         """
