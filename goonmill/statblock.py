@@ -6,9 +6,10 @@ formats it.
 import re
 
 from playtools.parser import (skillparser, featparser, 
-        saveparser, attackparser, fullabilityparser, specialparser)
+        saveparser, attackparser, fullabilityparser, specialparser,
+        diceparser)
 
-from playtools import diceparser, dice, util as ptutil, fact
+from playtools import dice, util as ptutil, fact
 from playtools.plugins import d20srd35
 
 SRD = fact.systems['D20 SRD']
@@ -173,7 +174,7 @@ class Statblock(object):
         ret  =  []
         # parse special attacks
         ret.extend(
-                specialparser.parseSpecialQualities(self.monster.special_attacks)
+                specialparser.parseSpecialQualities(self.monster.special_attacks or '')
                 )
         # parse special qualities
         ret.extend(
