@@ -48,7 +48,10 @@ def parseSaves(s):
     return children
 
 class SaveStat(object):
-    """The set of saves owned by a monster"""
+    """The set of saves owned by a monster
+    
+    FIXME - this is identical to abilityparser.AbilityStat
+    """
     def __init__(self, name):
         self.name = name
         self.bonus = 0
@@ -78,6 +81,7 @@ class SaveStat(object):
                 return '%+d%s%s' % (self.bonus, splat, qual)
             else:
                 return '-%s%s' % (splat, qual)
+
 
 class Processor(disp.DispatchProcessor):
     def other(self, (t,s1,s2,sub), buffer):
