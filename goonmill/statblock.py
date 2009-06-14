@@ -5,7 +5,7 @@ formats it.
 
 import re
 
-from goonmill.parser import (skillparser, featparser, 
+from playtools.parser import (skillparser, featparser, 
         saveparser, attackparser, fullabilityparser, specialparser)
 
 from playtools import diceparser, dice, util as ptutil, fact
