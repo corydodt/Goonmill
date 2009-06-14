@@ -170,8 +170,16 @@ class Statblock(object):
 
     def parseSpecialQualities(self):
         """All full ability markup as a list of strings"""
-##         TODO crap - special attacks must *also* get parsed here, e.g. pit fiend's fear aura
-        return specialparser.parseSpecialQualities(self.monster.special_qualities)
+        ret  =  []
+        # parse special attacks
+        ret.extend(
+                specialparser.parseSpecialQualities(self.monster.special_attacks)
+                )
+        # parse special qualities
+        ret.extend(
+                specialparser.parseSpecialQualities(self.monster.special_qualities)
+                )
+        return ret
 
     def parseFeats(self):
         """All feats of the monster, as a list of Feat."""

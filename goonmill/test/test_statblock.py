@@ -24,10 +24,18 @@ class StatblockTestCase(unittest.TestCase):
         The monster with no special qualities has no full ability column to
         parse
         """
-        stoneColossus= statblock.Statblock.fromId(13)
+        stoneColossus = statblock.Statblock.fromId(13)
         actual = stoneColossus.parseFullAbilities()[1]
         expected = ''
         self.assertEqual(actual, expected)
+
+    def test_specialAttacks(self):
+        """
+        Make sure special attacks are passed through unharmed
+        """
+        gorilla = statblock.Statblock.fromId(11)
+        actual = gorilla.get("special_attacks")
+        self.assertEqual(actual, "Rend 8d8+20")
 
     def test_statblockFromMonster(self):
         """
