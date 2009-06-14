@@ -74,6 +74,7 @@ class Statblock(object):
                 'vulnerabilities': self.vulnerabilities,
                 'skills': self.formatSkills,
                 'specialActions': self.specialActions,
+                'feats': lambda: self.formatFeats(lambda: self.feats),
                 }
         savesDict = self.parseSaves()
         for k in savesDict:
@@ -174,18 +175,20 @@ class Statblock(object):
     def parseFeats(self):
         """All feats of the monster, as a list of Feat."""
         ret = []
-        st = self.monster.feats
-        # check this before trying to parse
-        if st is None:
-            return ret
 
-        parsed = featparser.parseFeats(st)[0]
+        for st in self.monster.feats, self.monster.bonus_feats:
+            # check this before trying to parse
+            if st is None:
+                continue
 
-        for item in parsed:
-            name = ptutil.rdfName(item.name)
-            key = getattr(d20srd35.FEAT, name)
-            item.dbFeat = SRD.facts['feat'][key]
-            ret.append(item)
+            parsed = featparser.parseFeats(st)[0]
+
+            for item in parsed:
+                name = ptutil.rdfName(item.name)
+                key = getattr(d20srd35.FEAT, name)
+                item.dbFeat = SRD.facts['feat'][key]
+                if item not in ret:
+                    ret.append(item)
 
         return ret
 

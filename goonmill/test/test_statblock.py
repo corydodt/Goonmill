@@ -49,6 +49,15 @@ class StatblockTestCase(unittest.TestCase):
         self.assertEqual(mohrg.get('feats'), 
             u'Alertness, Dodge, Improved Initiative, Lightning Reflexes, Mobility')
 
+    def test_bonusFeats(self):
+        """
+        Some of a monster's feats may come from the bonus_feats column.  Make
+        sure these are represented
+        """
+        dbbadger = MONSTERS[u'Badger']
+        badger = statblock.Statblock.fromMonster(dbbadger)
+        self.assertEqual(badger.get('feats'), u'Weapon Finesse, Track')
+
     def test_parseSkills(self):
         """
         A monster's skills can be read and parsed into a list, and reformatted
