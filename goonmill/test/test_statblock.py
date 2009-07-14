@@ -5,7 +5,7 @@ Use the statblock module to format monsters
 from twisted.trial import unittest
 from .. import statblock
 from playtools import fact
-from playtools.test.util import pluck
+from playtools.test.pttestutil import pluck
 
 SRD = fact.systems['D20 SRD']
 MONSTERS = SRD.facts['monster']
