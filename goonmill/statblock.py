@@ -287,7 +287,7 @@ class Statblock(object):
             return -1
 
         rolled = list(dice.roll(self._parsedHitDice))
-        assert (len(rolled) == 1, "No repeat count allowed in expression")
+        assert (len(rolled) == 1), "No repeat count allowed in expression"
         hp = rolled[0].sum()
 
         # must have at least 1 hp if monster has a legitimate dice expression
