@@ -184,23 +184,32 @@ class Statblock(object):
 
     def parseFeats(self):
         """All feats of the monster, as a list of Feat."""
-        ret = []
-
-        for st in self.monster.feats, self.monster.bonus_feats:
+        def findFeats(collection):
+            """
+            Parse collection, a string, into some feats.
+            """
+            ret = []
             # check this before trying to parse
-            if st is None:
-                continue
+            if collection is None:
+                return ret
 
-            parsed = featparser.parseFeats(st)[0]
+            parsed = featparser.parseFeats(collection)
 
-            for item in parsed:
-                name = ptutil.rdfName(item.name)
-                key = getattr(d20srd35.FEAT, name)
-                item.dbFeat = SRD.facts['feat'][key]
-                if item not in ret:
-                    ret.append(item)
+            if parsed:
+                for item in parsed[0]:
+                    name = ptutil.rdfName(item.name)
+                    key = getattr(d20srd35.FEAT, name)
+                    item.dbFeat = SRD.facts['feat'][key]
+                    if item not in ret:
+                        ret.append(item)
+            return ret
 
-        return ret
+        r1 = findFeats(self.monster.feats)
+        r2 = findFeats(self.monster.bonus_feats)
+        [setattr(f, 'isBonusFeat', True) for f in r2]
+        r3 = findFeats(self.monster.epic_feats)
+
+        return r1+r2+r3
 
     def parseSkills(self):
         """All skills of the monster as a dict of strings"""
