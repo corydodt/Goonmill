@@ -56,6 +56,12 @@ class StatblockTestCase(unittest.TestCase):
         self.assertEqual(mohrg.get('acFeats'), 'Dodge, Mobility')
         self.assertEqual(mohrg.get('feats'), 
             u'Alertness, Dodge, Improved Initiative, Lightning Reflexes, Mobility')
+        dbbrachyurus = MONSTERS[u'Brachyurus']
+        brachyurus = statblock.Statblock.fromMonster(dbbrachyurus)
+        brachyfeats = brachyurus.feats
+        timeses = dict(zip(pluck(brachyfeats, 'name'), 
+                           pluck(brachyfeats, 'timesTaken')))
+        self.assertEqual(timeses['Blinding Speed'], 2)
 
     def test_bonusFeats(self):
         """
@@ -218,10 +224,12 @@ class StatblockTestCase(unittest.TestCase):
         # family resistances
         babau = statblock.Statblock.fromId(165)
         self.assertEqual(babau.get('resistances'), u'Acid 10, Cold 10, Fire 10')
+        anaxim = statblock.Statblock.fromId(1)
+        self.assertEqual(anaxim.get('resistances'), u'Cold 20, Fire 20')
 
         # no resistances..
-        anaxim = statblock.Statblock.fromId(1)
-        self.assertEqual(anaxim.get('resistances'), None)
+        vault = statblock.Statblock.fromId(63)
+        self.assertEqual(vault.get('resistances'), None)
 
     def test_spellResistance(self):
         """
