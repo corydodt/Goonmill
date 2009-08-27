@@ -25,7 +25,7 @@ class StatblockTestCase(unittest.TestCase):
         parse
         """
         stoneColossus = statblock.Statblock.fromId(13)
-        actual = stoneColossus.parseFullAbilities()[1]
+        actual = stoneColossus.parseFTAbilities()[1]
         expected = ''
         self.assertEqual(actual, expected)
 
@@ -185,7 +185,7 @@ class StatblockTestCase(unittest.TestCase):
         """
         forceDragon = statblock.Statblock.fromId(21)
         actual = forceDragon.get('casterLevel')
-        expected = u'3rd'
+        expected = 3
         self.assertEqual(actual, expected)
 
         # no caster level
@@ -280,7 +280,7 @@ class StatblockTestCase(unittest.TestCase):
         """
         deva = statblock.Statblock.fromId(431)
         actual = deva.get('attackGroups')
-        expected = {'melee': ['plus3 heavy mace of disruption +21/+16/+11 (1d8+12 plus stun) melee',
+        expected = {'melee': ['plus3 heavy mace of disruption +21/+16/+11 (1d8+12 (plus stun)) melee',
            'slam +18 (1d8+9) melee'], 'ranged': []}
         self.assertEqual(actual, expected)
 
