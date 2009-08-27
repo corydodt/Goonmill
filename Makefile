@@ -2,7 +2,7 @@
 DNOTIFY=dnotify -q1 -a
 
 start:
-	hg serve --daemon --port 28082 --pid-file hgserve.pid
+	hg serve --daemon --port 28082 --pid-file hgserve.pid -E hgserve.log
 
 stop:
 	kill `cat hgserve.pid`
