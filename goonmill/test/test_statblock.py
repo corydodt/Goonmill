@@ -250,7 +250,7 @@ class StatblockTestCase(unittest.TestCase):
         """
         demilich = statblock.Statblock.fromId(16)
         actual = demilich.get('immunities')
-        expected = u'Death Effects, Mind-Affecting Attacks, Disease, Magic , Paralysis, Poison, Sleep, Stunning, cold, electricity, mind-affecting attacks, polymorph'
+        expected = u'Death Effects, Mind-Affecting Attacks, Disease, Magic, Paralysis, Poison, Sleep, Stunning, cold, electricity, mind-affecting attacks, polymorph'
         self.assertEqual(actual, expected)
 
         # none...
