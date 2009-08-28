@@ -6,7 +6,7 @@ formats it.
 import re
 
 from playtools.parser import (skillparser, featparser, 
-        saveparser, attackparser, fullabilityparser, specialparser,
+        saveparser, attackparser, ftabilityparser, specialparser,
         diceparser)
 
 from playtools import dice, util as ptutil, fact
@@ -44,7 +44,7 @@ class Statblock(object):
         self.skills = self.parseSkills()
         self.feats = self.parseFeats()
 
-        parsedFullAbilities = self.parseFullAbilities()
+        parsedFullAbilities = self.parseFTAbilities()
         self.overrides = { # when .get() is called, these will be looked up
                            # first and possibly called
                 'hitPoints': self.hitPoints,
@@ -60,9 +60,9 @@ class Statblock(object):
                 'spot': '+0', # may be set again, down below
                 'alignment': self.formatAlignment,
                 'attackGroups': self.attackGroups,
-                'fullAbilities': parsedFullAbilities[0],
+                'fullAbilities': "FIXME", # parsedFullAbilities[0],
                 'casterLevel': self.casterLevel,
-                'spellLikeAbilities': parsedFullAbilities[1],
+                'spellLikeAbilities': "FIXME 2", # parsedFullAbilities[1],
                 'spellResistance': self.spellResistance,
                 'languages': self.languages,
                 'aura': self.aura,
@@ -81,7 +81,7 @@ class Statblock(object):
         for k in savesDict:
             self.overrides[k] = str(savesDict[k])
 
-        ## self.fullAbilities = self.parseFullAbilities()
+        ## self.fullAbilities = self.parseFTAbilities()
 
         listen = self.skills.get('Listen', None)
         if listen is not None: self.overrides['listen'] = listen[7:]
@@ -155,10 +155,10 @@ class Statblock(object):
             return matched.group(1).title()
         return s
 
-    def parseFullAbilities(self):
+    def parseFTAbilities(self):
         """All full ability markup as a 2-tuple of strings"""
         ft = self.monster.full_text
-        specs, spellLikes = fullabilityparser.parseFullAbilities(ft)
+        specs, spellLikes = ftabilityparser.parseFTAbilities(ft)
         if specs is None:
             specs = ''
         else:
@@ -174,7 +174,8 @@ class Statblock(object):
         ret  =  []
         # parse special attacks
         ret.extend(
-                specialparser.parseSpecialQualities(self.monster.special_attacks or '')
+                specialparser.parseSpecialQualities(self.monster.special_attacks
+                    or '-')
                 )
         # parse special qualities
         ret.extend(
