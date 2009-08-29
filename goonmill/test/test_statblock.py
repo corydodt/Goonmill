@@ -25,8 +25,8 @@ class StatblockTestCase(unittest.TestCase):
         parse
         """
         stoneColossus = statblock.Statblock.fromId(13)
-        actual = stoneColossus.parseFTAbilities()[1]
-        expected = ''
+        actual = stoneColossus.parseFTAbilities()
+        expected = []
         self.assertEqual(actual, expected)
 
     def test_specialAttacks(self):

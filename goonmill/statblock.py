@@ -21,6 +21,13 @@ class Statblock(object):
     A representation of one statblock; a configured monster that has had
     its hit points generated and labels set up.
     """
+    FIXME("full and spellLike abilities are disabled",
+            """
+            put in a test for sb.get('fullAbilities') and
+            sb.get('spellLikeAbilities') (need the markup they should generate
+            for somebody) - currently disabled while working on
+            ftabilityparser
+            """
     @classmethod
     def fromId(cls, id):
         assert isinstance(id, int)
@@ -158,16 +165,8 @@ class Statblock(object):
     def parseFTAbilities(self):
         """All full ability markup as a 2-tuple of strings"""
         ft = self.monster.full_text
-        specs, spellLikes = ftabilityparser.parseFTAbilities(ft)
-        if specs is None:
-            specs = ''
-        else:
-            specs = ''.join(specs)
-
-        if spellLikes is None:
-            spellLikes = ''
-
-        return (specs, spellLikes)
+        specs = ftabilityparser.parseFTAbilities(ft)
+        return specs
 
     def parseSpecialQualities(self):
         """All full ability markup as a list of strings"""
