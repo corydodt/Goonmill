@@ -51,10 +51,9 @@ done
 _files=$(find . "${_notifyParameters[@]}" )
 
 # set up the command line options we will use
-[ -e ./options.local ] && source ./options.local
-inotifyOptions=${inotifyOptions:--e modify "${_files}"} 
-twistdOptions=${twistdOptions:--n --pidfile goonmill.pid}
-goonmillOptions=${goonmillOptions:---dev}
+inotifyOptions="-e modify \"${_files}\""
+twistdOptions="-n --pidfile goonmill.pid"
+goonmillOptions="--dev"
 
 safeTTY() {
     tty="`tty`"
