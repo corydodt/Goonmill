@@ -11,6 +11,7 @@ from playtools.parser import (skillparser, featparser,
 
 from playtools import dice, util as ptutil, fact
 from playtools.plugins import d20srd35
+from playtools.test.pttestutil import FIXME
 
 SRD = fact.systems['D20 SRD']
 
@@ -27,7 +28,7 @@ class Statblock(object):
             sb.get('spellLikeAbilities') (need the markup they should generate
             for somebody) - currently disabled while working on
             ftabilityparser
-            """
+            """)
     @classmethod
     def fromId(cls, id):
         assert isinstance(id, int)
