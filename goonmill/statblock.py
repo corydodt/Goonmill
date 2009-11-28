@@ -118,8 +118,8 @@ class Statblock(object):
 
     def casterLevel(self):
         for q in self._parsedSpecialQualities:
-            if q.level:
-                return q.level
+            if q.casterLevel:
+                return q.casterLevel
 
         return None
 
@@ -144,7 +144,7 @@ class Statblock(object):
 
         for q in self._parsedSpecialQualities:
             if q.type == 'family':
-                what = q.what.title()
+                what = q.name.title()
                 if what in knownFamilies:
                     foundFamilies.add(knownFamilies[what])
 
@@ -324,13 +324,13 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.resistances:
-                label = s.attackEffect.label
+                label = s.damageType.label
                 amt = s.value
                 ret[label] = "%s %s" % (label, amt)
 
         for q in self._parsedSpecialQualities:
             if q.type == 'resistance':
-                ret[q.what.title()] = "%s %s" % (q.what.title(), q.amount)
+                ret[q.damageType.title()] = "%s %s" % (q.damageType.title(), q.amount)
 
         # spell resistance is covered elsewhere.
         if 'Spell' in ret: del ret['Spell']
@@ -351,7 +351,7 @@ class Statblock(object):
 
         for q in self._parsedSpecialQualities:
             if q.type == 'immunity':
-                ret[q.what.title()] = q.what
+                ret[q.damageType.title()] = q.damageType
 
         if len(ret) > 0:
             return u', '.join(sorted(ret.values()))
@@ -369,7 +369,7 @@ class Statblock(object):
 
         for q in self._parsedSpecialQualities:
             if q.type == 'vulnerability':
-                ret[q.what.title()] = q.what
+                ret[q.damageType.title()] = q.damageType
 
         if len(ret) > 0:
             return sorted(ret.values())
@@ -383,7 +383,7 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.senses:
-                if s.range:
+                if hasattr(s, 'range'):
                     ret[s.label.title()] = "%s %s" % (s.label.title(), s.range)
                 else:
                     ret[s.label.title()] = s.label.title()
@@ -402,7 +402,7 @@ class Statblock(object):
     def spellResistance(self):
         """Return the creature's spell resistance, if any"""
         for q in self._parsedSpecialQualities:
-            if q.type == 'resistance' and q.what == 'spell':
+            if q.type == 'resistance' and q.damageType == 'spell':
                 return q.amount
 
     def fastHealing(self):
@@ -425,16 +425,16 @@ class Statblock(object):
 
     def aura(self):
         """Return the creature's aura, if any"""
-        all = dict((unicode(x.label).lower(), x) for x in SRD.facts['aura'].dump())
-
         ret = []
+
+        for f in self.families:
+            for p in f.perks:
+                if p.isAura:
+                    ret.append(p.label.title())
+
         for q in self._parsedSpecialQualities:
             if q.type == 'aura':
-                ret.append(q.what)
-            else:
-                qname = (q.name.lower() if q.name else '')
-                if qname in all:
-                    ret.append(all[qname].label)
+                ret.append(q.damageType)
 
         return u', '.join(sorted(ret)) or None
 

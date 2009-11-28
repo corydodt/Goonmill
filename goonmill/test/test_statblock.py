@@ -4,13 +4,20 @@ Use the statblock module to format monsters
 
 from twisted.trial import unittest
 from .. import statblock
-from playtools import fact
+from playtools import fact, sparqly
 from playtools.test.pttestutil import pluck
+from playtools.plugins.d20srd35 import RDFDB
 
 SRD = fact.systems['D20 SRD']
 MONSTERS = SRD.facts['monster']
 
 class StatblockTestCase(unittest.TestCase):
+    def setUp(self):
+        self.oldGraph = sparqly.initRDFDatabase(RDFDB.graph)
+
+    def tearDown(self):
+        sparqly.initRDFDatabase(self.oldGraph)
+
     def test_statblockQuick(self):
         """
         Basic properties of the monster can be read
@@ -324,7 +331,7 @@ class StatblockTestCase(unittest.TestCase):
         # odd auras..
         phane = statblock.Statblock.fromId(8)
         actual = phane.get('aura')
-        expected = u'Null Time Field'
+        expected = u'null time field'
         self.assertEqual(actual, expected)
 
     def test_senses(self):
@@ -386,17 +393,18 @@ class HugeStatblockTestCase(unittest.TestCase):
         """
         Just load all the monsters through Statblock
         """
-        monsters = MONSTERS.dump()
-        for monster in monsters:
-            # we aren't actually making any assertions about monster except
-            # that it can be processed.  The "exp" construction is here so
-            # that the assertEqual at the end will have a string to tell us
-            # *which* monster failed, if one does.
-            exp = [monster.name, None]
+        with sparqly.usingRDFDatabase(RDFDB.graph):
+            monsters = MONSTERS.dump()
+            for monster in monsters:
+                # we aren't actually making any assertions about monster except
+                # that it can be processed.  The "exp" construction is here so
+                # that the assertEqual at the end will have a string to tell us
+                # *which* monster failed, if one does.
+                exp = [monster.name, None]
 
-            monster = statblock.Statblock.fromId(monster.id)
+                monster = statblock.Statblock.fromId(monster.id)
 
-            # get('name') as a proxy for checking that the monster actually
-            # loaded ok.
-            act = [monster.get('name'), monster and None]
-            self.assertEqual(exp, act)
+                # get('name') as a proxy for checking that the monster actually
+                # loaded ok.
+                act = [monster.get('name'), monster and None]
+                self.assertEqual(exp, act)
