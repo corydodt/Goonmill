@@ -9,7 +9,7 @@ from playtools.parser import (skillparser, featparser,
         saveparser, attackparser, ftabilityparser, specialparser,
         diceparser)
 
-from playtools import dice, util as ptutil, fact
+from playtools import dice, util as ptutil, fact, sparqly
 from playtools.plugins import d20srd35
 from playtools.test.pttestutil import FIXME
 
@@ -365,7 +365,7 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.vulnerabilities:
-                ret[s.label] = s.label
+                ret[sparqly.iriToTitle(s.damageType)] = str(sparqly.iriToTitle(s.damageType))
 
         for q in self._parsedSpecialQualities:
             if q.type == 'vulnerability':
