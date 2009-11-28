@@ -104,13 +104,10 @@ class Statblock(object):
         self.determineFamilies()
 
     def specialAC(self):
-        specArmors = dict((unicode(x.label).lower(), x) for x in SRD.facts['specialAC'].dump())
-
         extraArmors = []
         for q in self._parsedSpecialQualities:
-            qname = (q.name.lower() if q.name is not None else '')
-            if qname in specArmors:
-                extraArmors.append(specArmors[qname].label)
+            if q.type == 'specialAC':
+                extraArmors.append(q.name)
             
         extraArmors = ", ".join(extraArmors)
 

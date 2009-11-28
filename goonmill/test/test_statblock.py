@@ -183,7 +183,7 @@ class StatblockTestCase(unittest.TestCase):
         """
         forceDragon = statblock.Statblock.fromId(21)
         actual = forceDragon.get('specialAC')
-        expected = u'Deflecting Force'
+        expected = u'deflecting force'
         self.assertEqual(actual, expected)
 
     def test_casterLevel(self):
