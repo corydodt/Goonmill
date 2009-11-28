@@ -344,7 +344,7 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.immunities:
-                ret[s.label] = s.label
+                ret[sparqly.iriToTitle(s.damageType)] = s.damageType.label
 
         for q in self._parsedSpecialQualities:
             if q.type == 'immunity':
@@ -362,7 +362,7 @@ class Statblock(object):
 
         for f in self.families:
             for s in f.vulnerabilities:
-                ret[sparqly.iriToTitle(s.damageType)] = str(sparqly.iriToTitle(s.damageType))
+                ret[sparqly.iriToTitle(s.damageType)] = s.damageType.label
 
         for q in self._parsedSpecialQualities:
             if q.type == 'vulnerability':
